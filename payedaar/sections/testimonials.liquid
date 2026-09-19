@@ -1,0 +1,143 @@
+{%- if section.settings.show_testimonials or request.design_mode -%}
+<section
+  class="section section-testimonials"
+  data-section-id="{{ section.id }}"
+  data-section-type="testimonials"
+  data-reveal
+>
+  <div class="page-width">
+    <header class="section-header section-header--center">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="section-header__heading section-header__heading--accent">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="section-header__sub" style="margin-inline: auto;">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </header>
+
+    <div class="testimonials-grid" data-reveal-stagger>
+      {%- for block in section.blocks -%}
+        <blockquote class="testimonial-card" {{ block.shopify_attributes }}>
+          {%- if block.settings.rating != blank -%}
+            <div class="testimonial-card__stars" aria-label="{{ block.settings.rating }} out of 5 stars">
+              {%- assign stars = block.settings.rating | plus: 0 -%}
+              {%- for i in (1..5) -%}
+                <span{% if i > stars %} class="is-muted"{% endif %}>★</span>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+          {%- if block.settings.quote != blank -%}
+            <p class="testimonial-card__quote">“{{ block.settings.quote }}”</p>
+          {%- endif -%}
+          {%- if block.settings.author != blank -%}
+            <footer class="testimonial-card__author">— {{ block.settings.author }}</footer>
+          {%- endif -%}
+        </blockquote>
+      {%- else -%}
+        <blockquote class="testimonial-card">
+          <div class="testimonial-card__stars" aria-hidden="true">★★★★★</div>
+          <p class="testimonial-card__quote">“{{ 'sections.testimonials.default_q1' | t }}”</p>
+          <footer class="testimonial-card__author">— {{ 'sections.testimonials.default_a1' | t }}</footer>
+        </blockquote>
+        <blockquote class="testimonial-card">
+          <div class="testimonial-card__stars" aria-hidden="true">★★★★★</div>
+          <p class="testimonial-card__quote">“{{ 'sections.testimonials.default_q2' | t }}”</p>
+          <footer class="testimonial-card__author">— {{ 'sections.testimonials.default_a2' | t }}</footer>
+        </blockquote>
+        <blockquote class="testimonial-card">
+          <div class="testimonial-card__stars" aria-hidden="true">★★★★★</div>
+          <p class="testimonial-card__quote">“{{ 'sections.testimonials.default_q3' | t }}”</p>
+          <footer class="testimonial-card__author">— {{ 'sections.testimonials.default_a3' | t }}</footer>
+        </blockquote>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "tag": "section",
+  "class": "section-testimonials",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_testimonials",
+      "label": "Show customer testimonials",
+      "default": false,
+      "info": "Enable only after replacing sample quotes with genuine customer feedback."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Customer experiences"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Enable this section after adding genuine customer reviews"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "quote",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "range",
+          "id": "rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "label": "Star rating",
+          "default": 5
+        },
+        {
+          "type": "textarea",
+          "id": "quote",
+          "label": "Quote",
+          "default": "Bilkul same product mila jo ad me tha. Bohat satisfied hoon."
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Author",
+          "default": "Ali Khan"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "blocks": [
+        {
+          "type": "quote",
+          "settings": {
+            "quote": "Bilkul same product mila jo ad me tha. Bohat satisfied hoon.",
+            "author": "Ali Khan"
+          }
+        },
+        {
+          "type": "quote",
+          "settings": {
+            "quote": "Price ke hisab se best product hai. Delivery bhi fast thi.",
+            "author": "Ayesha Ali"
+          }
+        },
+        {
+          "type": "quote",
+          "settings": {
+            "quote": "COD se order kiya — parcel open karke check kar sake. Trust build ho gaya.",
+            "author": "Usman R."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

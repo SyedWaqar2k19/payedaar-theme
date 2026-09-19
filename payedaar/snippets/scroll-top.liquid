@@ -1,0 +1,5 @@
+{%- if settings.enable_scroll_top -%}
+  <button type="button" class="scroll-top" data-scroll-top hidden aria-label="{{ 'accessibility.scroll_to_top' | t }}">
+    {% render 'icon', name: 'arrow-up', size: 20 %}
+  </button>
+{%- endif -%}

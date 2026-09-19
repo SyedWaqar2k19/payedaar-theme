@@ -1,0 +1,138 @@
+{%- liquid
+  assign wa = settings.whatsapp_number
+  assign phone = settings.support_phone
+-%}
+
+<section class="section section-contact" data-section-id="{{ section.id }}">
+  <div class="page-width">
+    <header class="page-header page-header--center">
+      <h1 class="page-header__title">{{ page.title | default: section.settings.heading }}</h1>
+      {%- if section.settings.subheading != blank -%}
+        <p class="page-header__sub">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </header>
+
+    <div class="contact-layout">
+      <div class="contact-layout__form card contact-card">
+        {%- form 'contact', id: 'ContactForm', class: 'contact-form' -%}
+          {%- if form.posted_successfully? -%}
+            <p class="form-status form-status--success" role="status" tabindex="-1" autofocus>
+              {{ 'contact.form.post_success' | t }}
+            </p>
+          {%- endif -%}
+          {{ form.errors | default_errors }}
+
+          <div class="field">
+            <label class="field__label" for="ContactName-{{ section.id }}">{{ 'contact.form.name' | t }}</label>
+            <input
+              class="input"
+              type="text"
+              id="ContactName-{{ section.id }}"
+              name="contact[name]"
+              value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+              autocomplete="name"
+              required
+            >
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="ContactEmail-{{ section.id }}">{{ 'contact.form.email' | t }}</label>
+            <input
+              class="input"
+              type="email"
+              id="ContactEmail-{{ section.id }}"
+              name="contact[email]"
+              value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+              autocomplete="email"
+              required
+              {% if form.errors contains 'email' %}aria-invalid="true"{% endif %}
+            >
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="ContactPhone-{{ section.id }}">{{ 'contact.form.phone' | t }}</label>
+            <input
+              class="input"
+              type="tel"
+              id="ContactPhone-{{ section.id }}"
+              name="contact[phone]"
+              value="{{ form.phone }}"
+              autocomplete="tel"
+            >
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="ContactBody-{{ section.id }}">{{ 'contact.form.message' | t }}</label>
+            <textarea
+              class="input"
+              rows="5"
+              id="ContactBody-{{ section.id }}"
+              name="contact[body]"
+              required
+            >{{ form.body }}</textarea>
+          </div>
+
+          <button type="submit" class="button button--primary button--full">
+            {{ 'contact.form.submit' | t }}
+          </button>
+        {%- endform -%}
+      </div>
+
+      <aside class="contact-layout__aside">
+        {%- if page.content != blank -%}
+          <div class="rte contact-card card">{{ page.content }}</div>
+        {%- endif -%}
+
+        <div class="contact-card card">
+          <h2 class="contact-card__heading">{{ 'contact.quick_help' | t }}</h2>
+          <ul class="contact-card__list list-unstyled">
+            {%- if wa != blank -%}
+              <li>
+                <a class="button button--secondary button--full" href="https://wa.me/{{ wa }}" target="_blank" rel="noopener noreferrer">
+                  {% render 'icon', name: 'whatsapp', size: 18 %}
+                  {{ 'general.whatsapp' | t }}
+                </a>
+              </li>
+            {%- endif -%}
+            {%- if phone != blank -%}
+              <li>
+                <a class="button button--secondary button--full" href="tel:{{ phone }}">
+                  {% render 'icon', name: 'phone', size: 18 %}
+                  {{ 'general.call_us' | t }}
+                </a>
+              </li>
+            {%- endif -%}
+            <li>
+              <a class="button button--secondary button--full" href="{{ routes.collections_url }}/hot-deals">
+                {{ 'general.hot_deals' | t }}
+              </a>
+            </li>
+          </ul>
+          <p class="text-muted contact-card__note">{{ settings.trust_cod }}</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact",
+  "tag": "section",
+  "class": "section-contact",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Fallback heading",
+      "default": "Contact us"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Questions about COD, delivery, or your order? We’re here."
+    }
+  ]
+}
+{% endschema %}

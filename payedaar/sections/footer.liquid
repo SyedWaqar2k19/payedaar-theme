@@ -1,0 +1,238 @@
+{%- liquid
+  assign menu = section.settings.menu
+  assign menu_secondary = section.settings.menu_secondary
+  assign track_page = pages[section.settings.track_order_handle]
+  assign contact_page = pages['contact']
+  assign faq_page = pages['faq']
+  assign shipping_page = pages['shipping-returns']
+  assign privacy_url = settings.privacy_page
+  assign terms_url = settings.terms_page
+  assign hot_url = routes.collections_url
+  assign best_url = routes.collections_url
+  if collections['hot-deals'] != blank
+    assign hot_url = collections['hot-deals'].url
+  endif
+  if collections['best-sellers'] != blank
+    assign best_url = collections['best-sellers'].url
+  endif
+  if privacy_url == blank and shop.privacy_policy != blank
+    assign privacy_url = shop.privacy_policy.url
+  endif
+  if privacy_url == blank and pages['privacy-policy'] != blank
+    assign privacy_url = pages['privacy-policy'].url
+  endif
+  if terms_url == blank and shop.terms_of_service != blank
+    assign terms_url = shop.terms_of_service.url
+  endif
+  if terms_url == blank and pages['terms-of-service'] != blank
+    assign terms_url = pages['terms-of-service'].url
+  endif
+-%}
+
+<footer class="site-footer" data-section-id="{{ section.id }}">
+  <div class="site-footer__usp" aria-label="{{ 'general.trust_heading' | t }}">
+    <div class="page-width">
+      <ul class="site-footer__usp-list list-unstyled">
+        <li>
+          <span class="icon-circle" aria-hidden="true">{% render 'icon', name: 'truck', size: 18 %}</span>
+          <span>{{ settings.trust_delivery }}</span>
+        </li>
+        {%- if settings.enable_cod_messaging -%}
+          <li>
+            <span class="icon-circle" aria-hidden="true">{% render 'icon', name: 'shield', size: 18 %}</span>
+            <span>{{ settings.trust_cod }}</span>
+          </li>
+        {%- endif -%}
+        <li>
+          <span class="icon-circle" aria-hidden="true">{% render 'icon', name: 'return', size: 18 %}</span>
+          <span>{{ settings.trust_returns }}</span>
+        </li>
+        {%- if settings.whatsapp_number != blank -%}
+          <li>
+            <a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" rel="noopener noreferrer">
+              <span class="icon-circle" aria-hidden="true">{% render 'icon', name: 'whatsapp', size: 18 %}</span>
+              <span>{{ 'general.whatsapp' | t }}</span>
+            </a>
+          </li>
+        {%- endif -%}
+      </ul>
+    </div>
+  </div>
+  <div class="page-width">
+    <div class="site-footer__grid site-footer__grid--rich">
+      <div class="site-footer__brand-col">
+        <div class="site-footer__brand">
+          <a href="{{ routes.root_url }}" class="site-footer__brand-link">
+            {% render 'brand-logo',
+              class: 'site-footer__logo',
+              width: 200,
+              widths: '100, 150, 200',
+              sizes: '160px',
+              loading: 'lazy'
+            %}
+          </a>
+        </div>
+        {%- if section.settings.blurb != blank -%}
+          <p class="site-footer__meta">{{ section.settings.blurb }}</p>
+        {%- elsif settings.enable_cod_messaging -%}
+          <p class="site-footer__meta">{{ settings.trust_cod }}</p>
+        {%- else -%}
+          <p class="site-footer__meta">{{ settings.trust_delivery }}</p>
+        {%- endif -%}
+
+        <ul class="list-unstyled flex flex--wrap gap-sm mt-2">
+          {%- if settings.whatsapp_number != blank -%}
+            <li>
+              <a class="button button--primary button--sm" href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" rel="noopener noreferrer">
+                {% render 'icon', name: 'whatsapp', size: 16 %}
+                {{ 'general.whatsapp' | t }}
+              </a>
+            </li>
+          {%- endif -%}
+          {%- if settings.support_phone != blank -%}
+            <li>
+              <a class="button button--secondary button--sm" href="tel:{{ settings.support_phone }}">
+                {% render 'icon', name: 'phone', size: 16 %}
+                {{ settings.support_phone }}
+              </a>
+            </li>
+          {%- endif -%}
+        </ul>
+
+        {% render 'social-icons' %}
+      </div>
+
+      <div>
+        <h2 class="site-footer__heading">{{ section.settings.menu_heading | default: 'Shop' }}</h2>
+        <ul class="site-footer__links list-unstyled">
+          {%- if menu != blank -%}
+            {%- for link in linklists[menu].links -%}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {%- endfor -%}
+          {%- else -%}
+            <li><a href="{{ routes.collections_url }}">{{ 'general.categories' | t }}</a></li>
+            <li><a href="{{ hot_url }}">{{ 'general.hot_deals' | t }}</a></li>
+            <li><a href="{{ best_url }}">{{ 'general.best_sellers' | t }}</a></li>
+            <li>
+              <a href="{% if track_page != blank %}{{ track_page.url }}{% else %}#track-order{% endif %}"{% unless track_page %} data-track-drawer-open{% endunless %}>
+                {{ 'general.track_order' | t }}
+              </a>
+            </li>
+          {%- endif -%}
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="site-footer__heading">{{ section.settings.menu_secondary_heading | default: 'Help' }}</h2>
+        <ul class="site-footer__links list-unstyled">
+          {%- if menu_secondary != blank -%}
+            {%- for link in linklists[menu_secondary].links -%}
+              <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+            {%- endfor -%}
+          {%- else -%}
+            {%- if contact_page != blank -%}
+              <li><a href="{{ contact_page.url }}">{{ 'general.contact' | t }}</a></li>
+            {%- endif -%}
+            {%- if faq_page != blank -%}
+              <li><a href="{{ faq_page.url }}">{{ 'general.faq' | t }}</a></li>
+            {%- endif -%}
+            {%- if shipping_page != blank -%}
+              <li><a href="{{ shipping_page.url }}">{{ 'general.shipping_returns' | t }}</a></li>
+            {%- endif -%}
+            <li><a href="{{ routes.account_url }}">{{ 'general.account' | t }}</a></li>
+          {%- endif -%}
+          {%- if privacy_url != blank -%}
+            <li><a href="{{ privacy_url }}">{{ 'general.privacy_policy' | t }}</a></li>
+          {%- endif -%}
+          {%- if terms_url != blank -%}
+            <li><a href="{{ terms_url }}">{{ 'general.terms_of_service' | t }}</a></li>
+          {%- endif -%}
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="site-footer__heading">Order help</h2>
+        <ul class="site-footer__links list-unstyled">
+          <li>
+            <a href="{% if track_page != blank %}{{ track_page.url }}{% else %}#track-order{% endif %}"{% unless track_page %} data-track-drawer-open{% endunless %}>
+              {{ 'general.track_order' | t }}
+            </a>
+          </li>
+          <li><a href="{{ routes.account_url }}">{{ 'track_order.view_orders' | t }}</a></li>
+          {%- if settings.whatsapp_number != blank -%}
+            <li><a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" rel="noopener noreferrer">{{ 'general.whatsapp' | t }}</a></li>
+          {%- endif -%}
+        </ul>
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      <div class="site-footer__meta">
+        <p>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ 'general.made_for_pakistan' | t }}</p>
+        {%- if privacy_url != blank or terms_url != blank -%}
+          <p class="site-footer__legal">
+            {%- if privacy_url != blank -%}
+              <a href="{{ privacy_url }}">{{ 'general.privacy_policy' | t }}</a>
+            {%- endif -%}
+            {%- if privacy_url != blank and terms_url != blank -%}
+              <span aria-hidden="true"> · </span>
+            {%- endif -%}
+            {%- if terms_url != blank -%}
+              <a href="{{ terms_url }}">{{ 'general.terms_of_service' | t }}</a>
+            {%- endif -%}
+          </p>
+        {%- endif -%}
+      </div>
+      <div class="site-footer__payments" aria-label="{{ 'general.payment_methods' | t }}">
+        {%- if settings.enable_cod_messaging -%}
+          <span class="badge badge--sale">{{ 'general.cod' | t }}</span>
+        {%- endif -%}
+        {% render 'payment-icons' %}
+      </div>
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "tag": "section",
+  "class": "section-footer",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "blurb",
+      "label": "Brand blurb",
+      "default": "Everyday deals with Cash on Delivery across Pakistan."
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Shop menu"
+    },
+    {
+      "type": "text",
+      "id": "menu_heading",
+      "label": "Shop menu heading",
+      "default": "Shop"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_secondary",
+      "label": "Help menu"
+    },
+    {
+      "type": "text",
+      "id": "menu_secondary_heading",
+      "label": "Help menu heading",
+      "default": "Help"
+    },
+    {
+      "type": "text",
+      "id": "track_order_handle",
+      "label": "Track Order page handle",
+      "default": "track-order"
+    }
+  ]
+}
+{% endschema %}

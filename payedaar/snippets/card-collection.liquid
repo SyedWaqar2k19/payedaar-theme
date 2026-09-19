@@ -1,0 +1,30 @@
+{%- comment -%}
+  Collection card for list-collections directory.
+{%- endcomment -%}
+
+<a class="collection-card" href="{{ collection.url }}">
+  <span class="collection-card__media">
+    {%- if collection.featured_image -%}
+      {{
+        collection.featured_image
+        | image_url: width: 800
+        | image_tag:
+          loading: 'lazy',
+          widths: '200, 300, 400, 600, 800',
+          sizes: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw',
+          alt: collection.title,
+          class: 'collection-card__img'
+      }}
+    {%- else -%}
+      {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    {%- endif -%}
+  </span>
+  <span class="collection-card__body">
+    <span class="collection-card__title">{{ collection.title }}</span>
+    {%- if show_product_count -%}
+      <span class="collection-card__count">
+        {{ 'collections.product_count' | t: count: collection.all_products_count }}
+      </span>
+    {%- endif -%}
+  </span>
+</a>

@@ -1,0 +1,127 @@
+{%- comment -%}
+  Visual QA surface for Phase 1 design tokens (buttons, badges, colors, type).
+  Add to a page with template page.style-guide or via Theme Editor.
+{%- endcomment -%}
+
+<section class="section" data-section-id="{{ section.id }}">
+  <div class="page-width">
+    <h1 class="mb-2">{{ section.settings.heading }}</h1>
+    <p class="text-muted mb-4">{{ section.settings.intro }}</p>
+
+    <div class="ds-block">
+      <h2 class="ds-block__title">{{ 'sections.design_system.colors' | t }}</h2>
+      <div class="ds-swatches">
+        <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-primary)"></div><div class="ds-swatch__label">Primary</div></div>
+        <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-primary-dark)"></div><div class="ds-swatch__label">Primary dark</div></div>
+        <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-secondary)"></div><div class="ds-swatch__label">Secondary</div></div>
+        <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-highlight)"></div><div class="ds-swatch__label">Highlight</div></div>
+        <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-background); border-color: #ccc"></div><div class="ds-swatch__label">Background</div></div>
+        <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-surface)"></div><div class="ds-swatch__label">Surface</div></div>
+        <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-sale)"></div><div class="ds-swatch__label">Sale</div></div>
+        <div class="ds-swatch"><div class="ds-swatch__chip" style="background: var(--color-offer)"></div><div class="ds-swatch__label">Offer</div></div>
+      </div>
+    </div>
+
+    <div class="ds-block">
+      <h2 class="ds-block__title">{{ 'sections.design_system.buttons' | t }}</h2>
+      <div class="ds-row">
+        <button type="button" class="button button--primary">Primary</button>
+        <button type="button" class="button button--secondary">Secondary</button>
+        <button type="button" class="button button--hero">
+          Shop Now
+          {% render 'icon', name: 'arrow-right', size: 18 %}
+        </button>
+        <button type="button" class="button button--primary" disabled>Disabled</button>
+        <button type="button" class="button button--primary button--full" style="max-width: 16rem;">Full width ATC</button>
+      </div>
+    </div>
+
+    <div class="ds-block">
+      <h2 class="ds-block__title">{{ 'sections.design_system.badges' | t }}</h2>
+      <div class="ds-row">
+        <span class="badge badge--sale">-60%</span>
+        <span class="badge badge--hot">Hot Deal</span>
+        <span class="badge badge--limited">Limited Time</span>
+        <span class="badge badge--trending">Trending</span>
+        <span class="badge badge--best">Best Seller</span>
+        <span class="badge badge--new">New</span>
+        <span class="promo-circle">UP TO 70% OFF</span>
+      </div>
+    </div>
+
+    <div class="ds-block">
+      <h2 class="ds-block__title">{{ 'sections.design_system.forms' | t }}</h2>
+      <div class="field" style="max-width: 24rem;">
+        <label class="field__label" for="ds-search">{{ 'general.search' | t }}</label>
+        <input id="ds-search" class="input input--pill" type="search" placeholder="{{ 'general.search_placeholder' | t }}">
+      </div>
+    </div>
+
+    <div class="ds-block">
+      <h2 class="ds-block__title">{{ 'sections.design_system.card' | t }}</h2>
+      <div class="grid grid--3">
+        <article class="card card--interactive">
+          <div class="card__media">
+            <span class="card__badge"><span class="badge badge--sale">-45%</span></span>
+            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          </div>
+          <div class="card__body">
+            <h3 class="card__title line-clamp-2">Sample blender — kitchen deal</h3>
+            <div class="price price--on-sale">
+              <div class="price__regular">
+                <span class="price__sale">Rs. 2,499</span>
+                <s class="price__compare">Rs. 4,499</s>
+              </div>
+            </div>
+            <button type="button" class="button button--primary button--full">{{ 'products.add_to_cart' | t }}</button>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <div class="ds-block">
+      <h2 class="ds-block__title">{{ 'sections.design_system.trust' | t }}</h2>
+      <div class="trust-strip" role="list">
+        <div class="trust-strip__item" role="listitem">
+          <span class="icon-circle">{% render 'icon', name: 'truck' %}</span>
+          <div><strong>{{ settings.trust_delivery }}</strong><span>{{ 'sections.trust.delivery_hint' | t }}</span></div>
+        </div>
+        <div class="trust-strip__item" role="listitem">
+          <span class="icon-circle">{% render 'icon', name: 'shield' %}</span>
+          <div><strong>{{ settings.trust_cod }}</strong><span>{{ 'sections.trust.cod_hint' | t }}</span></div>
+        </div>
+        <div class="trust-strip__item" role="listitem">
+          <span class="icon-circle">{% render 'icon', name: 'return' %}</span>
+          <div><strong>{{ settings.trust_returns }}</strong><span>{{ 'sections.trust.returns_hint' | t }}</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Design system",
+  "tag": "section",
+  "class": "section-design-system",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Payedaar design system"
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Intro",
+      "default": "Phase 1 visual QA — colors, buttons, badges, forms, and product card shell."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Design system"
+    }
+  ]
+}
+{% endschema %}

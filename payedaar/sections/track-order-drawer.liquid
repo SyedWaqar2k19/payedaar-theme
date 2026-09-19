@@ -1,0 +1,106 @@
+<track-order-drawer
+  id="TrackOrderDrawer"
+  class="track-drawer"
+  data-track-drawer
+  hidden
+  aria-hidden="true"
+>
+  <div class="track-drawer__overlay" data-track-drawer-close tabindex="-1"></div>
+  <div
+    class="track-drawer__panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="TrackDrawer-Title"
+    tabindex="-1"
+    data-track-drawer-panel
+  >
+    <div class="track-drawer__header">
+      <h2 id="TrackDrawer-Title" class="track-drawer__title">{{ 'track_order.title' | t }}</h2>
+      <button type="button" class="site-header__icon-btn" data-track-drawer-close>
+        <span class="visually-hidden">{{ 'accessibility.close' | t | default: 'Close' }}</span>
+        {% render 'icon', name: 'close', size: 22 %}
+      </button>
+    </div>
+
+    <div class="track-drawer__body">
+      <p class="track-drawer__lead">{{ 'track_order.instructions' | t }}</p>
+
+      <form class="track-drawer__form" data-track-form>
+        <div class="field">
+          <label class="field__label" for="TrackOrderNumber">{{ 'track_order.order_number' | t }}</label>
+          <input
+            id="TrackOrderNumber"
+            class="input"
+            type="text"
+            name="order"
+            autocomplete="off"
+            placeholder="{{ 'track_order.order_placeholder' | t }}"
+            required
+            data-track-order-number
+          >
+        </div>
+        <div class="field">
+          <label class="field__label" for="TrackOrderEmail">{{ 'track_order.email' | t }}</label>
+          <input
+            id="TrackOrderEmail"
+            class="input"
+            type="text"
+            name="contact"
+            autocomplete="email"
+            placeholder="{{ 'track_order.email_placeholder' | t }}"
+            required
+            data-track-email
+          >
+        </div>
+        <button type="submit" class="button button--primary button--full">
+          {{ 'track_order.submit' | t }}
+        </button>
+      </form>
+
+      <p class="track-drawer__hint text-muted" data-track-hint hidden role="status"></p>
+
+      <ul class="track-drawer__actions list-unstyled">
+        {%- if customer -%}
+          <li>
+            <a class="button button--secondary button--full" href="{{ routes.account_url }}">
+              {{ 'track_order.view_orders' | t }}
+            </a>
+          </li>
+        {%- else -%}
+          <li>
+            <a class="button button--secondary button--full" href="{{ routes.account_login_url }}">
+              {{ 'track_order.sign_in_orders' | t }}
+            </a>
+          </li>
+        {%- endif -%}
+        {%- if settings.whatsapp_number != blank -%}
+          <li>
+            <a
+              class="button button--secondary button--full"
+              href="https://wa.me/{{ settings.whatsapp_number }}?text={{ 'track_order.whatsapp_prefill' | t | url_encode }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-track-whatsapp
+            >
+              {{ 'general.whatsapp' | t }}
+            </a>
+          </li>
+        {%- endif -%}
+        {%- if pages['track-order'] != blank -%}
+          <li>
+            <a class="track-drawer__page-link" href="{{ pages['track-order'].url }}">
+              {{ 'track_order.full_page' | t }}
+            </a>
+          </li>
+        {%- endif -%}
+      </ul>
+    </div>
+  </div>
+</track-order-drawer>
+
+{% schema %}
+{
+  "name": "Track order drawer",
+  "settings": []
+}
+{% endschema %}

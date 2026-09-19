@@ -1,0 +1,12 @@
+{%- comment -%}
+  Cart count badge — used in header and sticky nav.
+  Phase 3 can refresh via Section Rendering on sections/cart-icon-bubble.
+{%- endcomment -%}
+<span
+  class="cart-count{% if cart.item_count == 0 %} is-empty{% endif %}"
+  data-cart-count
+  {% if cart.item_count == 0 %}hidden{% endif %}
+>
+  <span class="visually-hidden" data-cart-count-label>{{ 'general.cart_count' | t: count: cart.item_count }}</span>
+  <span data-cart-count-number aria-hidden="true">{{ cart.item_count }}</span>
+</span>

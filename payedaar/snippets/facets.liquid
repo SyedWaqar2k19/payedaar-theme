@@ -1,0 +1,126 @@
+{%- comment -%}
+  Storefront Filtering facets form body.
+  results = collection or search
+{%- endcomment -%}
+
+{%- liquid
+  assign results = results
+  assign form_id = form_id | default: 'FacetFiltersForm'
+  assign section_id = section_id
+-%}
+
+{%- if enable_filtering and results.filters.size > 0 -%}
+  <div class="facets" data-facets>
+    {%- for filter in results.filters -%}
+      <details
+        class="facets__group js-filter"
+        data-index="{{ forloop.index }}"
+        data-filter-type="{{ filter.type }}"
+        {% liquid
+          assign group_open = false
+          if filter.active_values.size > 0
+            assign group_open = true
+          endif
+          if filter.type == 'price_range'
+            if filter.min_value.value != blank or filter.max_value.value != blank
+              assign group_open = true
+            endif
+          endif
+        %}
+        {% if group_open %}open{% endif %}
+      >
+        <summary class="facets__summary">
+          <span>{{ filter.label | escape }}</span>
+          {%- if filter.active_values.size > 0 -%}
+            <span class="facets__count">{{ filter.active_values.size }}</span>
+          {%- endif -%}
+        </summary>
+
+        <div class="facets__panel">
+          {%- case filter.type -%}
+            {%- when 'boolean', 'list' -%}
+              <ul class="facets__list list-unstyled" role="list">
+                {%- for value in filter.values -%}
+                  <li class="facets__item">
+                    <label
+                      class="facets__label{% if value.count == 0 and value.active == false %} is-disabled{% endif %}"
+                      for="Filter-{{ section_id }}-{{ filter.param_name | handleize }}-{{ forloop.index }}"
+                    >
+                      <input
+                        class="facets__checkbox"
+                        type="checkbox"
+                        name="{{ value.param_name }}"
+                        value="{{ value.value }}"
+                        id="Filter-{{ section_id }}-{{ filter.param_name | handleize }}-{{ forloop.index }}"
+                        {% if value.active %}checked{% endif %}
+                        {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                      >
+                      <span class="facets__label-text">
+                        {{ value.label | escape }}
+                        <span class="facets__value-count">({{ value.count }})</span>
+                      </span>
+                    </label>
+                  </li>
+                {%- endfor -%}
+              </ul>
+
+            {%- when 'price_range' -%}
+              {%- liquid
+                assign min_value = filter.min_value.value
+                assign max_value = filter.max_value.value
+                assign range_max = filter.range_max
+              -%}
+              <div class="facets__price" data-price-range>
+                <div class="facets__price-fields">
+                  <div class="field">
+                    <label class="field__label" for="Filter-{{ section_id }}-Price-GTE">
+                      {{ 'products.facets.price_from' | t }}
+                    </label>
+                    <div class="facets__price-input">
+                      <span class="facets__currency" aria-hidden="true">{{ cart.currency.symbol | default: shop.currency }}</span>
+                      <input
+                        class="input"
+                        type="number"
+                        name="{{ filter.min_value.param_name }}"
+                        id="Filter-{{ section_id }}-Price-GTE"
+                        {% if min_value %}value="{{ min_value }}"{% endif %}
+                        placeholder="0"
+                        min="0"
+                        max="{{ range_max }}"
+                        inputmode="numeric"
+                      >
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="field__label" for="Filter-{{ section_id }}-Price-LTE">
+                      {{ 'products.facets.price_to' | t }}
+                    </label>
+                    <div class="facets__price-input">
+                      <span class="facets__currency" aria-hidden="true">{{ cart.currency.symbol | default: shop.currency }}</span>
+                      <input
+                        class="input"
+                        type="number"
+                        name="{{ filter.max_value.param_name }}"
+                        id="Filter-{{ section_id }}-Price-LTE"
+                        {% if max_value %}value="{{ max_value }}"{% endif %}
+                        placeholder="{{ range_max }}"
+                        min="0"
+                        max="{{ range_max }}"
+                        inputmode="numeric"
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+          {%- endcase -%}
+        </div>
+      </details>
+    {%- endfor -%}
+
+    <noscript>
+      <button type="submit" class="button button--secondary button--full">
+        {{ 'products.facets.apply' | t }}
+      </button>
+    </noscript>
+  </div>
+{%- endif -%}

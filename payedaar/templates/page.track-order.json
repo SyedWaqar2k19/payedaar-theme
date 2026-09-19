@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": {
+      "type": "page-track-order",
+      "settings": {
+        "heading": "Track your order",
+        "subheading": "Use your order number and email from the confirmation message",
+        "tracking_label": "Track shipment"
+      }
+    }
+  },
+  "order": ["main"]
+}

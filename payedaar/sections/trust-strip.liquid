@@ -1,0 +1,141 @@
+<section
+  class="section section-trust"
+  data-section-id="{{ section.id }}"
+  data-section-type="trust-strip"
+  data-reveal
+>
+  <div class="page-width">
+    <div class="trust-strip" role="list" data-reveal-stagger>
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign icon_name = block.settings.icon | default: 'shield'
+          assign title = block.settings.title
+          assign text = block.settings.text
+          assign skip_block = false
+          if icon_name == 'shield' and settings.enable_cod_messaging == false
+            assign skip_block = true
+          endif
+          if title == blank and icon_name == 'truck'
+            assign title = settings.trust_delivery
+          endif
+          if title == blank and icon_name == 'shield'
+            assign title = settings.trust_cod
+          endif
+          if title == blank and icon_name == 'return'
+            assign title = settings.trust_returns
+          endif
+        -%}
+        {%- unless skip_block -%}
+        <div class="trust-strip__item" role="listitem" {{ block.shopify_attributes }}>
+          <span class="icon-circle" aria-hidden="true">
+            {% render 'icon', name: icon_name, size: 22 %}
+          </span>
+          <div>
+            {%- if title != blank -%}
+              <strong>{{ title }}</strong>
+            {%- endif -%}
+            {%- if text != blank -%}
+              <span>{{ text }}</span>
+            {%- endif -%}
+          </div>
+        </div>
+        {%- endunless -%}
+      {%- else -%}
+        <div class="trust-strip__item" role="listitem">
+          <span class="icon-circle" aria-hidden="true">{% render 'icon', name: 'truck', size: 22 %}</span>
+          <div>
+            <strong>{{ settings.trust_delivery }}</strong>
+            <span>{{ 'sections.trust.delivery_hint' | t }}</span>
+          </div>
+        </div>
+        {%- if settings.enable_cod_messaging -%}
+        <div class="trust-strip__item" role="listitem">
+          <span class="icon-circle" aria-hidden="true">{% render 'icon', name: 'shield', size: 22 %}</span>
+          <div>
+            <strong>{{ settings.trust_cod }}</strong>
+            <span>{{ 'sections.trust.cod_hint' | t }}</span>
+          </div>
+        </div>
+        {%- endif -%}
+        <div class="trust-strip__item" role="listitem">
+          <span class="icon-circle" aria-hidden="true">{% render 'icon', name: 'return', size: 22 %}</span>
+          <div>
+            <strong>{{ settings.trust_returns }}</strong>
+            <span>{{ 'sections.trust.returns_hint' | t }}</span>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Trust strip",
+  "tag": "section",
+  "class": "section-trust-strip",
+  "max_blocks": 4,
+  "settings": [],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Trust item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "truck", "label": "Delivery" },
+            { "value": "shield", "label": "COD / Shield" },
+            { "value": "return", "label": "Returns" },
+            { "value": "check", "label": "Check" },
+            { "value": "phone", "label": "Phone" },
+            { "value": "whatsapp", "label": "WhatsApp" }
+          ],
+          "default": "truck"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "info": "Leave blank to use theme trust settings"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Supporting text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust strip",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "icon": "truck",
+            "text": "Nationwide shipping you can rely on"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon": "shield",
+            "text": "Pay when your order arrives"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon": "return",
+            "text": "Easy returns within the window"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

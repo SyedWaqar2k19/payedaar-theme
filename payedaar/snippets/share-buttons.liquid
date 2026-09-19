@@ -1,0 +1,38 @@
+{%- comment -%}
+  Share: WhatsApp + copy link.
+{%- endcomment -%}
+
+{%- liquid
+  assign share_url = request.origin | append: product.url
+  if share_title == blank
+    assign share_title = product.title
+  endif
+  assign wa_text = share_title | append: ' — ' | append: share_url
+  assign wa_encoded = wa_text | url_encode
+  assign wa_link = 'https://wa.me/?text=' | append: wa_encoded
+-%}
+
+<div class="product-share" data-product-share>
+  <p class="product-share__label">{{ 'products.share.label' | t }}</p>
+  <div class="product-share__actions">
+    <a
+      class="button button--secondary button--sm product-share__btn"
+      href="{{ wa_link }}"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="{{ 'products.share.whatsapp' | t }}"
+    >
+      {% render 'icon', name: 'whatsapp', size: 18 %}
+      <span>{{ 'products.share.whatsapp' | t }}</span>
+    </a>
+    <button
+      type="button"
+      class="button button--secondary button--sm product-share__btn"
+      data-copy-link="{{ share_url | escape }}"
+      aria-label="{{ 'products.share.copy' | t }}"
+    >
+      {% render 'icon', name: 'check', size: 18 %}
+      <span data-copy-link-label>{{ 'products.share.copy' | t }}</span>
+    </button>
+  </div>
+</div>

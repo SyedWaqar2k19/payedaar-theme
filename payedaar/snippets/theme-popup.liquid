@@ -1,0 +1,77 @@
+{%- if settings.enable_promo_popup or settings.enable_newsletter_popup -%}
+  <div
+    class="theme-popup"
+    data-theme-popup
+    data-delay="{{ settings.popup_delay_seconds | default: 4 }}"
+    hidden
+  >
+    <div class="theme-popup__overlay" data-popup-close tabindex="-1"></div>
+    <div
+      class="theme-popup__panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="ThemePopupTitle"
+      tabindex="-1"
+      data-popup-panel
+    >
+      <button type="button" class="site-header__icon-btn theme-popup__close" data-popup-close>
+        <span class="visually-hidden">{{ 'accessibility.close' | t }}</span>
+        {% render 'icon', name: 'close', size: 22 %}
+      </button>
+
+      {%- if settings.enable_promo_popup -%}
+        <div class="theme-popup__promo" data-popup-promo>
+          {%- if settings.popup_image != blank -%}
+            {{
+              settings.popup_image
+              | image_url: width: 800
+              | image_tag: loading: 'lazy', class: 'theme-popup__img', alt: settings.popup_heading
+            }}
+          {%- endif -%}
+          {%- if settings.popup_heading != blank -%}
+            <h2 id="ThemePopupTitle" class="theme-popup__title">{{ settings.popup_heading }}</h2>
+          {%- else -%}
+            <h2 id="ThemePopupTitle" class="visually-hidden">{{ 'popup.promo_title' | t }}</h2>
+          {%- endif -%}
+          {%- if settings.popup_text != blank -%}
+            <p class="theme-popup__text">{{ settings.popup_text }}</p>
+          {%- endif -%}
+          {%- if settings.popup_button_label != blank -%}
+            <a class="button button--primary button--full" href="{{ settings.popup_button_link | default: routes.collections_url }}">
+              {{ settings.popup_button_label }}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if settings.enable_newsletter_popup -%}
+        <div class="theme-popup__newsletter" data-popup-newsletter {% if settings.enable_promo_popup %}hidden{% endif %}>
+          <h2 class="theme-popup__title"{% unless settings.enable_promo_popup %} id="ThemePopupTitle"{% endunless %}>
+            {{ settings.newsletter_popup_heading | default: 'Get deals in your inbox' }}
+          </h2>
+          {%- if settings.newsletter_popup_text != blank -%}
+            <p class="theme-popup__text">{{ settings.newsletter_popup_text }}</p>
+          {%- endif -%}
+          {%- form 'customer', class: 'theme-popup__form' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter,popup">
+            <div class="newsletter__fields">
+              <label class="visually-hidden" for="PopupNewsletterEmail">{{ 'sections.newsletter.email_label' | t }}</label>
+              <input
+                id="PopupNewsletterEmail"
+                class="input"
+                type="email"
+                name="contact[email]"
+                placeholder="{{ 'sections.newsletter.email_label' | t }}"
+                required
+              >
+              <button type="submit" class="button button--primary">{{ 'popup.subscribe' | t }}</button>
+            </div>
+            {%- if form.posted_successfully? -%}
+              <p class="form-status form-status--success" role="status">{{ 'sections.newsletter.success' | t }}</p>
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}

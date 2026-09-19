@@ -1,0 +1,416 @@
+{%- liquid
+  assign product_form_id = 'ProductForm-' | append: section.id
+  assign current_variant = product.selected_or_first_available_variant
+  assign show_sticky = section.settings.enable_sticky_atc
+  assign show_dynamic = section.settings.show_dynamic_checkout
+  assign show_size_guide = false
+  if section.settings.show_size_guide
+    if product.tags contains 'apparel' or product.tags contains 'size-guide' or product.type == 'Apparel' or section.settings.size_guide_page != blank
+      assign show_size_guide = true
+    endif
+  endif
+-%}
+
+{% render 'product-json-ld', product: product %}
+
+<section
+  class="section section-main-product"
+  data-section-id="{{ section.id }}"
+  data-section-type="main-product"
+  data-product-id="{{ product.id }}"
+>
+  <div class="page-width">
+    <div class="product-layout">
+      <div class="product-layout__media">
+        {% render 'product-media-gallery', product: product, section_id: section.id %}
+      </div>
+
+      <div class="product-layout__info" data-product-info>
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when '@app' -%}
+              {% render block %}
+
+            {%- when 'badge' -%}
+              <div class="product-info__badges" {{ block.shopify_attributes }}>
+                {% render 'product-badge', product: product %}
+              </div>
+
+            {%- when 'title' -%}
+              <div class="product-info__title" {{ block.shopify_attributes }}>
+                <h1 class="product-title">{{ product.title }}</h1>
+                {%- if block.settings.show_vendor and product.vendor != blank -%}
+                  <p class="product-vendor text-muted">{{ product.vendor }}</p>
+                {%- endif -%}
+                {%- if product.metafields.descriptors.subtitle != blank -%}
+                  <p class="product-subtitle">{{ product.metafields.descriptors.subtitle.value }}</p>
+                {%- endif -%}
+              </div>
+
+            {%- when 'price' -%}
+              <div class="product-info__price" data-product-price {{ block.shopify_attributes }}>
+                {% render 'price', product: product, use_variant: true, show_badge: true %}
+                <div class="product-info__sku text-muted" data-product-sku {% if current_variant.sku == blank %}hidden{% endif %}>
+                  {{ 'products.sku' | t }}: <span data-sku-value>{{ current_variant.sku }}</span>
+                </div>
+              </div>
+
+            {%- when 'inventory' -%}
+              {%- if block.settings.show_inventory -%}
+                <div
+                  class="product-inventory"
+                  data-product-inventory
+                  data-threshold="{{ block.settings.inventory_threshold }}"
+                  {{ block.shopify_attributes }}
+                >
+                  {%- if current_variant.inventory_management and current_variant.available -%}
+                    {%- if current_variant.inventory_quantity > 0 and current_variant.inventory_quantity <= block.settings.inventory_threshold -%}
+                      <p class="product-inventory__low">
+                        {{ 'products.inventory.low_stock' | t: count: current_variant.inventory_quantity }}
+                      </p>
+                    {%- elsif current_variant.inventory_quantity > block.settings.inventory_threshold -%}
+                      <p class="product-inventory__in">{{ 'products.inventory.in_stock' | t }}</p>
+                    {%- endif -%}
+                  {%- elsif current_variant.available == false -%}
+                    <p class="product-inventory__out">{{ 'products.sold_out' | t }}</p>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+
+            {%- when 'variant_picker' -%}
+              {%- comment -%} Rendered inside buy_buttons for single form {%- endcomment -%}
+
+            {%- when 'buy_buttons' -%}
+              {% render 'buy-buttons',
+                product: product,
+                product_form_id: product_form_id,
+                section_id: section.id,
+                block: block,
+                show_dynamic_checkout: show_dynamic
+              %}
+
+              {%- if show_size_guide and section.settings.size_guide_page != blank -%}
+                <p class="product-size-guide">
+                  <a href="{{ section.settings.size_guide_page.url }}">{{ 'products.size_guide' | t }}</a>
+                </p>
+              {%- endif -%}
+
+            {%- when 'trust' -%}
+              <div class="product-info__trust" {{ block.shopify_attributes }}>
+                {% render 'trust-badges' %}
+                {% render 'cod-badge', product: product %}
+                {% render 'delivery-estimate', product: product %}
+                {%- if settings.enable_cod_messaging -%}
+                  <p class="product-info__cod-note">{{ 'products.open_parcel_cod' | t }}</p>
+                {%- endif -%}
+              </div>
+
+            {%- when 'description' -%}
+              {%- if product.description != blank -%}
+                <details class="product-accordion" {{ block.shopify_attributes }} {% if block.settings.open %}open{% endif %}>
+                  <summary class="product-accordion__summary">{{ block.settings.heading | default: 'Description' }}</summary>
+                  <div class="product-accordion__content rte">{{ product.description }}</div>
+                </details>
+              {%- endif -%}
+
+            {%- when 'collapsible_tab' -%}
+              <details class="product-accordion" {{ block.shopify_attributes }} {% if block.settings.open %}open{% endif %}>
+                <summary class="product-accordion__summary">{{ block.settings.heading }}</summary>
+                <div class="product-accordion__content rte">
+                  {{ block.settings.content }}
+                  {%- if block.settings.page != blank -%}
+                    {{ block.settings.page.content }}
+                  {%- endif -%}
+                </div>
+              </details>
+
+            {%- when 'shipping' -%}
+              <details class="product-accordion" {{ block.shopify_attributes }} {% if block.settings.open %}open{% endif %}>
+                <summary class="product-accordion__summary">{{ block.settings.heading | default: 'Shipping & returns' }}</summary>
+                <div class="product-accordion__content rte">
+                  {%- if block.settings.content != blank -%}
+                    {{ block.settings.content }}
+                  {%- else -%}
+                    <p>{{ settings.trust_delivery }}</p>
+                    <p>{{ settings.trust_returns }}</p>
+                    {%- if settings.enable_cod_messaging -%}
+                      <p>{{ settings.trust_cod }}</p>
+                    {%- endif -%}
+                  {%- endif -%}
+                </div>
+              </details>
+
+            {%- when 'share' -%}
+              <div {{ block.shopify_attributes }}>
+                {% render 'share-buttons', product: product %}
+              </div>
+
+            {%- when 'complementary' -%}
+              {%- if block.settings.product_list != blank -%}
+                <div class="product-complementary" {{ block.shopify_attributes }}>
+                  {%- if block.settings.heading != blank -%}
+                    <h2 class="product-complementary__heading">{{ block.settings.heading }}</h2>
+                  {%- endif -%}
+                  <div class="grid grid--2">
+                    {%- for comp in block.settings.product_list -%}
+                      {% render 'product-card', product: comp %}
+                    {%- endfor -%}
+                  </div>
+                </div>
+              {%- endif -%}
+
+            {%- when 'urgency' -%}
+              {%- comment -%} Fake scarcity — OFF by default (P6-AC8) {%- endcomment -%}
+              {%- if block.settings.enable_fake_urgency -%}
+                <p class="product-urgency" {{ block.shopify_attributes }}>
+                  {{ block.settings.urgency_text }}
+                </p>
+              {%- endif -%}
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" data-product-json>
+    {{ product | json }}
+  </script>
+</section>
+
+{%- if show_sticky -%}
+  <sticky-atc class="sticky-atc" data-sticky-atc hidden>
+    <div class="sticky-atc__inner page-width">
+      <div class="sticky-atc__meta">
+        <span class="sticky-atc__title">{{ product.title | truncate: 40 }}</span>
+        <span class="sticky-atc__price text-primary font-bold" data-sticky-price>
+          {{ current_variant.price | money }}
+        </span>
+      </div>
+      <button
+        type="button"
+        class="button button--primary sticky-atc__btn"
+        data-sticky-atc-trigger
+        {% unless current_variant.available %}disabled{% endunless %}
+      >
+        <span data-sticky-atc-text>
+          {%- if current_variant.available -%}
+            {{ 'products.add_to_cart' | t }}
+          {%- else -%}
+            {{ 'products.sold_out' | t }}
+          {%- endif -%}
+        </span>
+      </button>
+    </div>
+  </sticky-atc>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product information",
+  "tag": "section",
+  "class": "section-main-product",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_sticky_atc",
+      "label": "Sticky add to cart (mobile)",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "Show dynamic checkout buttons",
+      "default": false,
+      "info": "ATC stays primary orange; Shop Pay etc. appear below when enabled"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_size_guide",
+      "label": "Show size guide link",
+      "default": true,
+      "info": "Only shows when product is tagged apparel/size-guide or a page is set"
+    },
+    {
+      "type": "page",
+      "id": "size_guide_page",
+      "label": "Size guide page"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "badge",
+      "name": "Badges",
+      "limit": 1
+    },
+    {
+      "type": "title",
+      "name": "Title",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_vendor",
+          "label": "Show vendor",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "price",
+      "name": "Price",
+      "limit": 1
+    },
+    {
+      "type": "inventory",
+      "name": "Inventory status",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "show_inventory",
+          "label": "Show real inventory status",
+          "default": true
+        },
+        {
+          "type": "range",
+          "id": "inventory_threshold",
+          "min": 1,
+          "max": 20,
+          "step": 1,
+          "label": "Low stock threshold",
+          "default": 5
+        }
+      ]
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Buy buttons",
+      "limit": 1
+    },
+    {
+      "type": "trust",
+      "name": "Trust badges",
+      "limit": 1
+    },
+    {
+      "type": "description",
+      "name": "Description",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Description"
+        },
+        {
+          "type": "checkbox",
+          "id": "open",
+          "label": "Open by default",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "collapsible_tab",
+      "name": "Collapsible tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Specifications"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content"
+        },
+        {
+          "type": "page",
+          "id": "page",
+          "label": "Or page content"
+        },
+        {
+          "type": "checkbox",
+          "id": "open",
+          "label": "Open by default",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "shipping",
+      "name": "Shipping & returns",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Shipping & returns"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "info": "Leave blank to use theme trust settings"
+        },
+        {
+          "type": "checkbox",
+          "id": "open",
+          "label": "Open by default",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "share",
+      "name": "Share",
+      "limit": 1
+    },
+    {
+      "type": "complementary",
+      "name": "Bought together",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Frequently bought together"
+        },
+        {
+          "type": "product_list",
+          "id": "product_list",
+          "label": "Products",
+          "limit": 4
+        }
+      ]
+    },
+    {
+      "type": "urgency",
+      "name": "Urgency (optional)",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "enable_fake_urgency",
+          "label": "Enable live-visitor style urgency",
+          "default": false,
+          "info": "Keep OFF — harms trust for Pakistan mass market (P6-AC8)"
+        },
+        {
+          "type": "text",
+          "id": "urgency_text",
+          "label": "Urgency text",
+          "default": "X people are viewing this right now"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

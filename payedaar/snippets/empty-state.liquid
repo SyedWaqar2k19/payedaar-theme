@@ -1,0 +1,33 @@
+{%- comment -%}
+  Empty discovery state with Hot Deals CTA.
+{%- endcomment -%}
+
+{%- liquid
+  if cta_url != blank
+    assign hot_url = cta_url
+  else
+    assign hot_url = routes.collections_url | append: '/hot-deals'
+  endif
+  if cta_label != blank
+    assign hot_label = cta_label
+  else
+    assign hot_label = 'general.hot_deals' | t
+  endif
+-%}
+
+<div class="empty-state" data-empty-state>
+  {%- if heading != blank -%}
+    <h2 class="empty-state__heading">{{ heading }}</h2>
+  {%- endif -%}
+  {%- if text != blank -%}
+    <p class="empty-state__text">{{ text }}</p>
+  {%- endif -%}
+  <div class="empty-state__actions">
+    {%- if show_clear and clear_url != blank -%}
+      <a class="button button--secondary" href="{{ clear_url }}" data-facet-clear>
+        {{ 'products.facets.clear_filters' | t }}
+      </a>
+    {%- endif -%}
+    <a class="button button--primary" href="{{ hot_url }}">{{ hot_label }}</a>
+  </div>
+</div>

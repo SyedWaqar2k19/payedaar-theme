@@ -1,0 +1,39 @@
+{%- comment -%}
+  Free shipping progress toward settings.freeshipping_goal_amount (PKR whole units).
+{%- endcomment -%}
+
+{%- liquid
+  assign goal_pkr = settings.freeshipping_goal_amount | default: 2999
+  assign goal_cents = goal_pkr | times: 100
+  assign cart_total = cart.total_price
+  assign remaining = goal_cents | minus: cart_total
+  if remaining < 0
+    assign remaining = 0
+  endif
+  if goal_cents > 0
+    assign progress = cart_total | times: 100.0 | divided_by: goal_cents
+  else
+    assign progress = 100
+  endif
+  if progress > 100
+    assign progress = 100
+  endif
+  assign remaining_money = remaining | money
+-%}
+
+{%- if goal_pkr > 0 -%}
+  <div class="free-shipping-bar" data-free-shipping-bar data-goal="{{ goal_cents }}">
+    {%- if remaining > 0 -%}
+      <p class="free-shipping-bar__text">
+        {{ 'cart.free_shipping_remaining_html' | t: amount: remaining_money }}
+      </p>
+    {%- else -%}
+      <p class="free-shipping-bar__text free-shipping-bar__text--success">
+        {{ 'cart.free_shipping_unlocked_html' | t }}
+      </p>
+    {%- endif -%}
+    <div class="free-shipping-bar__track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ progress | round }}" aria-label="{{ 'cart.free_shipping_progress' | t }}">
+      <span class="free-shipping-bar__fill" style="width: {{ progress }}%;"></span>
+    </div>
+  </div>
+{%- endif -%}

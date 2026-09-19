@@ -1,0 +1,97 @@
+{%- liquid
+  assign product_count = 0
+  if collections.all != blank
+    assign product_count = collections.all.all_products_count | default: collections.all.products_count | default: 0
+  endif
+  assign show_banner = false
+  if section.settings.show_when_empty and product_count == 0
+    assign show_banner = true
+  endif
+  if request.design_mode and section.settings.force_in_editor
+    assign show_banner = true
+  endif
+-%}
+
+{%- if show_banner -%}
+  <section class="section section-merch-ready" data-section-id="{{ section.id }}" data-reveal>
+    <div class="page-width">
+      <div class="merch-ready">
+        <div>
+          {%- if section.settings.heading != blank -%}
+            <h2 class="merch-ready__heading">{{ section.settings.heading }}</h2>
+          {%- endif -%}
+          {%- if section.settings.text != blank -%}
+            <p class="merch-ready__text">{{ section.settings.text }}</p>
+          {%- endif -%}
+        </div>
+        <div class="merch-ready__actions">
+          {%- if section.settings.button_label != blank -%}
+            <a class="button button--primary" href="{{ section.settings.button_link | default: routes.collections_url }}">
+              {{ section.settings.button_label }}
+            </a>
+          {%- endif -%}
+          {%- if settings.whatsapp_number != blank -%}
+            <a
+              class="button button--secondary"
+              href="https://wa.me/{{ settings.whatsapp_number }}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {{ 'general.whatsapp' | t }}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Catalog ready banner",
+  "tag": "section",
+  "class": "section-merch-ready",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_when_empty",
+      "label": "Show when store has no products",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "force_in_editor",
+      "label": "Always show in Theme Editor",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Deals are being loaded"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text",
+      "default": "Hot Deals and Best Sellers go live as soon as products are published. Meanwhile explore categories or chat on WhatsApp."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Browse categories"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Catalog ready banner"
+    }
+  ]
+}
+{% endschema %}

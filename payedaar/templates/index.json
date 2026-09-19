@@ -1,0 +1,211 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-banner",
+      "blocks": {
+        "ht1": {
+          "type": "trust",
+          "settings": { "icon": "truck", "label": "Delivery across Pakistan" }
+        },
+        "ht2": {
+          "type": "trust",
+          "settings": { "icon": "shield", "label": "Cash on Delivery (Pay at Your Door)" }
+        },
+        "ht3": {
+          "type": "trust",
+          "settings": { "icon": "flame", "label": "Great Value & Deals" }
+        },
+        "ht4": {
+          "type": "trust",
+          "settings": { "icon": "check", "label": "7-day support" }
+        },
+        "hs1": {
+          "type": "service",
+          "settings": { "icon": "flame", "label": "High Quality Products" }
+        },
+        "hs2": {
+          "type": "service",
+          "settings": { "icon": "heart", "label": "Affordable Prices" }
+        },
+        "hs3": {
+          "type": "service",
+          "settings": { "icon": "shield", "label": "COD available" }
+        },
+        "hs4": {
+          "type": "service",
+          "settings": { "icon": "truck", "label": "Fast & Reliable Delivery" }
+        }
+      },
+      "block_order": ["ht1", "ht2", "ht3", "ht4", "hs1", "hs2", "hs3", "hs4"],
+      "settings": {
+        "eyebrow": "Everyday Essentials,",
+        "heading": "Better Prices!",
+        "text": "From home essentials to daily utilities — everything you need, all in one place.",
+        "button_label": "Shop Now",
+        "secondary_label": "Browse Categories",
+        "badge_text": "UP TO 70% OFF",
+        "show_overlay": true,
+        "full_bleed": true,
+        "show_default_trust": true,
+        "show_service_bar": true,
+        "autoplay": true,
+        "autoplay_speed": 5
+      }
+    },
+    "categories": {
+      "type": "category-icons",
+      "blocks": {
+        "cat_home": {
+          "type": "category",
+          "settings": { "label": "Home", "icon": "home" }
+        },
+        "cat_kitchen": {
+          "type": "category",
+          "settings": { "label": "Kitchen", "icon": "grid" }
+        },
+        "cat_beauty": {
+          "type": "category",
+          "settings": { "label": "Beauty", "icon": "heart" }
+        },
+        "cat_gadgets": {
+          "type": "category",
+          "settings": { "label": "Gadgets", "icon": "grid" }
+        },
+        "cat_fashion": {
+          "type": "category",
+          "settings": { "label": "Fashion", "icon": "heart" }
+        },
+        "cat_deals": {
+          "type": "category",
+          "settings": { "label": "Hot Deals", "icon": "flame" }
+        }
+      },
+      "block_order": [
+        "cat_home",
+        "cat_kitchen",
+        "cat_beauty",
+        "cat_gadgets",
+        "cat_fashion",
+        "cat_deals"
+      ],
+      "settings": {
+        "heading": "Shop by category",
+        "subheading": "Find deals in every aisle",
+        "layout": "tiles"
+      }
+    },
+    "trending": {
+      "type": "featured-collection",
+      "settings": {
+        "heading": "Trending Deals",
+        "subheading": "Hot picks customers love right now",
+        "products_to_show": 8,
+        "columns": 4,
+        "show_view_all": true,
+        "view_all_label": "View all"
+      }
+    },
+    "deal_day": {
+      "type": "deal-of-the-day",
+      "settings": {
+        "heading": "Deal of the Day",
+        "subheading": "Grab it before the clock hits zero",
+        "show_countdown": true,
+        "end_datetime": "2026-12-31T23:59:59+05:00",
+        "products_to_show": 4,
+        "button_label": "Shop deals"
+      }
+    },
+    "promo": {
+      "type": "promo-banner",
+      "blocks": {
+        "promo_1": {
+          "type": "banner",
+          "settings": {
+            "eyebrow": "Kitchen upgrade",
+            "heading": "Cook smarter, every day",
+            "button_label": "Shop kitchen",
+            "tone": "orange"
+          }
+        },
+        "promo_2": {
+          "type": "banner",
+          "settings": {
+            "eyebrow": "Home refresh",
+            "heading": "Small upgrades, calmer spaces",
+            "button_label": "Shop home",
+            "tone": "teal"
+          }
+        }
+      },
+      "block_order": ["promo_1", "promo_2"],
+      "settings": {
+        "heading": "Made for everyday living",
+        "subheading": "Useful finds selected for Pakistani homes"
+      }
+    },
+    "best_sellers": {
+      "type": "featured-collection",
+      "settings": {
+        "heading": "Best Sellers",
+        "subheading": "Trusted favorites across Pakistan",
+        "products_to_show": 8,
+        "columns": 4,
+        "show_view_all": true,
+        "view_all_label": "View all"
+      }
+    },
+    "home_faq": {
+      "type": "home-faq",
+      "blocks": {
+        "f1": {
+          "type": "item",
+          "settings": {
+            "question": "How does Cash on Delivery work?",
+            "answer": "<p>Choose COD when it is available at checkout and pay the courier when your order arrives. Parcel inspection depends on the courier and shipment service.</p>"
+          }
+        },
+        "f2": {
+          "type": "item",
+          "settings": {
+            "question": "How long does delivery take?",
+            "answer": "<p>Most orders arrive within a few business days depending on your city across Pakistan.</p>"
+          }
+        },
+        "f3": {
+          "type": "item",
+          "settings": {
+            "question": "What if I receive a damaged product?",
+            "answer": "<p>Contact us promptly on WhatsApp with your order number and photos. We will confirm the options available under the store’s current return policy.</p>"
+          }
+        }
+      },
+      "block_order": ["f1", "f2", "f3"],
+      "settings": {
+        "heading": "Shop with confidence",
+        "subheading": "COD, delivery, and returns — answered simply",
+        "open_first": true
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "Get deals in your inbox",
+        "subheading": "New drops, flash deals, and COD-friendly offers — no spam.",
+        "placeholder": "Enter your email",
+        "button_label": "Subscribe",
+        "disclaimer": "Unsubscribe anytime. We respect your inbox."
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "categories",
+    "trending",
+    "promo",
+    "deal_day",
+    "best_sellers",
+    "home_faq",
+    "newsletter"
+  ]
+}

@@ -1,0 +1,428 @@
+{%- liquid
+  assign has_slides = false
+  if section.blocks.size > 0
+    assign has_slides = true
+  endif
+  assign trust_blocks = section.blocks | where: 'type', 'trust'
+  assign slide_blocks = section.blocks | where: 'type', 'slide'
+  if slide_blocks.size > 0
+    assign has_slides = true
+  else
+    assign has_slides = false
+  endif
+-%}
+
+<section
+  class="section section--flush section-hero section-hero--campaign{% if section.settings.full_bleed %} section-hero--bleed{% endif %}"
+  data-section-id="{{ section.id }}"
+  data-section-type="hero-banner"
+  data-hero-animate
+>
+  <div class="{% unless section.settings.full_bleed %}page-width{% endunless %}">
+    {%- if has_slides -%}
+      {%- comment -%} Legacy multi-slide mode kept for merchants who added slides {%- endcomment -%}
+      <div
+        class="hero-banner hero-banner--slides{% if section.settings.full_bleed %} hero-banner--bleed{% endif %}"
+        data-hero-slider
+        data-autoplay="{% if section.settings.autoplay %}true{% else %}false{% endif %}"
+        data-autoplay-speed="{{ section.settings.autoplay_speed | default: 5 | times: 1000 }}"
+      >
+        <div class="hero-banner__track" data-hero-track>
+          {%- for block in slide_blocks -%}
+            <article
+              class="hero-banner__slide{% if forloop.first %} is-active{% endif %}"
+              {{ block.shopify_attributes }}
+              {% unless forloop.first %}hidden{% endunless %}
+              data-hero-slide
+            >
+              {%- if block.settings.image != blank -%}
+                <div class="hero-banner__media" aria-hidden="true">
+                  {{
+                    block.settings.image
+                    | image_url: width: 1800
+                    | image_tag:
+                      loading: 'eager',
+                      widths: '600, 900, 1200, 1500, 1800',
+                      sizes: '100vw',
+                      class: 'hero-banner__img',
+                      alt: ''
+                  }}
+                  {%- if section.settings.show_overlay -%}<span class="hero-banner__overlay"></span>{%- endif -%}
+                </div>
+              {%- endif -%}
+              <div class="hero-banner__inner">
+                {%- if block.settings.heading != blank -%}
+                  <h1 class="hero-banner__heading">{{ block.settings.heading }}</h1>
+                {%- endif -%}
+                {%- if block.settings.text != blank -%}
+                  <p class="hero-banner__text">{{ block.settings.text }}</p>
+                {%- endif -%}
+              </div>
+            </article>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- else -%}
+      <div class="hero-campaign{% if section.settings.full_bleed %} hero-campaign--bleed{% endif %}">
+        <span class="hero-campaign__blob hero-campaign__blob--bl" aria-hidden="true"></span>
+        <span class="hero-campaign__blob hero-campaign__blob--tr" aria-hidden="true"></span>
+
+        <div class="hero-campaign__grid{% if section.settings.full_bleed %} page-width{% endif %}">
+          <div class="hero-campaign__copy">
+            {%- if section.settings.eyebrow != blank -%}
+              <p class="hero-campaign__eyebrow">{{ section.settings.eyebrow }}</p>
+            {%- endif -%}
+
+            <h1 class="hero-campaign__heading">
+              {%- if section.settings.heading != blank -%}
+                {{ section.settings.heading }}
+              {%- else -%}
+                Better Prices!
+              {%- endif -%}
+            </h1>
+
+            {%- if section.settings.text != blank -%}
+              <p class="hero-campaign__text">{{ section.settings.text }}</p>
+            {%- endif -%}
+
+            <div class="hero-campaign__actions">
+              {%- if section.settings.button_label != blank -%}
+                <a
+                  class="button button--campaign"
+                  href="{{ section.settings.button_link | default: routes.collections_url }}"
+                >
+                  {{ section.settings.button_label }}
+                  {% render 'icon', name: 'arrow-right', size: 18 %}
+                </a>
+              {%- endif -%}
+              {%- if section.settings.secondary_label != blank -%}
+                <a
+                  class="button button--campaign-outline"
+                  href="{{ section.settings.secondary_link | default: routes.collections_url }}"
+                >
+                  {{ section.settings.secondary_label }}
+                </a>
+              {%- endif -%}
+            </div>
+
+            {%- if trust_blocks.size > 0 or section.settings.show_default_trust -%}
+              <ul class="hero-campaign__trust list-unstyled" role="list">
+                {%- if trust_blocks.size > 0 -%}
+                  {%- for block in trust_blocks -%}
+                    {%- assign trust_icon = block.settings.icon | default: 'truck' -%}
+                    <li class="hero-campaign__trust-item" {{ block.shopify_attributes }}>
+                      <span class="hero-campaign__trust-icon">
+                        {% render 'icon', name: trust_icon, size: 22 %}
+                      </span>
+                      <span class="hero-campaign__trust-label">{{ block.settings.label }}</span>
+                    </li>
+                  {%- endfor -%}
+                {%- else -%}
+                  <li class="hero-campaign__trust-item">
+                    <span class="hero-campaign__trust-icon">{% render 'icon', name: 'truck', size: 22 %}</span>
+                    <span class="hero-campaign__trust-label">Nationwide Shipping</span>
+                  </li>
+                  <li class="hero-campaign__trust-item">
+                    <span class="hero-campaign__trust-icon">{% render 'icon', name: 'shield', size: 22 %}</span>
+                    <span class="hero-campaign__trust-label">Cash on Delivery (Pay at Your Door)</span>
+                  </li>
+                  <li class="hero-campaign__trust-item">
+                    <span class="hero-campaign__trust-icon">{% render 'icon', name: 'flame', size: 22 %}</span>
+                    <span class="hero-campaign__trust-label">Great Value &amp; Deals</span>
+                  </li>
+                  <li class="hero-campaign__trust-item">
+                    <span class="hero-campaign__trust-icon">{% render 'icon', name: 'check', size: 22 %}</span>
+                    <span class="hero-campaign__trust-label">Easy Return Support</span>
+                  </li>
+                {%- endif -%}
+              </ul>
+            {%- endif -%}
+          </div>
+
+          <div class="hero-campaign__visual">
+            <div class="hero-campaign__media-frame">
+              {%- liquid
+                if section.settings.image != blank
+                  assign desktop_hero_src = section.settings.image | image_url: width: 1400
+                else
+                  assign desktop_hero_src = 'hero-payedaar-campaign-desktop.jpg' | asset_url
+                endif
+
+                if section.settings.mobile_image != blank
+                  assign mobile_hero_src = section.settings.mobile_image | image_url: width: 900
+                else
+                  assign mobile_hero_src = 'hero-payedaar-campaign-mobile.jpg' | asset_url
+                endif
+              -%}
+              <picture>
+                <source media="(max-width: 899px)" srcset="{{ mobile_hero_src }}">
+                <img
+                  class="hero-campaign__media-img"
+                  src="{{ desktop_hero_src }}"
+                  alt=""
+                  width="2100"
+                  height="720"
+                  loading="eager"
+                  fetchpriority="high"
+                  decoding="async"
+                >
+              </picture>
+
+              {%- if section.settings.badge_text != blank -%}
+                <div class="hero-campaign__badge">
+                  <div class="promo-circle promo-circle--sale">
+                    {%- assign badge_down = section.settings.badge_text | downcase -%}
+                    {%- if badge_down contains '70%' -%}
+                      <span class="promo-circle__stack">
+                        <span>UP TO</span>
+                        <strong>70%</strong>
+                        <span>OFF</span>
+                      </span>
+                    {%- else -%}
+                      {{ section.settings.badge_text }}
+                    {%- endif -%}
+                  </div>
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+
+  {%- if section.settings.show_service_bar -%}
+    <div class="hero-service-bar">
+      <div class="page-width">
+        <ul class="hero-service-bar__list list-unstyled" role="list">
+          {%- assign service_blocks = section.blocks | where: 'type', 'service' -%}
+          {%- if service_blocks.size > 0 -%}
+            {%- for block in service_blocks -%}
+              {%- assign service_icon = block.settings.icon | default: 'check' -%}
+              <li {{ block.shopify_attributes }}>
+                <span class="hero-service-bar__icon">{% render 'icon', name: service_icon, size: 18 %}</span>
+                <span>{{ block.settings.label }}</span>
+              </li>
+            {%- endfor -%}
+          {%- else -%}
+            <li>
+              <span class="hero-service-bar__icon">{% render 'icon', name: 'flame', size: 18 %}</span>
+              <span>High Quality Products</span>
+            </li>
+            <li>
+              <span class="hero-service-bar__icon">{% render 'icon', name: 'heart', size: 18 %}</span>
+              <span>Affordable Prices</span>
+            </li>
+            <li>
+              <span class="hero-service-bar__icon">{% render 'icon', name: 'shield', size: 18 %}</span>
+              <span>Secure Payments</span>
+            </li>
+            <li>
+              <span class="hero-service-bar__icon">{% render 'icon', name: 'truck', size: 18 %}</span>
+              <span>Fast &amp; Reliable Delivery</span>
+            </li>
+          {%- endif -%}
+        </ul>
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Hero banner",
+  "tag": "section",
+  "class": "section-hero",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow (script)",
+      "default": "Everyday Essentials,"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Better Prices!"
+    },
+    {
+      "type": "textarea",
+      "id": "text",
+      "label": "Text",
+      "default": "From home essentials to daily utilities — everything you need, all in one place."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Primary button",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Primary button link"
+    },
+    {
+      "type": "text",
+      "id": "secondary_label",
+      "label": "Secondary button",
+      "default": "Browse Categories"
+    },
+    {
+      "type": "url",
+      "id": "secondary_link",
+      "label": "Secondary button link"
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Promo circle text",
+      "default": "UP TO 70% OFF"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Desktop image (4:3)",
+      "info": "Optional. Theme ships with a kitchen essentials hero if empty."
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile portrait image",
+      "info": "Optional. Theme ships with a portrait kitchen essentials hero if empty."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay",
+      "label": "Show gradient overlay on image",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "full_bleed",
+      "label": "Full-bleed edge-to-edge hero",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_default_trust",
+      "label": "Show default trust icons when no trust blocks",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_service_bar",
+      "label": "Show service bar under hero",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Slider (optional blocks)"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay slides",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "Autoplay speed",
+      "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "trust",
+      "name": "Trust icon",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "truck", "label": "Truck" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "flame", "label": "Flame / deals" },
+            { "value": "check", "label": "Check" },
+            { "value": "heart", "label": "Heart" },
+            { "value": "return", "label": "Return" }
+          ],
+          "default": "truck"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Delivery across Pakistan"
+        }
+      ]
+    },
+    {
+      "type": "service",
+      "name": "Service bar item",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "flame", "label": "Quality" },
+            { "value": "heart", "label": "Heart" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "truck", "label": "Truck" },
+            { "value": "check", "label": "Check" }
+          ],
+          "default": "check"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "High Quality Products"
+        }
+      ]
+    },
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Better Prices!"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero banner",
+      "blocks": [
+        { "type": "trust", "settings": { "icon": "truck", "label": "Delivery across Pakistan" } },
+        { "type": "trust", "settings": { "icon": "shield", "label": "Cash on Delivery (Pay at Your Door)" } },
+        { "type": "trust", "settings": { "icon": "flame", "label": "Great Value & Deals" } },
+        { "type": "trust", "settings": { "icon": "check", "label": "Easy Return Support" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

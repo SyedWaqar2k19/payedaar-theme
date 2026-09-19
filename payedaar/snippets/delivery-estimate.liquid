@@ -1,0 +1,15 @@
+{%- comment -%}
+  Estimated delivery from product metafield custom.delivery_days
+  Usage: {% render 'delivery-estimate', product: product %}
+{%- endcomment -%}
+
+{%- liquid
+  assign days = product.metafields.custom.delivery_days.value | default: product.metafields.custom.delivery_days
+-%}
+<p class="product-delivery-estimate text-muted">
+  {%- if days != blank -%}
+    {{ 'products.delivery_estimate' | t: days: days }}
+  {%- else -%}
+    {{ 'products.delivery_fallback' | t }}
+  {%- endif -%}
+</p>

@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "main": {
+      "type": "page-shipping-returns",
+      "settings": {
+        "heading": "Shipping & returns"
+      }
+    }
+  },
+  "order": ["main"]
+}

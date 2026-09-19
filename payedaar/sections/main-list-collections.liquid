@@ -1,0 +1,101 @@
+{%- liquid
+  assign columns = section.settings.columns | default: 3
+  assign show_product_count = section.settings.show_product_count
+  assign grid_class = 'collection-list grid grid--2'
+  if columns == 3
+    assign grid_class = grid_class | append: ' grid--3'
+  else
+    assign grid_class = grid_class | append: ' grid--4'
+  endif
+  assign hot_deals_url = routes.collections_url | append: '/hot-deals'
+  assign empty_heading = 'collections.list_empty' | t
+  assign empty_text = 'collections.empty_hint' | t
+-%}
+
+<div class="page-width section">
+  <header class="collection-banner collection-banner--list">
+    <h1 class="collection-banner__title">{{ 'collections.list_title' | t }}</h1>
+    {%- if section.settings.subheading != blank -%}
+      <p class="collection-banner__description">{{ section.settings.subheading }}</p>
+    {%- endif -%}
+  </header>
+
+  <div class="{{ grid_class }}">
+    {%- if section.settings.display_type == 'all' -%}
+      {%- for collection in collections -%}
+        {%- unless collection.handle == 'all' or collection.handle == 'frontpage' -%}
+          {% render 'card-collection', collection: collection, show_product_count: show_product_count %}
+        {%- endunless -%}
+      {%- else -%}
+        <div style="grid-column: 1 / -1;">
+          {% render 'empty-state', heading: empty_heading, text: empty_text, cta_url: hot_deals_url %}
+        </div>
+      {%- endfor -%}
+    {%- else -%}
+      {%- if section.settings.menu != blank and linklists[section.settings.menu].links.size > 0 -%}
+        {%- for link in linklists[section.settings.menu].links -%}
+          {%- if link.type == 'collection_link' and link.object != blank -%}
+            {% render 'card-collection', collection: link.object, show_product_count: show_product_count %}
+          {%- elsif link.url contains '/collections/' -%}
+            {%- assign handle = link.url | split: '/collections/' | last | split: '/' | first | split: '?' | first -%}
+            {%- assign menu_collection = collections[handle] -%}
+            {%- if menu_collection != blank -%}
+              {% render 'card-collection', collection: menu_collection, show_product_count: show_product_count %}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- else -%}
+        <div style="grid-column: 1 / -1;">
+          {% render 'empty-state', heading: empty_heading, text: empty_text, cta_url: hot_deals_url %}
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collections list",
+  "tag": "section",
+  "class": "section-main-list-collections",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Browse every category — deals across Pakistan"
+    },
+    {
+      "type": "select",
+      "id": "display_type",
+      "label": "Collections to show",
+      "options": [
+        { "value": "all", "label": "All collections" },
+        { "value": "menu", "label": "From a menu" }
+      ],
+      "default": "all"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "info": "Used when display type is “From a menu”"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_count",
+      "label": "Show product count",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "label": "Desktop columns",
+      "default": 3
+    }
+  ]
+}
+{% endschema %}

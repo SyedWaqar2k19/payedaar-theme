@@ -1,0 +1,39 @@
+{%- comment -%}
+  FAQPage JSON-LD from FAQ section blocks.
+  Usage: {% render 'faq-json-ld', blocks: section.blocks %}
+{%- endcomment -%}
+
+{%- liquid
+  assign faq_count = 0
+  for block in blocks
+    if block.type == 'item' and block.settings.question != blank
+      assign faq_count = faq_count | plus: 1
+    endif
+  endfor
+-%}
+
+{%- if faq_count > 0 -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {%- assign wrote = false -%}
+      {%- for block in blocks -%}
+        {%- if block.type == 'item' and block.settings.question != blank -%}
+          {%- if wrote -%},{%- endif -%}
+          {
+            "@type": "Question",
+            "name": {{ block.settings.question | json }},
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": {{ block.settings.answer | strip_html | json }}
+            }
+          }
+          {%- assign wrote = true -%}
+        {%- endif -%}
+      {%- endfor -%}
+    ]
+  }
+  </script>
+{%- endif -%}

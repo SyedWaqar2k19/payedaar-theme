@@ -1,0 +1,15 @@
+{%- comment -%}
+  Shared section heading.
+  Usage: {% render 'section-header', heading: ..., subheading: ..., accent: true, align: 'center' %}
+{%- endcomment -%}
+
+{%- if heading != blank or subheading != blank -%}
+  <header class="section-header{% if align == 'center' %} section-header--center{% endif %}">
+    {%- if heading != blank -%}
+      <h2 class="section-header__heading{% if accent %} section-header__heading--accent{% endif %}">{{ heading }}</h2>
+    {%- endif -%}
+    {%- if subheading != blank -%}
+      <p class="section-header__sub{% if align == 'center' %} section-header__sub--center{% endif %}">{{ subheading }}</p>
+    {%- endif -%}
+  </header>
+{%- endif -%}

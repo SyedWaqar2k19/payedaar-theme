@@ -1,0 +1,78 @@
+{%- comment -%}
+  Organization + WebSite JSON-LD (global).
+{%- endcomment -%}
+
+{%- liquid
+  assign search_query_placeholder = '{' | append: 'search_term_string' | append: '}'
+  assign search_action_url = request.origin | append: routes.search_url | append: '?q=' | append: search_query_placeholder
+-%}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "name": {{ shop.name | json }},
+      "url": {{ request.origin | json }}
+      {%- if settings.logo != blank -%}
+      ,"logo": {{ settings.logo | image_url: width: 512 | prepend: 'https:' | json }}
+      {%- endif -%}
+      {%- if settings.support_phone != blank or settings.whatsapp_number != blank -%}
+      ,"contactPoint": [{
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "areaServed": "PK",
+        "availableLanguage": ["en", "ur"]
+        {%- if settings.support_phone != blank -%}
+        ,"telephone": {{ settings.support_phone | json }}
+        {%- endif -%}
+      }]
+      {%- endif -%}
+      {%- liquid
+        assign has_same_as = false
+        if settings.social_facebook != blank or settings.social_instagram != blank or settings.social_tiktok != blank or settings.social_youtube != blank or settings.social_twitter != blank
+          assign has_same_as = true
+        endif
+      -%}
+      {%- if has_same_as -%}
+      ,"sameAs": [
+        {%- assign same_sep = false -%}
+        {%- if settings.social_facebook != blank -%}
+          {{ settings.social_facebook | json }}
+          {%- assign same_sep = true -%}
+        {%- endif -%}
+        {%- if settings.social_instagram != blank -%}
+          {%- if same_sep -%},{%- endif -%}{{ settings.social_instagram | json }}
+          {%- assign same_sep = true -%}
+        {%- endif -%}
+        {%- if settings.social_tiktok != blank -%}
+          {%- if same_sep -%},{%- endif -%}{{ settings.social_tiktok | json }}
+          {%- assign same_sep = true -%}
+        {%- endif -%}
+        {%- if settings.social_youtube != blank -%}
+          {%- if same_sep -%},{%- endif -%}{{ settings.social_youtube | json }}
+          {%- assign same_sep = true -%}
+        {%- endif -%}
+        {%- if settings.social_twitter != blank -%}
+          {%- if same_sep -%},{%- endif -%}{{ settings.social_twitter | json }}
+        {%- endif -%}
+      ]
+      {%- endif -%}
+    },
+    {
+      "@type": "WebSite",
+      "name": {{ shop.name | json }},
+      "url": {{ request.origin | json }},
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": {{ search_action_url | json }}
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+  ]
+}
+</script>

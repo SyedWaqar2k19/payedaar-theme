@@ -1,0 +1,80 @@
+<section class="section" data-section-id="{{ section.id }}">
+  <div class="page-width">
+    <h1 class="mb-3">{{ 'cart.title' | t }}</h1>
+
+    {%- if cart.item_count == 0 -%}
+      <div class="ds-block text-center">
+        <p class="mb-3">{{ 'cart.empty' | t }}</p>
+        <a class="button button--primary" href="{{ routes.collections_url }}/hot-deals">{{ 'general.hot_deals' | t }}</a>
+      </div>
+    {%- else -%}
+      <div class="mb-3">
+        {% render 'free-shipping-bar' %}
+      </div>
+
+      <form action="{{ routes.cart_url }}" method="post" id="cart-page-form" class="cart-page card">
+        <div class="cart-page__items">
+          {%- for item in cart.items -%}
+            <div class="cart-drawer__item cart-page__item">
+              <a href="{{ item.url }}" class="cart-drawer__image">
+                {%- if item.image -%}
+                  {{ item.image | image_url: width: 180 | image_tag: loading: 'lazy', alt: item.product.title }}
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag }}
+                {%- endif -%}
+              </a>
+              <div class="cart-drawer__details">
+                <a class="cart-drawer__item-title" href="{{ item.url }}">{{ item.product.title }}</a>
+                {%- unless item.product.has_only_default_variant -%}
+                  <p class="cart-drawer__variant text-muted">{{ item.variant.title }}</p>
+                {%- endunless -%}
+                <p class="cart-drawer__price text-primary font-bold">
+                  {{ item.final_line_price | money }}
+                  {%- if item.original_line_price > item.final_line_price -%}
+                    <s class="cart-drawer__compare text-muted">{{ item.original_line_price | money }}</s>
+                  {%- endif -%}
+                </p>
+                <div class="cart-page__qty-row">
+                  <label class="visually-hidden" for="Updates-{{ item.key }}">{{ 'cart.quantity' | t }}</label>
+                  <input
+                    id="Updates-{{ item.key }}"
+                    class="input cart-page__qty-input"
+                    type="number"
+                    name="updates[]"
+                    value="{{ item.quantity }}"
+                    min="0"
+                    {% if item.variant.inventory_management and item.variant.inventory_policy == 'deny' and item.variant.inventory_quantity > 0 %}
+                      max="{{ item.variant.inventory_quantity }}"
+                    {% endif %}
+                  >
+                  <a class="cart-page__remove" href="{{ item.url_to_remove }}">{{ 'cart.remove' | t }}</a>
+                </div>
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+
+        <p class="mt-3 font-bold">
+          {{ 'cart.subtotal' | t }}: <span class="text-primary">{{ cart.total_price | money }}</span>
+        </p>
+        <div class="cart-drawer__cod mt-2">
+          {% render 'trust-badges', compact: true %}
+        </div>
+        <div class="ds-row mt-3">
+          <button type="submit" name="update" class="button button--secondary">{{ 'cart.update' | t }}</button>
+          <button type="submit" name="checkout" class="button button--primary" formaction="/checkout" formmethod="post">
+            {{ 'cart.checkout' | t }}
+          </button>
+        </div>
+      </form>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Cart",
+  "tag": "section",
+  "settings": []
+}
+{% endschema %}

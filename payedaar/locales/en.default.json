@@ -1,0 +1,382 @@
+{
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "breadcrumb": "Breadcrumb",
+    "main_navigation": "Main navigation",
+    "mobile_navigation": "Mobile navigation",
+    "sticky_navigation": "Quick navigation",
+    "menu": "Menu",
+    "open_menu": "Open menu",
+    "close_menu": "Close menu",
+    "close": "Close",
+    "dismiss": "Dismiss",
+    "scroll_to_top": "Scroll to top"
+  },
+  "general": {
+    "home": "Home",
+    "categories": "Categories",
+    "hot_deals": "Hot Deals",
+    "best_sellers": "Best Sellers",
+    "track_order": "Track Order",
+    "account": "Account",
+    "cart": "Cart",
+    "cart_count": {
+      "one": "{{ count }} item in cart",
+      "other": "{{ count }} items in cart"
+    },
+    "search": "Search",
+    "search_placeholder": "Search products, brands…",
+    "search_suggestions": "Search suggestions",
+    "search_no_suggestions": "No suggestions",
+    "search_for": "Search for “{{ terms }}”",
+    "search_no_results": "No products found for “{{ terms }}”",
+    "search_results_count": {
+      "one": "{{ count }} result",
+      "other": "{{ count }} results"
+    },
+    "continue_shopping": "Continue shopping",
+    "view_all": "View all",
+    "whatsapp": "Chat on WhatsApp",
+    "call_us": "Call us",
+    "contact": "Contact",
+    "faq": "FAQ",
+    "shipping_returns": "Shipping & Returns",
+    "privacy_policy": "Privacy policy",
+    "terms_of_service": "Terms of service",
+    "cod": "COD",
+    "cod_available": "Cash on Delivery available",
+    "social": "Social media",
+    "payment_methods": "Payment methods",
+    "trust_heading": "Why Payedaar",
+    "made_for_pakistan": "Shopping made easy across Pakistan",
+    "trust_delivery_short": "Free Delivery",
+    "password": "Password",
+    "password_message": "This store is password protected.",
+    "submit": "Enter",
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page {{ number }}"
+    }
+  },
+  "sections": {
+    "announcement_bar": {
+      "label": "Announcement"
+    },
+    "hero": {
+      "default_heading": "Big Savings Everyday!",
+      "slides": "Hero slides",
+      "slide_n": "Slide {{ number }}"
+    },
+    "trust": {
+      "delivery_hint": "Nationwide shipping you can rely on",
+      "cod_hint": "Pay when your order arrives",
+      "returns_hint": "Easy returns within the window"
+    },
+    "featured_collection": {
+      "placeholder_title": "Add a collection",
+      "placeholder_hint": "Select a collection in the Theme Editor to show products."
+    },
+    "deal_of_the_day": {
+      "days": "Days",
+      "hours": "Hrs",
+      "minutes": "Min",
+      "seconds": "Sec",
+      "ended": "This deal has ended — check Trending Deals for more.",
+      "placeholder_title": "Featured deal",
+      "placeholder_hint": "Pick products or a collection for Deal of the Day."
+    },
+    "promo_banner": {
+      "placeholder_eyebrow": "Limited offer",
+      "placeholder_heading": "Promo banner",
+      "shop_now": "Shop now"
+    },
+    "coupon_strip": {
+      "copied": "Copied!",
+      "copy_code": "Copy code {{ code }}"
+    },
+    "newsletter": {
+      "email_label": "Email",
+      "success": "Thanks for subscribing! Watch your inbox for deals."
+    },
+    "testimonials": {
+      "default_q1": "Bilkul same product mila jo ad me tha. Bohat satisfied hoon.",
+      "default_a1": "Ali Khan",
+      "default_q2": "Price ke hisab se best product hai. Delivery bhi fast thi.",
+      "default_a2": "Ayesha Ali",
+      "default_q3": "COD se order kiya — parcel open karke check kar sake. Trust build ho gaya.",
+      "default_a3": "Usman R."
+    },
+    "home_faq": {
+      "default_q1": "How does Cash on Delivery work?",
+      "default_a1": "Choose COD when it is available at checkout and pay the courier when your order arrives. Parcel inspection depends on the courier and shipment service.",
+      "default_q2": "How long does delivery take?",
+      "default_a2": "Most orders arrive within a few business days depending on your city across Pakistan.",
+      "default_q3": "What if I receive a damaged product?",
+      "default_a3": "Contact us promptly with your order number and photos. We will confirm the options available under the current return policy."
+    },
+    "phase1": {
+      "note": "Payedaar design system Phase 1 is live. Full merchandising sections ship in Phase 4."
+    },
+    "design_system": {
+      "colors": "Color tokens",
+      "buttons": "Buttons",
+      "badges": "Badges",
+      "forms": "Forms",
+      "card": "Product card shell",
+      "trust": "Pakistan trust strip"
+    }
+  },
+  "products": {
+    "add_to_cart": "Add to Cart",
+    "added_to_cart": "Added",
+    "add_to_cart_error": "Could not add to cart. Please try again.",
+    "sold_out": "Sold out",
+    "view_product": "View product",
+    "variant": "Option",
+    "sku": "SKU",
+    "size_guide": "Size guide",
+    "share": {
+      "label": "Share",
+      "whatsapp": "WhatsApp",
+      "copy": "Copy link"
+    },
+    "media": {
+      "zoom": "Zoom image",
+      "thumbnail": "View image {{ index }}"
+    },
+    "inventory": {
+      "in_stock": "In stock",
+      "low_stock": "Only {{ count }} left",
+      "low_stock_prefix": "Only",
+      "left": "left"
+    },
+    "delivery_estimate": "Typically delivered in {{ days }} days",
+    "delivery_fallback": "Estimated delivery in 3–5 business days across Pakistan",
+    "open_parcel_cod": "Cash on Delivery is available on eligible orders.",
+    "badge": {
+      "hot_deal": "Hot Deal",
+      "best_seller": "Best Seller",
+      "limited": "Limited Time",
+      "new": "New"
+    },
+    "price": {
+      "regular_price": "Regular price",
+      "sale_price": "Sale price",
+      "save_percent": "Save {{ percent }} percent"
+    },
+    "facets": {
+      "filters": "Filters",
+      "apply": "Apply filters",
+      "show_results": "Show results",
+      "sort_by_label": "Sort by",
+      "clear_filters": "Clear filters",
+      "clear_all": "Clear all",
+      "remove_filter": "Remove filter {{ value }}",
+      "remove_price_filter": "Remove price filter",
+      "price_from": "From",
+      "price_to": "To",
+      "product_count": {
+        "one": "{{ count }} product",
+        "other": "{{ count }} products"
+      },
+      "empty_filtered_heading": "No products match these filters",
+      "empty_filtered_text": "Try clearing filters or browse Hot Deals for more picks."
+    }
+  },
+  "collections": {
+    "empty": "No products found in this collection.",
+    "empty_hint": "Browse Hot Deals for bestsellers and flash offers.",
+    "list_title": "Categories",
+    "list_empty": "No categories to show yet.",
+    "product_count": {
+      "one": "{{ count }} product",
+      "other": "{{ count }} products"
+    }
+  },
+  "cart": {
+    "title": "Your cart",
+    "drawer_title": "Your cart",
+    "empty": "Your cart is empty — browse Hot Deals.",
+    "product": "Product",
+    "quantity": "Qty",
+    "increase": "Increase quantity",
+    "decrease": "Decrease quantity",
+    "remove": "Remove item",
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "update": "Update cart",
+    "checkout": "Checkout",
+    "view_cart": "View cart",
+    "free_shipping_remaining_html": "You're {{ amount }} away from FREE delivery",
+    "free_shipping_unlocked_html": "Congrats! You unlocked FREE delivery",
+    "free_shipping_progress": "Free delivery progress",
+    "drawer_placeholder": "Cart drawer"
+  },
+  "templates": {
+    "404": {
+      "title": "Page not found",
+      "subtext": "The page you requested does not exist. Try searching or browse Hot Deals."
+    }
+  },
+  "contact": {
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "message": "Message",
+      "submit": "Send message",
+      "post_success": "Thanks — we received your message and will reply soon."
+    },
+    "quick_help": "Quick help"
+  },
+  "faq": {
+    "default_q1": "Do you offer Cash on Delivery?",
+    "default_a1": "Yes — Cash on Delivery is available across Pakistan on eligible orders.",
+    "default_q2": "How long does delivery take?",
+    "default_a2": "Most orders arrive within a few business days depending on your city.",
+    "default_q3": "What is your return policy?",
+    "default_a3": "Easy returns within the stated window. See Shipping & Returns for full details."
+  },
+  "track_order": {
+    "title": "Order help & tracking",
+    "instructions": "Use the secure tracking link in your confirmation message, sign in to view fulfilled orders, or send these details to our support team.",
+    "order_number": "Order number",
+    "order_placeholder": "e.g. #1001",
+    "email": "Email or phone used at checkout",
+    "email_placeholder": "Email address or mobile number",
+    "submit": "Prepare support request",
+    "view_orders": "View my orders",
+    "sign_in_orders": "Sign in to view orders",
+    "full_page": "Open full track page",
+    "whatsapp_prefill": "Hi Payedaar, I need help tracking my order.",
+    "hint_ready": "For live shipment updates, use the tracking link in your confirmation email or message us on WhatsApp with order {{ order }}.",
+    "hint_login": "Sign in to see order history and fulfillment status in your Payedaar account."
+  },
+  "shipping": {
+    "default_delivery": "We deliver nationwide across Pakistan. Free delivery may apply above the store threshold.",
+    "default_cod": "Pay Cash on Delivery when your order arrives — available on eligible orders.",
+    "default_returns": "Hassle-free returns within the stated window for unused items in original condition."
+  },
+  "cookie": {
+    "title": "Cookies & privacy",
+    "message": "We use cookies to keep your cart and shopping experience working. ",
+    "privacy_link": "Privacy policy",
+    "accept": "Accept",
+    "dismiss": "Dismiss"
+  },
+  "popup": {
+    "promo_title": "Special offer",
+    "subscribe": "Subscribe"
+  },
+  "wishlist": {
+    "title": "Wishlist",
+    "subtext": "Saved on this device — add items from product cards.",
+    "empty": "Your wishlist is empty. Browse Hot Deals and tap the heart.",
+    "remove": "Remove",
+    "add": "Add to wishlist",
+    "count_label": "Wishlist items"
+  },
+  "blogs": {
+    "article": {
+      "read_more": "Read more",
+      "no_articles": "No articles yet."
+    }
+  },
+  "customer": {
+    "account": {
+      "title": "Account",
+      "welcome": "Welcome, {{ name }}",
+      "logout": "Log out",
+      "return": "Back to account",
+      "view_addresses": "View addresses",
+      "details": "Account details",
+      "theme_note": "Login, profile & order history use your store account. In Shopify admin, set Customer accounts to Classic so they stay inside this theme."
+    },
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "create_account": "Create account",
+      "forgot_password": "Forgot password?"
+    },
+    "recover_password": {
+      "title": "Reset your password",
+      "subtext": "We will email you a link to reset your password.",
+      "submit": "Send reset link",
+      "success": "Check your email for a password reset link."
+    },
+    "register": {
+      "title": "Create account",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Create"
+    },
+    "addresses": {
+      "title": "Addresses",
+      "empty": "You have no addresses yet.",
+      "default": "Default",
+      "edit": "Edit",
+      "delete": "Delete",
+      "delete_confirm": "Delete this address?",
+      "add_new": "Add a new address",
+      "add": "Add address",
+      "update": "Update address",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "address1": "Address",
+      "city": "City",
+      "zip": "Postal code",
+      "phone": "Phone",
+      "set_default": "Set as default address",
+      "no_default": "No default address yet."
+    },
+    "orders": {
+      "title": "Order history",
+      "order_number": "Order",
+      "date": "Date",
+      "payment_status": "Payment",
+      "fulfillment_status": "Fulfillment",
+      "total": "Total",
+      "none": "You haven’t placed any orders yet."
+    },
+    "order": {
+      "title": "Order {{ name }}",
+      "date": "Placed on {{ date }}",
+      "total": "Total",
+      "product": "Product",
+      "sku": "SKU",
+      "price": "Price",
+      "quantity": "Qty",
+      "payment_status": "Payment",
+      "fulfillment_status": "Fulfillment",
+      "billing_address": "Billing address",
+      "shipping_address": "Shipping address"
+    },
+    "activate_account": {
+      "title": "Activate account",
+      "subtext": "Create your password to activate your account.",
+      "password": "Password",
+      "password_confirm": "Confirm password",
+      "submit": "Activate"
+    },
+    "reset_password": {
+      "title": "Reset password",
+      "password": "Password",
+      "password_confirm": "Confirm password",
+      "submit": "Reset password"
+    }
+  },
+  "gift_cards": {
+    "issued": {
+      "title": "Here's your {{ value }} gift card for {{ shop }}!",
+      "subtext": "Your gift card",
+      "expired": "This gift card has expired or is disabled.",
+      "shop_link": "View gift card"
+    }
+  }
+}

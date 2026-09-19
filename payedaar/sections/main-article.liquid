@@ -1,0 +1,47 @@
+<article class="section section-article" data-section-id="{{ section.id }}">
+  <div class="page-width page-width--narrow">
+    <header class="page-header">
+      <p class="text-muted mb-2">
+        <a href="{{ blog.url }}">{{ blog.title }}</a>
+        · {{ article.published_at | date: format: 'date' }}
+      </p>
+      <h1 class="page-header__title">{{ article.title }}</h1>
+    </header>
+
+    {%- if article.image -%}
+      <div class="article-hero mb-3">
+        {{
+          article.image
+          | image_url: width: 1400
+          | image_tag:
+            loading: 'eager',
+            widths: '600, 900, 1200, 1400',
+            sizes: '100vw',
+            alt: article.title,
+            class: 'article-hero__img'
+        }}
+      </div>
+    {%- endif -%}
+
+    <div class="rte page-content">
+      {{ article.content }}
+    </div>
+
+    {%- if article.tags.size > 0 -%}
+      <ul class="article-tags list-unstyled">
+        {%- for tag in article.tags -%}
+          <li><a class="facets-active__chip" href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a></li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</article>
+
+{% schema %}
+{
+  "name": "Article",
+  "tag": "section",
+  "class": "section-main-article",
+  "settings": []
+}
+{% endschema %}

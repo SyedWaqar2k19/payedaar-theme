@@ -1,0 +1,73 @@
+{%- comment -%}
+  Active facet chips.
+{%- endcomment -%}
+
+{%- liquid
+  assign sort_by = results.sort_by | default: results.default_sort_by
+  assign has_active = false
+  for filter in results.filters
+    if filter.active_values.size > 0
+      assign has_active = true
+    endif
+    if filter.type == 'price_range'
+      if filter.min_value.value != blank or filter.max_value.value != blank
+        assign has_active = true
+      endif
+    endif
+  endfor
+
+  assign clear_href = results_url
+  if sort_by != blank
+    assign sort_encoded = sort_by | url_encode
+    if results_url contains '?'
+      assign clear_href = results_url | append: '&sort_by=' | append: sort_encoded
+    else
+      assign clear_href = results_url | append: '?sort_by=' | append: sort_encoded
+    endif
+  endif
+-%}
+
+<div class="facets-active" id="FacetFiltersActive-{{ section_id }}" data-facets-active {% unless has_active %}hidden{% endunless %}>
+  {%- if has_active -%}
+    <ul class="facets-active__list list-unstyled" role="list">
+      {%- for filter in results.filters -%}
+        {%- for value in filter.active_values -%}
+          <li>
+            <a class="facets-active__chip" href="{{ value.url_to_remove }}" data-facet-remove>
+              <span>{{ value.label | escape }}</span>
+              <span aria-hidden="true">×</span>
+              <span class="visually-hidden">{{ 'products.facets.remove_filter' | t: value: value.label }}</span>
+            </a>
+          </li>
+        {%- endfor -%}
+
+        {%- if filter.type == 'price_range' -%}
+          {%- if filter.min_value.value != blank or filter.max_value.value != blank -%}
+            <li>
+              <a class="facets-active__chip" href="{{ filter.url_to_remove }}" data-facet-remove>
+                <span>
+                  {%- if filter.min_value.value != blank -%}
+                    {{ filter.min_value.value | money }}
+                  {%- else -%}
+                    {{ 0 | money }}
+                  {%- endif -%}
+                  –
+                  {%- if filter.max_value.value != blank -%}
+                    {{ filter.max_value.value | money }}
+                  {%- else -%}
+                    {{ filter.range_max | money }}
+                  {%- endif -%}
+                </span>
+                <span aria-hidden="true">×</span>
+                <span class="visually-hidden">{{ 'products.facets.remove_price_filter' | t }}</span>
+              </a>
+            </li>
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+    <a class="facets-active__clear" href="{{ clear_href }}" data-facet-clear>
+      {{ 'products.facets.clear_all' | t }}
+    </a>
+  {%- endif -%}
+</div>

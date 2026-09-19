@@ -1,0 +1,72 @@
+{%- comment -%}
+  Font loading — Phase 1
+  Default: self-hosted Plus Jakarta Sans (font-display: swap) from theme assets.
+  Optional: Shopify font_picker when type_font_source = shopify.
+{%- endcomment -%}
+
+{%- if settings.type_font_source == 'shopify' -%}
+  <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+{%- else -%}
+  {%- liquid
+    assign font_400 = 'plus-jakarta-sans-400.woff2' | asset_url
+    assign font_500 = 'plus-jakarta-sans-500.woff2' | asset_url
+    assign font_600 = 'plus-jakarta-sans-600.woff2' | asset_url
+    assign font_700 = 'plus-jakarta-sans-700.woff2' | asset_url
+    assign font_800 = 'plus-jakarta-sans-800.woff2' | asset_url
+    assign caveat_600 = 'caveat-600.ttf' | asset_url
+    assign caveat_700 = 'caveat-700.ttf' | asset_url
+  -%}
+  {{ font_400 | preload_tag: as: 'font', type: 'font/woff2' }}
+  {{ font_700 | preload_tag: as: 'font', type: 'font/woff2' }}
+  {% style %}
+    @font-face {
+      font-family: "Plus Jakarta Sans";
+      font-style: normal;
+      font-weight: 400;
+      font-display: swap;
+      src: url({{ font_400 }}) format("woff2");
+    }
+    @font-face {
+      font-family: "Plus Jakarta Sans";
+      font-style: normal;
+      font-weight: 500;
+      font-display: swap;
+      src: url({{ font_500 }}) format("woff2");
+    }
+    @font-face {
+      font-family: "Plus Jakarta Sans";
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url({{ font_600 }}) format("woff2");
+    }
+    @font-face {
+      font-family: "Plus Jakarta Sans";
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url({{ font_700 }}) format("woff2");
+    }
+    @font-face {
+      font-family: "Plus Jakarta Sans";
+      font-style: normal;
+      font-weight: 800;
+      font-display: swap;
+      src: url({{ font_800 }}) format("woff2");
+    }
+    @font-face {
+      font-family: "Caveat";
+      font-style: normal;
+      font-weight: 600;
+      font-display: swap;
+      src: url({{ caveat_600 }}) format("truetype");
+    }
+    @font-face {
+      font-family: "Caveat";
+      font-style: normal;
+      font-weight: 700;
+      font-display: swap;
+      src: url({{ caveat_700 }}) format("truetype");
+    }
+  {% endstyle %}
+{%- endif -%}

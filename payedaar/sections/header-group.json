@@ -1,0 +1,43 @@
+{
+  "name": "Header group",
+  "type": "header",
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "msg1": {
+          "type": "message",
+          "settings": {
+            "text": "Free delivery across Pakistan on orders over Rs. 2,999"
+          }
+        },
+        "msg2": {
+          "type": "message",
+          "settings": {
+            "text": "Cash on Delivery available on eligible orders"
+          }
+        },
+        "msg3": {
+          "type": "message",
+          "settings": {
+            "text": "Easy return support · Shop with confidence"
+          }
+        }
+      },
+      "block_order": ["msg1", "msg2", "msg3"],
+      "settings": {
+        "rotate_seconds": 4,
+        "enable_dismiss": true
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "hot_deals_handle": "hot-deals",
+        "best_sellers_handle": "best-sellers",
+        "track_order_handle": "track-order"
+      }
+    }
+  },
+  "order": ["announcement-bar", "header"]
+}

@@ -1,0 +1,70 @@
+{%- liquid
+  assign hot_handle = section.settings.hot_deals_handle | default: 'hot-deals'
+  assign show = settings.enable_mobile_sticky_nav
+-%}
+
+{%- if show -%}
+  <nav
+    class="mobile-sticky-nav"
+    aria-label="{{ 'accessibility.sticky_navigation' | t }}"
+    data-mobile-sticky-nav
+  >
+    <a
+      href="{{ routes.root_url }}"
+      class="mobile-sticky-nav__item{% if request.page_type == 'index' %} is-active{% endif %}"
+      {% if request.page_type == 'index' %}aria-current="page"{% endif %}
+    >
+      {% render 'icon', name: 'home', size: 22 %}
+      <span>{{ 'general.home' | t }}</span>
+    </a>
+    <a
+      href="{{ routes.collections_url }}"
+      class="mobile-sticky-nav__item{% if request.page_type == 'collection' or request.page_type == 'list-collections' %} is-active{% endif %}"
+    >
+      {% render 'icon', name: 'grid', size: 22 %}
+      <span>{{ 'general.categories' | t }}</span>
+    </a>
+    <a
+      href="{{ routes.collections_url }}/{{ hot_handle }}"
+      class="mobile-sticky-nav__item mobile-sticky-nav__item--hot{% if request.path contains hot_handle %} is-active{% endif %}"
+    >
+      {% render 'icon', name: 'flame', size: 22 %}
+      <span>{{ 'general.hot_deals' | t }}</span>
+    </a>
+    <a
+      href="{{ routes.account_url }}"
+      class="mobile-sticky-nav__item{% if request.path contains '/account' %} is-active{% endif %}"
+    >
+      {% render 'icon', name: 'account', size: 22 %}
+      <span>{{ 'general.account' | t }}</span>
+    </a>
+    <button
+      type="button"
+      class="mobile-sticky-nav__item mobile-sticky-nav__item--cart{% if request.page_type == 'cart' %} is-active{% endif %}"
+      data-cart-drawer-open
+      aria-label="{{ 'general.cart' | t }}"
+    >
+      <span class="mobile-sticky-nav__cart-wrap">
+        {% render 'icon', name: 'cart', size: 22 %}
+        {% render 'cart-icon-bubble' %}
+      </span>
+      <span>{{ 'general.cart' | t }}</span>
+    </button>
+  </nav>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Mobile sticky nav",
+  "tag": "section",
+  "class": "section-mobile-sticky-nav",
+  "settings": [
+    {
+      "type": "text",
+      "id": "hot_deals_handle",
+      "label": "Hot Deals collection handle",
+      "default": "hot-deals"
+    }
+  ]
+}
+{% endschema %}

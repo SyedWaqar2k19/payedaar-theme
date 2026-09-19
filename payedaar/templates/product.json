@@ -1,0 +1,88 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "badge": {
+          "type": "badge",
+          "settings": {}
+        },
+        "title": {
+          "type": "title",
+          "settings": {
+            "show_vendor": false
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "inventory": {
+          "type": "inventory",
+          "settings": {
+            "show_inventory": true,
+            "inventory_threshold": 5
+          }
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {}
+        },
+        "trust": {
+          "type": "trust",
+          "settings": {}
+        },
+        "description": {
+          "type": "description",
+          "settings": {
+            "heading": "Description",
+            "open": true
+          }
+        },
+        "shipping": {
+          "type": "shipping",
+          "settings": {
+            "heading": "Shipping & returns",
+            "open": false
+          }
+        },
+        "share": {
+          "type": "share",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "badge",
+        "title",
+        "price",
+        "inventory",
+        "buy_buttons",
+        "trust",
+        "description",
+        "shipping",
+        "share"
+      ],
+      "settings": {
+        "enable_sticky_atc": true,
+        "show_dynamic_checkout": false,
+        "show_size_guide": true
+      }
+    },
+    "apps": {
+      "type": "apps",
+      "blocks": {},
+      "block_order": [],
+      "settings": {}
+    },
+    "related": {
+      "type": "related-products",
+      "settings": {
+        "heading": "You may also like",
+        "subheading": "More deals customers grab with this",
+        "products_to_show": 4,
+        "intent": "related"
+      }
+    }
+  },
+  "order": ["main", "apps", "related"]
+}

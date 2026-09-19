@@ -1,0 +1,17 @@
+{%- comment -%}
+  COD availability badge — respects theme COD toggle + product metafield.
+  Usage: {% render 'cod-badge', product: product %}
+{%- endcomment -%}
+
+{%- if settings.enable_cod_messaging -%}
+  {%- liquid
+    assign show_cod = true
+    assign cod_mf = product.metafields.custom.cod_available.value
+    if product.metafields.custom.cod_available != blank and cod_mf == false
+      assign show_cod = false
+    endif
+  -%}
+  {%- if show_cod -%}
+    <span class="badge badge--cod" title="{{ settings.trust_cod | escape }}">{{ 'general.cod' | t }}</span>
+  {%- endif -%}
+{%- endif -%}

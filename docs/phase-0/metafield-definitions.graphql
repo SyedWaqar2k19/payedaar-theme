@@ -1,0 +1,164 @@
+# Payedaar Phase 0 — Metafield definition mutations
+# Run via Shopify Admin GraphQL (Apps → develop apps → GraphiQL)
+# or: shopify app / partner tooling with Admin API access.
+# Skip any mutation that errors with "already taken" / exists.
+
+mutation CreateProductSubtitle {
+  metafieldDefinitionCreate(
+    definition: {
+      name: "Subtitle"
+      namespace: "descriptors"
+      key: "subtitle"
+      type: "single_line_text_field"
+      description: "Short PDP subtitle"
+      ownerType: PRODUCT
+    }
+  ) {
+    createdDefinition { id namespace key }
+    userErrors { field message code }
+  }
+}
+
+mutation CreateProductShortDescription {
+  metafieldDefinitionCreate(
+    definition: {
+      name: "Short description"
+      namespace: "custom"
+      key: "short_description"
+      type: "multi_line_text_field"
+      description: "Card / PDP blurb"
+      ownerType: PRODUCT
+    }
+  ) {
+    createdDefinition { id namespace key }
+    userErrors { field message code }
+  }
+}
+
+mutation CreateProductCodAvailable {
+  metafieldDefinitionCreate(
+    definition: {
+      name: "COD available"
+      namespace: "custom"
+      key: "cod_available"
+      type: "boolean"
+      description: "Show COD badge when true"
+      ownerType: PRODUCT
+    }
+  ) {
+    createdDefinition { id namespace key }
+    userErrors { field message code }
+  }
+}
+
+mutation CreateProductDeliveryDays {
+  metafieldDefinitionCreate(
+    definition: {
+      name: "Delivery days"
+      namespace: "custom"
+      key: "delivery_days"
+      type: "number_integer"
+      description: "Estimated delivery days"
+      ownerType: PRODUCT
+    }
+  ) {
+    createdDefinition { id namespace key }
+    userErrors { field message code }
+  }
+}
+
+mutation CreateProductIsHotDeal {
+  metafieldDefinitionCreate(
+    definition: {
+      name: "Hot deal"
+      namespace: "custom"
+      key: "is_hot_deal"
+      type: "boolean"
+      description: "Badge + collection automation helper"
+      ownerType: PRODUCT
+    }
+  ) {
+    createdDefinition { id namespace key }
+    userErrors { field message code }
+  }
+}
+
+mutation CreateProductBadgeLabel {
+  metafieldDefinitionCreate(
+    definition: {
+      name: "Custom badge"
+      namespace: "custom"
+      key: "badge_label"
+      type: "single_line_text_field"
+      description: "Overrides default badge text"
+      ownerType: PRODUCT
+    }
+  ) {
+    createdDefinition { id namespace key }
+    userErrors { field message code }
+  }
+}
+
+mutation CreateProductSpecTable {
+  metafieldDefinitionCreate(
+    definition: {
+      name: "Specs"
+      namespace: "custom"
+      key: "spec_table"
+      type: "multi_line_text_field"
+      description: "Specs tab content"
+      ownerType: PRODUCT
+    }
+  ) {
+    createdDefinition { id namespace key }
+    userErrors { field message code }
+  }
+}
+
+mutation CreateProductBundleDiscount {
+  metafieldDefinitionCreate(
+    definition: {
+      name: "Bundle discount %"
+      namespace: "custom"
+      key: "bundle_discount_rate"
+      type: "number_integer"
+      description: "Bought-together discount percentage"
+      ownerType: PRODUCT
+    }
+  ) {
+    createdDefinition { id namespace key }
+    userErrors { field message code }
+  }
+}
+
+mutation CreateCollectionIcon {
+  metafieldDefinitionCreate(
+    definition: {
+      name: "Category icon"
+      namespace: "custom"
+      key: "icon"
+      type: "file_reference"
+      description: "Circular category image/icon"
+      ownerType: COLLECTION
+    }
+  ) {
+    createdDefinition { id namespace key }
+    userErrors { field message code }
+  }
+}
+
+mutation CreateCollectionMenuHighlight {
+  metafieldDefinitionCreate(
+    definition: {
+      name: "Menu highlight"
+      namespace: "custom"
+      key: "menu_highlight"
+      type: "boolean"
+      description: "Highlight like Hot Deals in navigation"
+      ownerType: COLLECTION
+    }
+  ) {
+    createdDefinition { id namespace key }
+    userErrors { field message code }
+  }
+}

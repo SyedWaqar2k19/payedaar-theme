@@ -1,0 +1,65 @@
+{%- liquid
+  assign limit = section.settings.products_to_show | default: 4
+  assign intent = section.settings.intent | default: 'related'
+-%}
+
+<product-recommendations
+  class="product-recommendations"
+  data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ limit }}&intent={{ intent }}"
+  data-section-id="{{ section.id }}"
+>
+  {%- if recommendations.performed and recommendations.products_count > 0 -%}
+    <div class="page-width section">
+      {% render 'section-header',
+        heading: section.settings.heading,
+        subheading: section.settings.subheading
+      %}
+      <div class="grid grid--2 grid--4">
+        {%- for recommendation in recommendations.products -%}
+          {% render 'product-card', product: recommendation %}
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+</product-recommendations>
+
+{% schema %}
+{
+  "name": "Related products",
+  "tag": "section",
+  "class": "section-related-products",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "You may also like"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "More deals customers grab with this"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "label": "Products to show",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "intent",
+      "label": "Recommendation type",
+      "options": [
+        { "value": "related", "label": "Related" },
+        { "value": "complementary", "label": "Complementary" }
+      ],
+      "default": "related"
+    }
+  ]
+}
+{% endschema %}

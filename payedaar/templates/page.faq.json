@@ -1,0 +1,37 @@
+{
+  "sections": {
+    "main": {
+      "type": "page-faq",
+      "blocks": {
+        "q1": {
+          "type": "item",
+          "settings": {
+            "question": "Do you offer Cash on Delivery?",
+            "answer": "<p>Yes — Cash on Delivery is available across Pakistan on eligible orders.</p>"
+          }
+        },
+        "q2": {
+          "type": "item",
+          "settings": {
+            "question": "How long does delivery take?",
+            "answer": "<p>Most orders arrive within a few business days depending on your city.</p>"
+          }
+        },
+        "q3": {
+          "type": "item",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>Easy returns within the stated window. See Shipping & Returns for full details.</p>"
+          }
+        }
+      },
+      "block_order": ["q1", "q2", "q3"],
+      "settings": {
+        "heading": "Frequently asked questions",
+        "subheading": "COD, delivery, returns — answered simply",
+        "open_first": true
+      }
+    }
+  },
+  "order": ["main"]
+}

@@ -1,0 +1,88 @@
+{%- comment -%}
+  Option-based variant picker (buttons) + master select for form id.
+{%- endcomment -%}
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+-%}
+
+{%- unless product.has_only_default_variant -%}
+  <variant-selects
+    class="variant-selects"
+    data-section="{{ section_id }}"
+    data-url="{{ product.url }}"
+  >
+    {%- for option in product.options_with_values -%}
+      <fieldset class="variant-selects__fieldset">
+        <legend class="variant-selects__legend">
+          {{ option.name }}:
+          <span data-selected-value>{{ option.selected_value }}</span>
+        </legend>
+        <div class="variant-selects__values">
+          {%- for value in option.values -%}
+            {%- liquid
+              assign option_disabled = true
+              for variant in product.variants
+                if variant.available
+                  case option.position
+                    when 1
+                      if variant.option1 == value
+                        assign option_disabled = false
+                      endif
+                    when 2
+                      if variant.option2 == value
+                        assign option_disabled = false
+                      endif
+                    when 3
+                      if variant.option3 == value
+                        assign option_disabled = false
+                      endif
+                  endcase
+                endif
+              endfor
+            -%}
+            <input
+              type="radio"
+              id="Option-{{ section_id }}-{{ forloop.parentloop.index }}-{{ forloop.index }}"
+              name="options-{{ section_id }}-{{ option.position }}"
+              value="{{ value | escape }}"
+              class="visually-hidden"
+              {% if option.selected_value == value %}checked{% endif %}
+              data-option-position="{{ option.position }}"
+              data-unavailable="{% if option_disabled %}true{% else %}false{% endif %}"
+              {% if option_disabled %}disabled{% endif %}
+            >
+            <label
+              class="variant-selects__swatch{% if option_disabled %} is-unavailable{% endif %}"
+              for="Option-{{ section_id }}-{{ forloop.parentloop.index }}-{{ forloop.index }}"
+              aria-disabled="{% if option_disabled %}true{% else %}false{% endif %}"
+            >
+              {{ value }}
+            </label>
+          {%- endfor -%}
+        </div>
+      </fieldset>
+    {%- endfor -%}
+  </variant-selects>
+{%- endunless -%}
+
+<select
+  name="id"
+  id="Variant-{{ section_id }}"
+  class="visually-hidden"
+  data-product-variant-select
+  aria-label="{{ 'products.variant' | t }}"
+>
+  {%- for variant in product.variants -%}
+    <option
+      value="{{ variant.id }}"
+      {% if variant.id == current_variant.id %}selected{% endif %}
+      {% unless variant.available %}disabled{% endunless %}
+      data-available="{% if variant.available %}true{% else %}false{% endif %}"
+      data-sku="{{ variant.sku | escape }}"
+      {% if variant.featured_media %}data-media-id="{{ variant.featured_media.id }}"{% endif %}
+    >
+      {{ variant.title }}
+    </option>
+  {%- endfor -%}
+</select>

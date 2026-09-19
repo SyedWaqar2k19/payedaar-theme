@@ -1,0 +1,80 @@
+{%- comment -%}
+  Payedaar brand logo — theme setting first, then bundled high-res assets.
+  Usage:
+    {% render 'brand-logo', class: 'header-logo', width: 280, loading: 'eager', variant: 'default' %}
+  variant: default | dark
+{%- endcomment -%}
+
+{%- liquid
+  assign logo_class = class | default: 'brand-logo'
+  assign logo_width = width | default: 320
+  assign logo_loading = loading | default: 'lazy'
+  assign logo_variant = variant | default: 'default'
+  assign logo_alt = alt | default: settings.brand_name | default: shop.name
+  assign fetch_priority = fetchpriority | default: blank
+  comment
+    Master asset is 1600×551 (aspect ≈ 2.904).
+  endcomment
+  assign logo_height = logo_width | times: 551 | divided_by: 1600
+  assign logo_sizes = sizes | default: '(max-width: 749px) var(--logo-width-mobile), var(--logo-width)'
+-%}
+
+{%- if settings.logo != blank -%}
+  {%- liquid
+    assign logo_widths = widths | default: '160, 240, 320, 480, 640, 800'
+  -%}
+  {%- if fetch_priority != blank -%}
+    {{
+      settings.logo
+      | image_url: width: logo_width
+      | image_tag:
+        class: logo_class,
+        widths: logo_widths,
+        sizes: logo_sizes,
+        alt: logo_alt,
+        loading: logo_loading,
+        fetchpriority: fetch_priority,
+        decoding: 'async'
+    }}
+  {%- else -%}
+    {{
+      settings.logo
+      | image_url: width: logo_width
+      | image_tag:
+        class: logo_class,
+        widths: logo_widths,
+        sizes: logo_sizes,
+        alt: logo_alt,
+        loading: logo_loading,
+        decoding: 'async'
+    }}
+  {%- endif -%}
+{%- else -%}
+  {%- if logo_variant == 'dark' -%}
+    <img
+      class="{{ logo_class }}"
+      src="{{ 'logo-payedaar-on-dark-800.png' | asset_url }}"
+      srcset="{{ 'logo-payedaar-on-dark-800.png' | asset_url }} 800w, {{ 'logo-payedaar-on-dark.png' | asset_url }} 1600w"
+      sizes="{{ logo_sizes }}"
+      alt="{{ logo_alt | escape }}"
+      width="{{ logo_width }}"
+      height="{{ logo_height }}"
+      loading="{{ logo_loading }}"
+      decoding="async"
+      {% if fetch_priority != blank %}fetchpriority="{{ fetch_priority }}"{% endif %}
+    >
+  {%- else -%}
+    <img
+      class="{{ logo_class }}"
+      src="{{ 'logo-payedaar-800.png' | asset_url }}"
+      srcset="{{ 'logo-payedaar-800.png' | asset_url }} 800w, {{ 'logo-payedaar.png' | asset_url }} 1600w"
+      sizes="{{ logo_sizes }}"
+      alt="{{ logo_alt | escape }}"
+      width="{{ logo_width }}"
+      height="{{ logo_height }}"
+      loading="{{ logo_loading }}"
+      decoding="async"
+      {% if fetch_priority != blank %}fetchpriority="{{ fetch_priority }}"{% endif %}
+    >
+  {%- endif -%}
+{%- endif -%}

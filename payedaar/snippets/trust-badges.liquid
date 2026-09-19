@@ -1,0 +1,31 @@
+{%- comment -%}
+  COD / delivery / returns trust row.
+  Usage: {% render 'trust-badges' %}
+         {% render 'trust-badges', compact: true %}
+{%- endcomment -%}
+
+<ul class="trust-badges{% if compact %} trust-badges--compact{% endif %} list-unstyled" role="list">
+  {%- if settings.enable_cod_messaging -%}
+    <li class="trust-badges__item">
+      <span class="icon-circle" aria-hidden="true">{% render 'icon', name: 'shield', size: 18 %}</span>
+      <span>{{ settings.trust_cod }}</span>
+    </li>
+  {%- endif -%}
+  {%- unless compact -%}
+    <li class="trust-badges__item">
+      <span class="icon-circle" aria-hidden="true">{% render 'icon', name: 'truck', size: 18 %}</span>
+      <span>{{ settings.trust_delivery }}</span>
+    </li>
+    <li class="trust-badges__item">
+      <span class="icon-circle" aria-hidden="true">{% render 'icon', name: 'return', size: 18 %}</span>
+      <span>{{ settings.trust_returns }}</span>
+    </li>
+  {%- else -%}
+    {%- unless settings.enable_cod_messaging -%}
+      <li class="trust-badges__item">
+        <span class="icon-circle" aria-hidden="true">{% render 'icon', name: 'truck', size: 18 %}</span>
+        <span>{{ settings.trust_delivery }}</span>
+      </li>
+    {%- endunless -%}
+  {%- endunless -%}
+</ul>

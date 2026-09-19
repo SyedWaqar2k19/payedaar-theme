@@ -1,0 +1,12 @@
+{
+  "sections": {
+    "main": {
+      "type": "page-contact",
+      "settings": {
+        "heading": "Contact us",
+        "subheading": "Questions about COD, delivery, or your order? We’re here."
+      }
+    }
+  },
+  "order": ["main"]
+}

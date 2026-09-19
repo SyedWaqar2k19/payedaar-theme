@@ -1,0 +1,62 @@
+{%- comment -%}
+  Product badges — priority: sold out → custom label → sale % → tag-based.
+  Usage: {% render 'product-badge', product: product %}
+{%- endcomment -%}
+
+{%- liquid
+  assign badge_product = product
+  assign first_variant = badge_product.selected_or_first_available_variant
+  assign compare_at = badge_product.compare_at_price
+  assign price = badge_product.price
+  if first_variant
+    assign compare_at = first_variant.compare_at_price | default: badge_product.compare_at_price
+    assign price = first_variant.price | default: badge_product.price
+  endif
+
+  assign show_sold_out = false
+  if badge_product.available == false
+    assign show_sold_out = true
+  endif
+
+  assign custom_label = badge_product.metafields.custom.badge_label
+  assign is_hot = false
+  if badge_product.metafields.custom.is_hot_deal == true or badge_product.tags contains 'hot-deal'
+    assign is_hot = true
+  endif
+  assign is_best = false
+  if badge_product.tags contains 'best-seller'
+    assign is_best = true
+  endif
+  assign is_limited = false
+  if badge_product.tags contains 'limited'
+    assign is_limited = true
+  endif
+  assign is_new = false
+  if badge_product.tags contains 'new'
+    assign is_new = true
+  endif
+
+  assign on_sale = false
+  assign save_pct = 0
+  if compare_at != blank and compare_at > price and price > 0
+    assign on_sale = true
+    assign save_amount = compare_at | minus: price
+    assign save_pct = save_amount | times: 100.0 | divided_by: compare_at | round
+  endif
+-%}
+
+{%- if show_sold_out -%}
+  <span class="badge badge--sold-out">{{ 'products.sold_out' | t }}</span>
+{%- elsif custom_label != blank -%}
+  <span class="badge badge--hot">{{ custom_label }}</span>
+{%- elsif on_sale and save_pct > 0 -%}
+  <span class="badge badge--sale" aria-label="{{ 'products.price.save_percent' | t: percent: save_pct }}">-{{ save_pct }}%</span>
+{%- elsif is_hot -%}
+  <span class="badge badge--hot">{{ 'products.badge.hot_deal' | t }}</span>
+{%- elsif is_best -%}
+  <span class="badge badge--best">{{ 'products.badge.best_seller' | t }}</span>
+{%- elsif is_limited -%}
+  <span class="badge badge--limited">{{ 'products.badge.limited' | t }}</span>
+{%- elsif is_new -%}
+  <span class="badge badge--new">{{ 'products.badge.new' | t }}</span>
+{%- endif -%}

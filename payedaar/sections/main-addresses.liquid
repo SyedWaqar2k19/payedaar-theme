@@ -1,0 +1,146 @@
+<section class="section section-customer" data-section-id="{{ section.id }}">
+  <div class="page-width">
+    <header class="page-header customer-account-header">
+      <h1 class="page-header__title">{{ 'customer.addresses.title' | t }}</h1>
+      <a class="button button--secondary button--sm" href="{{ routes.account_url }}">{{ 'customer.account.return' | t }}</a>
+    </header>
+
+    <div class="customer-addresses-grid">
+      {%- for address in customer.addresses -%}
+        <article class="card contact-card">
+          {%- if address == customer.default_address -%}
+            <p class="badge badge--soft-sale">{{ 'customer.addresses.default' | t }}</p>
+          {%- endif -%}
+          {{ address | format_address }}
+          <div class="customer-card__links mt-3">
+            <button type="button" class="button button--secondary button--sm" data-address-edit="{{ address.id }}">
+              {{ 'customer.addresses.edit' | t }}
+            </button>
+            {% form 'customer_address', address %}
+              <input type="hidden" name="_method" value="delete">
+              <button
+                type="submit"
+                class="button button--secondary button--sm"
+                onclick="return confirm({{ 'customer.addresses.delete_confirm' | t | json }});"
+              >
+                {{ 'customer.addresses.delete' | t }}
+              </button>
+            {% endform %}
+          </div>
+
+          <div class="customer-address-form" id="EditAddress-{{ address.id }}" hidden>
+            {% form 'customer_address', address %}
+              <div class="field">
+                <label class="field__label" for="AddressFirstName_{{ form.id }}">{{ 'customer.addresses.first_name' | t }}</label>
+                <input class="input" type="text" id="AddressFirstName_{{ form.id }}" name="address[first_name]" value="{{ form.first_name }}" autocomplete="given-name">
+              </div>
+              <div class="field">
+                <label class="field__label" for="AddressLastName_{{ form.id }}">{{ 'customer.addresses.last_name' | t }}</label>
+                <input class="input" type="text" id="AddressLastName_{{ form.id }}" name="address[last_name]" value="{{ form.last_name }}" autocomplete="family-name">
+              </div>
+              <div class="field">
+                <label class="field__label" for="AddressAddress1_{{ form.id }}">{{ 'customer.addresses.address1' | t }}</label>
+                <input class="input" type="text" id="AddressAddress1_{{ form.id }}" name="address[address1]" value="{{ form.address1 }}" autocomplete="address-line1">
+              </div>
+              <div class="field">
+                <label class="field__label" for="AddressCity_{{ form.id }}">{{ 'customer.addresses.city' | t }}</label>
+                <input class="input" type="text" id="AddressCity_{{ form.id }}" name="address[city]" value="{{ form.city }}" autocomplete="address-level2">
+              </div>
+              <div class="field">
+                <label class="field__label" for="AddressProvince_{{ form.id }}">Province / region</label>
+                <input class="input" type="text" id="AddressProvince_{{ form.id }}" name="address[province]" value="{{ form.province }}" autocomplete="address-level1">
+              </div>
+              <div class="field">
+                <label class="field__label" for="AddressCountry_{{ form.id }}">Country</label>
+                <select class="input" id="AddressCountry_{{ form.id }}" name="address[country]" data-address-country data-default="{{ form.country | default: 'Pakistan' | escape }}" autocomplete="country">
+                  {{ all_country_option_tags }}
+                </select>
+              </div>
+              <div class="field">
+                <label class="field__label" for="AddressZip_{{ form.id }}">{{ 'customer.addresses.zip' | t }}</label>
+                <input class="input" type="text" id="AddressZip_{{ form.id }}" name="address[zip]" value="{{ form.zip }}" autocomplete="postal-code">
+              </div>
+              <div class="field">
+                <label class="field__label" for="AddressPhone_{{ form.id }}">{{ 'customer.addresses.phone' | t }}</label>
+                <input class="input" type="tel" id="AddressPhone_{{ form.id }}" name="address[phone]" value="{{ form.phone }}" autocomplete="tel">
+              </div>
+              <div class="field">
+                <label class="facets__label" for="AddressDefault_{{ form.id }}">
+                  <input type="checkbox" id="AddressDefault_{{ form.id }}" name="address[default]" {% if address == customer.default_address %}checked{% endif %}>
+                  {{ 'customer.addresses.set_default' | t }}
+                </label>
+              </div>
+              <button type="submit" class="button button--primary">{{ 'customer.addresses.update' | t }}</button>
+            {% endform %}
+          </div>
+        </article>
+      {%- else -%}
+        <p class="text-muted">{{ 'customer.addresses.empty' | t }}</p>
+      {%- endfor -%}
+    </div>
+
+    <div class="card contact-card mt-3">
+      <h2 class="contact-card__heading">{{ 'customer.addresses.add_new' | t }}</h2>
+      {% form 'customer_address', customer.new_address %}
+        <div class="field">
+          <label class="field__label" for="AddressFirstNameNew">{{ 'customer.addresses.first_name' | t }}</label>
+          <input class="input" type="text" id="AddressFirstNameNew" name="address[first_name]" autocomplete="given-name">
+        </div>
+        <div class="field">
+          <label class="field__label" for="AddressLastNameNew">{{ 'customer.addresses.last_name' | t }}</label>
+          <input class="input" type="text" id="AddressLastNameNew" name="address[last_name]" autocomplete="family-name">
+        </div>
+        <div class="field">
+          <label class="field__label" for="AddressAddress1New">{{ 'customer.addresses.address1' | t }}</label>
+          <input class="input" type="text" id="AddressAddress1New" name="address[address1]" autocomplete="address-line1">
+        </div>
+        <div class="field">
+          <label class="field__label" for="AddressCityNew">{{ 'customer.addresses.city' | t }}</label>
+          <input class="input" type="text" id="AddressCityNew" name="address[city]" autocomplete="address-level2">
+        </div>
+        <div class="field">
+          <label class="field__label" for="AddressProvinceNew">Province / region</label>
+          <input class="input" type="text" id="AddressProvinceNew" name="address[province]" autocomplete="address-level1">
+        </div>
+        <div class="field">
+          <label class="field__label" for="AddressCountryNew">Country</label>
+          <select class="input" id="AddressCountryNew" name="address[country]" data-address-country data-default="Pakistan" autocomplete="country">
+            {{ all_country_option_tags }}
+          </select>
+        </div>
+        <div class="field">
+          <label class="field__label" for="AddressZipNew">{{ 'customer.addresses.zip' | t }}</label>
+          <input class="input" type="text" id="AddressZipNew" name="address[zip]" autocomplete="postal-code">
+        </div>
+        <div class="field">
+          <label class="field__label" for="AddressPhoneNew">{{ 'customer.addresses.phone' | t }}</label>
+          <input class="input" type="tel" id="AddressPhoneNew" name="address[phone]" autocomplete="tel">
+        </div>
+        <button type="submit" class="button button--primary">{{ 'customer.addresses.add' | t }}</button>
+      {% endform %}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('[data-address-edit]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const panel = document.getElementById('EditAddress-' + btn.dataset.addressEdit);
+      if (panel) panel.toggleAttribute('hidden');
+    });
+  });
+  document.querySelectorAll('[data-address-country]').forEach((select) => {
+    const expected = select.dataset.default;
+    const option = Array.from(select.options).find((item) => item.value === expected || item.text === expected);
+    if (option) option.selected = true;
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Addresses",
+  "tag": "section",
+  "class": "section-main-addresses",
+  "settings": []
+}
+{% endschema %}

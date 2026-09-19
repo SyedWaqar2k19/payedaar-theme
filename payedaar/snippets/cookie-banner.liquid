@@ -1,0 +1,36 @@
+{%- if settings.enable_cookie_banner -%}
+  {%- liquid
+    assign cookie_privacy = settings.privacy_page
+    if cookie_privacy == blank and shop.privacy_policy != blank
+      assign cookie_privacy = shop.privacy_policy.url
+    endif
+  -%}
+  <div
+    class="cookie-banner"
+    data-cookie-banner
+    hidden
+    role="dialog"
+    aria-labelledby="CookieBannerTitle"
+    aria-live="polite"
+  >
+    <div class="cookie-banner__inner page-width">
+      <div class="cookie-banner__copy">
+        <p id="CookieBannerTitle" class="cookie-banner__title">{{ 'cookie.title' | t }}</p>
+        <p class="cookie-banner__text">
+          {{ 'cookie.message' | t }}
+          {%- if cookie_privacy != blank -%}
+            <a href="{{ cookie_privacy }}">{{ 'cookie.privacy_link' | t }}</a>
+          {%- endif -%}
+        </p>
+      </div>
+      <div class="cookie-banner__actions">
+        <button type="button" class="button button--secondary button--sm" data-cookie-dismiss>
+          {{ 'cookie.dismiss' | t }}
+        </button>
+        <button type="button" class="button button--primary button--sm" data-cookie-accept>
+          {{ 'cookie.accept' | t }}
+        </button>
+      </div>
+    </div>
+  </div>
+{%- endif -%}

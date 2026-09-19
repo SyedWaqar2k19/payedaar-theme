@@ -1,0 +1,101 @@
+<section
+  class="section section-newsletter"
+  data-section-id="{{ section.id }}"
+  data-section-type="newsletter"
+  data-reveal
+>
+  <div class="page-width">
+    <div class="newsletter">
+      <div class="newsletter__copy">
+        {% render 'section-header',
+          heading: section.settings.heading,
+          subheading: section.settings.subheading
+        %}
+      </div>
+
+      <div class="newsletter__form-wrap">
+        {%- form 'customer', class: 'newsletter__form' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          <div class="newsletter__fields">
+            <label class="visually-hidden" for="NewsletterEmail-{{ section.id }}">
+              {{ 'sections.newsletter.email_label' | t }}
+            </label>
+            <input
+              id="NewsletterEmail-{{ section.id }}"
+              class="input newsletter__input"
+              type="email"
+              name="contact[email]"
+              value="{{ form.email }}"
+              placeholder="{{ section.settings.placeholder | default: 'Enter your email' }}"
+              autocomplete="email"
+              required
+              {% if form.errors %}aria-invalid="true"{% endif %}
+            >
+            <button type="submit" class="button button--primary">
+              {{ section.settings.button_label | default: 'Subscribe' }}
+            </button>
+          </div>
+
+          {%- if form.errors -%}
+            <div class="newsletter__message newsletter__message--error" role="alert">
+              {{ form.errors | default_errors }}
+            </div>
+          {%- endif -%}
+          {%- if form.posted_successfully? -%}
+            <p class="newsletter__message newsletter__message--success" role="status">
+              {{ 'sections.newsletter.success' | t }}
+            </p>
+          {%- endif -%}
+        {%- endform -%}
+        {%- if section.settings.disclaimer != blank -%}
+          <p class="newsletter__disclaimer text-muted">{{ section.settings.disclaimer }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "tag": "section",
+  "class": "section-newsletter",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Get deals in your inbox"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "New drops, flash deals, and COD-friendly offers — no spam."
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Email placeholder",
+      "default": "Enter your email"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Subscribe"
+    },
+    {
+      "type": "text",
+      "id": "disclaimer",
+      "label": "Disclaimer",
+      "default": "Unsubscribe anytime. We respect your inbox."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter"
+    }
+  ]
+}
+{% endschema %}

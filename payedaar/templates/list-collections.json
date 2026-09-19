@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-list-collections",
+      "settings": {
+        "subheading": "Browse every category — deals across Pakistan",
+        "display_type": "all",
+        "show_product_count": true,
+        "columns": 3
+      }
+    }
+  },
+  "order": ["main"]
+}

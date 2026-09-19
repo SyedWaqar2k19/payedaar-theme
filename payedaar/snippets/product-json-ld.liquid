@@ -1,0 +1,78 @@
+{%- comment -%}
+  Product JSON-LD (Product + Offer) — Phase 8 hardened.
+  Usage: {% render 'product-json-ld', product: product %}
+{%- endcomment -%}
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign availability = 'https://schema.org/OutOfStock'
+  if current_variant.available
+    assign availability = 'https://schema.org/InStock'
+  endif
+-%}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "url": {{ request.origin | append: product.url | json }},
+  {% if product.featured_media -%}
+  "image": [
+    {%- assign img_wrote = false -%}
+    {%- for media in product.media limit: 8 -%}
+      {%- if media.media_type == 'image' -%}
+        {%- if img_wrote -%},{%- endif -%}
+        {{ media | image_url: width: 1200 | prepend: 'https:' | json }}
+        {%- assign img_wrote = true -%}
+      {%- endif -%}
+    {%- endfor -%}
+    {%- unless img_wrote -%}
+      {{ product.featured_media | image_url: width: 1200 | prepend: 'https:' | json }}
+    {%- endunless -%}
+  ],
+  {% endif -%}
+  "description": {{ product.description | strip_html | truncate: 5000 | json }},
+  {% if product.vendor != blank -%}
+  "brand": {
+    "@type": "Brand",
+    "name": {{ product.vendor | json }}
+  },
+  {% endif -%}
+  {% if current_variant.sku != blank -%}
+  "sku": {{ current_variant.sku | json }},
+  {% endif -%}
+  {% if current_variant.barcode != blank -%}
+  "gtin": {{ current_variant.barcode | json }},
+  {% endif -%}
+  {% if product.variants.size > 1 -%}
+  "offers": {
+    "@type": "AggregateOffer",
+    "url": {{ request.origin | append: product.url | json }},
+    "priceCurrency": {{ cart.currency.iso_code | default: shop.currency | json }},
+    "lowPrice": {{ product.price_min | divided_by: 100.0 | json }},
+    "highPrice": {{ product.price_max | divided_by: 100.0 | json }},
+    "offerCount": {{ product.variants.size | json }},
+    "availability": {{ availability | json }},
+    "itemCondition": "https://schema.org/NewCondition",
+    "seller": {
+      "@type": "Organization",
+      "name": {{ shop.name | json }}
+    }
+  }
+  {% else -%}
+  "offers": {
+    "@type": "Offer",
+    "url": {{ request.origin | append: current_variant.url | json }},
+    "priceCurrency": {{ cart.currency.iso_code | default: shop.currency | json }},
+    "price": {{ current_variant.price | divided_by: 100.0 | json }},
+    "availability": {{ availability | json }},
+    "itemCondition": "https://schema.org/NewCondition",
+    "seller": {
+      "@type": "Organization",
+      "name": {{ shop.name | json }}
+    }
+  }
+  {% endif -%}
+}
+</script>

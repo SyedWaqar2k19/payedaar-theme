@@ -1,0 +1,40 @@
+<section class="section section-shipping" data-section-id="{{ section.id }}">
+  <div class="page-width page-width--narrow">
+    <header class="page-header">
+      <h1 class="page-header__title">{{ page.title | default: section.settings.heading }}</h1>
+    </header>
+
+    <div class="mb-3">
+      {% render 'trust-badges' %}
+    </div>
+
+    <div class="rte page-content card contact-card">
+      {%- if page.content != blank -%}
+        {{ page.content }}
+      {%- else -%}
+        <h2>{{ settings.trust_delivery }}</h2>
+        <p>{{ 'shipping.default_delivery' | t }}</p>
+        <h2>{{ settings.trust_cod }}</h2>
+        <p>{{ 'shipping.default_cod' | t }}</p>
+        <h2>{{ settings.trust_returns }}</h2>
+        <p>{{ 'shipping.default_returns' | t }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Shipping & returns",
+  "tag": "section",
+  "class": "section-shipping-returns",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Fallback heading",
+      "default": "Shipping & returns"
+    }
+  ]
+}
+{% endschema %}

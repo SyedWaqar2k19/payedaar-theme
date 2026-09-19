@@ -1,0 +1,134 @@
+{%- comment -%}
+  Payedaar design tokens — Phase 1.
+  Theme Editor color/type/layout settings map here so CTAs update live (P1-AC1).
+{%- endcomment -%}
+
+{%- liquid
+  assign font_source = settings.type_font_source | default: 'self'
+  if font_source == 'shopify'
+    assign body_font = settings.type_font_shopify
+    assign body_font_500 = body_font | font_modify: 'weight', '500'
+    assign body_font_600 = body_font | font_modify: 'weight', '600'
+    assign body_font_700 = body_font | font_modify: 'weight', '700'
+    assign body_font_800 = body_font | font_modify: 'weight', '800'
+    assign heading_font = body_font_700 | default: body_font
+  endif
+
+  assign spacing = settings.section_spacing | default: 'default'
+  case spacing
+    when 'compact'
+      assign section_pad_mobile = '2rem'
+      assign section_pad_desktop = '3rem'
+    when 'relaxed'
+      assign section_pad_mobile = '2.75rem'
+      assign section_pad_desktop = '4.5rem'
+    else
+      assign section_pad_mobile = '2.25rem'
+      assign section_pad_desktop = '3.5rem'
+  endcase
+
+  if settings.enable_card_shadow
+    assign card_shadow = '0 4px 16px rgba(31, 36, 33, 0.06)'
+  else
+    assign card_shadow = 'none'
+  endif
+
+  assign body_lh_pct = settings.type_body_line_height | default: 150
+  assign body_lh = body_lh_pct | times: 0.01
+-%}
+
+{%- if font_source == 'shopify' -%}
+  {% style %}
+    {{ body_font | font_face: font_display: 'swap' }}
+    {%- if body_font_500 -%}{{ body_font_500 | font_face: font_display: 'swap' }}{%- endif -%}
+    {%- if body_font_600 -%}{{ body_font_600 | font_face: font_display: 'swap' }}{%- endif -%}
+    {%- if body_font_700 -%}{{ body_font_700 | font_face: font_display: 'swap' }}{%- endif -%}
+    {%- if body_font_800 -%}{{ body_font_800 | font_face: font_display: 'swap' }}{%- endif -%}
+  {% endstyle %}
+{%- endif -%}
+
+{% style %}
+  :root {
+    /* Colors */
+    --color-primary: {{ settings.color_primary }};
+    --color-primary-dark: {{ settings.color_primary_dark }};
+    --color-secondary: {{ settings.color_secondary }};
+    --color-highlight: {{ settings.color_highlight }};
+    --color-background: {{ settings.color_background }};
+    --color-surface: {{ settings.color_surface }};
+    --color-text: {{ settings.color_text }};
+    --color-text-muted: {{ settings.color_text_muted }};
+    --color-border: {{ settings.color_border }};
+    --color-sale: {{ settings.color_sale }};
+    --color-offer: {{ settings.color_offer }};
+    --color-cart-badge: {{ settings.color_cart_badge }};
+    --color-success: {{ settings.color_secondary }};
+    --color-error: {{ settings.color_sale }};
+    --color-button-hero: {{ settings.color_button_hero }};
+    --color-button-hero-text: {{ settings.color_button_hero_text }};
+    --color-focus: {{ settings.color_secondary }};
+
+    /* Soft tints */
+    --color-sale-soft: {{ settings.color_sale | color_modify: 'alpha', 0.12 }};
+    --color-offer-soft: {{ settings.color_offer | color_modify: 'alpha', 0.16 }};
+    --color-secondary-soft: {{ settings.color_secondary | color_modify: 'alpha', 0.12 }};
+    --color-primary-soft: {{ settings.color_primary | color_modify: 'alpha', 0.12 }};
+
+    /* Gradients */
+    --hero-gradient: linear-gradient(135deg, {{ settings.color_highlight }} 0%, {{ settings.color_primary }} 52%, {{ settings.color_primary_dark }} 100%);
+
+    /* Typography */
+    {%- if font_source == 'shopify' -%}
+      --font-body-family: {{ body_font.family }}, {{ body_font.fallback_families }};
+      --font-heading-family: {{ heading_font.family }}, {{ heading_font.fallback_families }};
+    {%- else -%}
+      --font-body-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --font-heading-family: var(--font-body-family);
+    {%- endif -%}
+    --font-body-size: {{ settings.type_body_size | default: 16 }}px;
+    --font-body-weight: {{ settings.type_body_weight | default: 400 }};
+    --font-body-line-height: {{ body_lh }};
+    --font-heading-weight: {{ settings.type_heading_weight | default: 700 }};
+    --font-price-size: 1.125rem;
+    --font-price-size-lg: 1.25rem;
+    --font-section-heading: clamp(1.375rem, 2.5vw, 2rem);
+    --font-hero-heading: clamp(1.75rem, 5vw, 3rem);
+
+    /* Layout */
+    --page-width: {{ settings.page_width | default: 1200 }}px;
+    --page-gutter: {{ settings.page_gutter | default: 16 }}px;
+    --content-narrow: 720px;
+    --header-height-mobile: 116px;
+    --mobile-nav-height: 68px;
+    --sticky-atc-height: 76px;
+    --section-pad-mobile: {{ section_pad_mobile }};
+    --section-pad-desktop: {{ section_pad_desktop }};
+    --logo-width: {{ settings.logo_width | default: 160 }}px;
+    --logo-width-mobile: {{ settings.logo_width_mobile | default: 130 }}px;
+
+    /* Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-pill: 999px;
+
+    /* Elevation & motion */
+    --shadow-card: {{ card_shadow }};
+    --shadow-elevated: 0 12px 32px rgba(26, 28, 32, 0.1);
+    --shadow-hover: 0 18px 44px rgba(26, 28, 32, 0.13);
+    --shadow-bloom: 0 14px 42px rgba(241, 122, 1, 0.18);
+    --tap-min: 44px;
+    --transition-fast: 160ms cubic-bezier(0.22, 1, 0.36, 1);
+    --transition-base: 280ms cubic-bezier(0.22, 1, 0.36, 1);
+    --transition-spring: 420ms cubic-bezier(0.34, 1.4, 0.64, 1);
+    --header-z: 100;
+    --drawer-z: 200;
+  }
+
+  @media (min-width: 750px) {
+    :root {
+      --page-gutter: max({{ settings.page_gutter | default: 16 }}px, 24px);
+    }
+  }
+{% endstyle %}

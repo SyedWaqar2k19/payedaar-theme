@@ -1,0 +1,166 @@
+<section
+  class="section section--flush section-coupon"
+  data-section-id="{{ section.id }}"
+  data-section-type="coupon-strip"
+  data-reveal
+>
+  <div
+    class="coupon-strip"
+    style="
+      {% if section.settings.background != blank %}--coupon-bg: {{ section.settings.background }};{% endif %}
+      {% if section.settings.text_color != blank %}--coupon-text: {{ section.settings.text_color }};{% endif %}
+    "
+  >
+    <div class="page-width coupon-strip__inner">
+      {%- if section.settings.mode == 'marquee' and section.blocks.size > 0 -%}
+        <div class="coupon-strip__marquee" data-marquee {% if section.settings.pause_on_hover %}data-pause-hover{% endif %}>
+          <div class="coupon-strip__marquee-track">
+            {%- for i in (1..2) -%}
+              <div class="coupon-strip__marquee-group" {% if i == 2 %}aria-hidden="true"{% endif %}>
+                {%- for block in section.blocks -%}
+                  <span class="coupon-strip__marquee-item" {{ block.shopify_attributes }}>
+                    {{ block.settings.text }}
+                    {%- unless forloop.last -%}
+                      <span class="coupon-strip__sep" aria-hidden="true">•</span>
+                    {%- endunless -%}
+                  </span>
+                {%- endfor -%}
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+      {%- else -%}
+        <div class="coupon-strip__static">
+          {%- if section.settings.heading != blank -%}
+            <p class="coupon-strip__heading">{{ section.settings.heading }}</p>
+          {%- endif -%}
+          {%- if section.settings.code != blank -%}
+            <button
+              type="button"
+              class="coupon-strip__code"
+              data-copy-code="{{ section.settings.code | escape }}"
+              aria-label="{{ 'sections.coupon_strip.copy_code' | t: code: section.settings.code }}"
+            >
+              <span data-copy-label>{{ section.settings.code }}</span>
+            </button>
+          {%- endif -%}
+          {%- if section.settings.button_label != blank -%}
+            <a
+              class="button button--sm button--hero"
+              href="{{ section.settings.button_link | default: routes.collections_url }}"
+            >
+              {{ section.settings.button_label }}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Coupon / marquee",
+  "tag": "section",
+  "class": "section-coupon-strip",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "select",
+      "id": "mode",
+      "label": "Mode",
+      "options": [
+        { "value": "coupon", "label": "Coupon bar" },
+        { "value": "marquee", "label": "Marquee" }
+      ],
+      "default": "coupon"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Coupon message",
+      "default": "Use code for extra savings at checkout"
+    },
+    {
+      "type": "text",
+      "id": "code",
+      "label": "Coupon code",
+      "default": "PAYEDAAR10"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop Hot Deals"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background",
+      "default": "#1F2421"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause marquee on hover",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Marquee text",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Free delivery on qualifying orders • Cash on Delivery"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Coupon strip"
+    },
+    {
+      "name": "Marquee strip",
+      "settings": {
+        "mode": "marquee"
+      },
+      "blocks": [
+        {
+          "type": "text",
+          "settings": {
+            "text": "Free delivery on qualifying orders"
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Cash on Delivery across Pakistan"
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text": "Easy returns — shop with confidence"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

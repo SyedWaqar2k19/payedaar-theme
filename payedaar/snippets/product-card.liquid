@@ -1,0 +1,132 @@
+{%- comment -%}
+  Payedaar product card — Bold Deals (UI polish: 2nd-image hover, COD chip, ratings).
+  Usage: {% render 'product-card', product: product %}
+{%- endcomment -%}
+
+{%- liquid
+  assign card_product = product
+  assign variant = card_product.selected_or_first_available_variant
+  assign can_quick_add = false
+  if card_product.has_only_default_variant and variant.available
+    assign can_quick_add = true
+  endif
+  assign secondary_media = blank
+  assign show_cod = settings.enable_cod_messaging
+  if card_product.metafields.custom.cod_available != blank and card_product.metafields.custom.cod_available.value == false
+    assign show_cod = false
+  endif
+  if card_product.media.size > 1
+    for media in card_product.media
+      if media.media_type == 'image' and media.id != card_product.featured_media.id
+        assign secondary_media = media
+        break
+      endif
+    endfor
+  endif
+-%}
+
+<article class="card card--interactive product-card{% if secondary_media != blank %} product-card--has-secondary{% endif %}">
+  <div class="card__media-wrap">
+    <a class="card__media" href="{{ card_product.url }}" aria-label="{{ card_product.title | escape }}">
+      {%- capture badge_html -%}{% render 'product-badge', product: card_product %}{%- endcapture -%}
+      {%- if badge_html != blank -%}
+        <span class="card__badge">{{ badge_html }}</span>
+      {%- endif -%}
+      {%- if card_product.featured_media -%}
+        {{
+          card_product.featured_media
+          | image_url: width: 800
+          | image_tag:
+            loading: 'lazy',
+            decoding: 'async',
+            widths: '200, 300, 400, 600, 800',
+            sizes: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw',
+            alt: card_product.title,
+            class: 'card__media-img card__media-img--primary'
+        }}
+        {%- if secondary_media != blank -%}
+          {{
+            secondary_media
+            | image_url: width: 800
+            | image_tag:
+              loading: 'lazy',
+              decoding: 'async',
+              widths: '200, 300, 400, 600, 800',
+              sizes: '(min-width: 990px) 25vw, (min-width: 750px) 33vw, 50vw',
+              alt: card_product.title,
+              class: 'card__media-img card__media-img--secondary',
+              aria-hidden: 'true'
+          }}
+        {%- endif -%}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+      {%- endif -%}
+    </a>
+    {%- if settings.enable_wishlist -%}
+      <button
+        type="button"
+        class="product-card__wishlist"
+        data-wishlist-toggle
+        data-product-id="{{ card_product.id }}"
+        data-product-handle="{{ card_product.handle }}"
+        data-product-title="{{ card_product.title | escape }}"
+        data-product-url="{{ card_product.url }}"
+        data-product-image="{% if card_product.featured_media %}{{ card_product.featured_media | image_url: width: 400 }}{% endif %}"
+        data-product-price="{{ variant.price | money }}"
+        aria-label="{{ 'wishlist.add' | t }}"
+        aria-pressed="false"
+      >
+        {% render 'icon', name: 'heart', size: 18 %}
+      </button>
+    {%- endif -%}
+  </div>
+
+  <div class="card__body">
+    <h3 class="card__title line-clamp-2">
+      <a href="{{ card_product.url }}">{{ card_product.title }}</a>
+    </h3>
+
+    {%- if card_product.metafields.reviews.rating.value != blank -%}
+      {%- assign rating_value = card_product.metafields.reviews.rating.value -%}
+      <p class="product-card__rating" aria-label="{{ rating_value.rating }} / {{ rating_value.scale_max }}">
+        <span class="product-card__stars" aria-hidden="true">★</span>
+        <span>{{ rating_value.rating | round: 1 }}</span>
+        {%- if card_product.metafields.reviews.rating_count != blank -%}
+          <span class="product-card__rating-count">({{ card_product.metafields.reviews.rating_count }})</span>
+        {%- endif -%}
+      </p>
+    {%- endif -%}
+
+    {% render 'price', product: card_product %}
+
+    {%- if show_cod -%}
+      <span class="product-card__cod">{{ 'general.cod_available' | t }}</span>
+    {%- endif -%}
+
+    {%- if can_quick_add -%}
+      <product-form class="product-form product-form--card" data-product-form>
+        {%- form 'product', card_product -%}
+          <input type="hidden" name="id" value="{{ variant.id }}" data-product-variant-id>
+          <button
+            type="submit"
+            name="add"
+            class="button button--primary button--full"
+            data-add-to-cart
+            {% unless variant.available %}disabled{% endunless %}
+          >
+            <span data-add-to-cart-text>{{ 'products.add_to_cart' | t }}</span>
+            <span class="product-form__spinner" hidden aria-hidden="true"></span>
+          </button>
+        {%- endform -%}
+      </product-form>
+    {%- elsif card_product.available == false -%}
+      <button type="button" class="button button--primary button--full" disabled>
+        {{ 'products.sold_out' | t }}
+      </button>
+    {%- else -%}
+      <a class="button button--primary button--full" href="{{ card_product.url }}">
+        {{ 'products.view_product' | t }}
+      </a>
+    {%- endif -%}
+  </div>
+</article>

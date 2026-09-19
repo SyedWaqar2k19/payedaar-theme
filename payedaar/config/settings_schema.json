@@ -1,0 +1,549 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Payedaar",
+    "theme_version": "1.0.0",
+    "theme_author": "Payedaar",
+    "theme_support_email": "syedwaqar2k19@gmail.com",
+    "theme_documentation_url": "https://cwvavv-yb.myshopify.com"
+  },
+  {
+    "name": "Brand",
+    "settings": [
+      {
+        "type": "text",
+        "id": "brand_name",
+        "label": "Brand name",
+        "default": "payedaar"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo",
+        "info": "Optional. Theme ships with payedaar logo assets if empty."
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "min": 80,
+        "max": 220,
+        "step": 5,
+        "unit": "px",
+        "label": "Logo width (desktop)",
+        "default": 160
+      },
+      {
+        "type": "range",
+        "id": "logo_width_mobile",
+        "min": 60,
+        "max": 180,
+        "step": 5,
+        "unit": "px",
+        "label": "Logo width (mobile)",
+        "default": 130
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon",
+        "info": "Optional. Bundled favicon-payedaar.png is used if empty."
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Brand colors (Bold Deals)"
+      },
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Primary",
+        "default": "#F17A01"
+      },
+      {
+        "type": "color",
+        "id": "color_primary_dark",
+        "label": "Primary dark (hover)",
+        "default": "#D46600"
+      },
+      {
+        "type": "color",
+        "id": "color_secondary",
+        "label": "Secondary",
+        "default": "#176B5B"
+      },
+      {
+        "type": "color",
+        "id": "color_highlight",
+        "label": "Highlight",
+        "default": "#FFC107"
+      },
+      {
+        "type": "header",
+        "content": "Surfaces & text"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Page background",
+        "default": "#FFFDF9"
+      },
+      {
+        "type": "color",
+        "id": "color_surface",
+        "label": "Surface (cards, header)",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Text",
+        "default": "#1A1C20"
+      },
+      {
+        "type": "color",
+        "id": "color_text_muted",
+        "label": "Muted text",
+        "default": "#66736D"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Border",
+        "default": "#E8E4DE"
+      },
+      {
+        "type": "header",
+        "content": "Sale & badges"
+      },
+      {
+        "type": "color",
+        "id": "color_sale",
+        "label": "Sale / discount",
+        "default": "#E94F37"
+      },
+      {
+        "type": "color",
+        "id": "color_offer",
+        "label": "Offer badge",
+        "default": "#F59E0B"
+      },
+      {
+        "type": "color",
+        "id": "color_cart_badge",
+        "label": "Cart count badge",
+        "default": "#E94F37"
+      },
+      {
+        "type": "header",
+        "content": "Buttons"
+      },
+      {
+        "type": "color",
+        "id": "color_button_hero",
+        "label": "Hero CTA background",
+        "default": "#1A1C20"
+      },
+      {
+        "type": "color",
+        "id": "color_button_hero_text",
+        "label": "Hero CTA text",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "mobile_browser_color",
+        "label": "Mobile browser theme color",
+        "default": "#F17A01"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "select",
+        "id": "type_font_source",
+        "label": "Font source",
+        "options": [
+          { "value": "self", "label": "Plus Jakarta Sans (self-hosted)" },
+          { "value": "shopify", "label": "Shopify font" }
+        ],
+        "default": "self"
+      },
+      {
+        "type": "paragraph",
+        "content": "Self-hosted Plus Jakarta Sans is the Payedaar default (Bold Deals). Switch to Shopify font only if you need a different family."
+      },
+      {
+        "type": "font_picker",
+        "id": "type_font_shopify",
+        "label": "Shopify font",
+        "default": "assistant_n4"
+      },
+      {
+        "type": "header",
+        "content": "Sizes"
+      },
+      {
+        "type": "range",
+        "id": "type_body_size",
+        "min": 14,
+        "max": 18,
+        "step": 1,
+        "unit": "px",
+        "label": "Body font size",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "type_body_line_height",
+        "min": 130,
+        "max": 180,
+        "step": 5,
+        "unit": "%",
+        "label": "Body line height",
+        "default": 150
+      },
+      {
+        "type": "select",
+        "id": "type_body_weight",
+        "label": "Body weight",
+        "options": [
+          { "value": "400", "label": "400" },
+          { "value": "500", "label": "500" },
+          { "value": "600", "label": "600" }
+        ],
+        "default": "400"
+      },
+      {
+        "type": "select",
+        "id": "type_heading_weight",
+        "label": "Heading weight",
+        "options": [
+          { "value": "600", "label": "600" },
+          { "value": "700", "label": "700" },
+          { "value": "800", "label": "800" }
+        ],
+        "default": "700"
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "min": 1100,
+        "max": 1400,
+        "step": 10,
+        "unit": "px",
+        "label": "Page width",
+        "default": 1200
+      },
+      {
+        "type": "range",
+        "id": "page_gutter",
+        "min": 12,
+        "max": 32,
+        "step": 2,
+        "unit": "px",
+        "label": "Side gutter (mobile)",
+        "default": 16
+      },
+      {
+        "type": "select",
+        "id": "section_spacing",
+        "label": "Section spacing density",
+        "options": [
+          { "value": "compact", "label": "Compact" },
+          { "value": "default", "label": "Default" },
+          { "value": "relaxed", "label": "Relaxed" }
+        ],
+        "default": "default"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_card_shadow",
+        "label": "Enable soft card shadow",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Pakistan & trust",
+    "settings": [
+      {
+        "type": "text",
+        "id": "trust_delivery",
+        "label": "Free delivery text",
+        "default": "Free delivery over Rs. 2,999"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_cod_messaging",
+        "label": "Show Cash on Delivery messaging",
+        "default": true,
+        "info": "Turn OFF if COD is not enabled in Shopify Payments / checkout. Keeps storefront copy accurate (P9-AC4)."
+      },
+      {
+        "type": "text",
+        "id": "trust_cod",
+        "label": "Cash on delivery text",
+        "default": "Cash on Delivery — Pay at Your Door"
+      },
+      {
+        "type": "text",
+        "id": "trust_returns",
+        "label": "Returns text",
+        "default": "Easy return support"
+      },
+      {
+        "type": "text",
+        "id": "whatsapp_number",
+        "label": "WhatsApp number",
+        "info": "Digits only with country code, e.g. 923001234567. Leave blank until ready."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_whatsapp_float",
+        "label": "Show floating WhatsApp button",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "support_phone",
+        "label": "Support phone",
+        "info": "Tap-to-call number. Leave blank until ready."
+      },
+      {
+        "type": "number",
+        "id": "freeshipping_goal_amount",
+        "label": "Free shipping goal (PKR)",
+        "default": 2999,
+        "info": "Must match Admin shipping rules."
+      }
+    ]
+  },
+  {
+    "name": "Analytics",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_analytics_events",
+        "label": "Publish storefront analytics events",
+        "default": true,
+        "info": "Pushes add_to_cart, begin_checkout, search, page_view to dataLayer and Shopify.analytics. Configure GA4 / Meta / TikTok in Admin → Customer events."
+      },
+      {
+        "type": "paragraph",
+        "content": "Do not paste raw pixel snippets here. Use Shopify Customer events or official apps so consent and checkout events stay accurate."
+      }
+    ]
+  },
+  {
+    "name": "Search",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_predictive_search",
+        "label": "Enable predictive search",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "predictive_search_limit",
+        "min": 3,
+        "max": 10,
+        "step": 1,
+        "label": "Predictive results limit",
+        "default": 6
+      },
+      {
+        "type": "text",
+        "id": "search_placeholder",
+        "label": "Search placeholder",
+        "default": "Search products, brands…"
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "Facebook URL"
+      },
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram URL"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok URL"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube",
+        "label": "YouTube URL"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter",
+        "label": "X / Twitter URL"
+      }
+    ]
+  },
+  {
+    "name": "Popups & privacy",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_cookie_banner",
+        "label": "Show cookie consent banner",
+        "default": true
+      },
+      {
+        "type": "url",
+        "id": "privacy_page",
+        "label": "Privacy policy page",
+        "info": "Linked in the footer and cookie banner"
+      },
+      {
+        "type": "url",
+        "id": "terms_page",
+        "label": "Terms of service page",
+        "info": "Linked in the footer legal row"
+      },
+      {
+        "type": "header",
+        "content": "Promo popup"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_promo_popup",
+        "label": "Enable promo popup",
+        "default": false
+      },
+      {
+        "type": "image_picker",
+        "id": "popup_image",
+        "label": "Popup image"
+      },
+      {
+        "type": "text",
+        "id": "popup_heading",
+        "label": "Popup heading",
+        "default": "Welcome deal"
+      },
+      {
+        "type": "textarea",
+        "id": "popup_text",
+        "label": "Popup text",
+        "default": "Shop Hot Deals with Cash on Delivery across Pakistan."
+      },
+      {
+        "type": "text",
+        "id": "popup_button_label",
+        "label": "Popup button label",
+        "default": "Shop Hot Deals"
+      },
+      {
+        "type": "url",
+        "id": "popup_button_link",
+        "label": "Popup button link"
+      },
+      {
+        "type": "header",
+        "content": "Newsletter popup"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_newsletter_popup",
+        "label": "Enable newsletter popup",
+        "default": false,
+        "info": "Used when promo popup is off"
+      },
+      {
+        "type": "text",
+        "id": "newsletter_popup_heading",
+        "label": "Newsletter heading",
+        "default": "Get deals in your inbox"
+      },
+      {
+        "type": "textarea",
+        "id": "newsletter_popup_text",
+        "label": "Newsletter text",
+        "default": "Flash deals and COD-friendly offers — no spam."
+      },
+      {
+        "type": "range",
+        "id": "popup_delay_seconds",
+        "min": 1,
+        "max": 20,
+        "step": 1,
+        "unit": "s",
+        "label": "Popup delay",
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "popup_reappear_days",
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "unit": "d",
+        "label": "Days before popup can reappear",
+        "default": 7
+      }
+    ]
+  },
+  {
+    "name": "Wishlist",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_wishlist",
+        "label": "Enable wishlist",
+        "default": true,
+        "info": "Saved in the browser (localStorage). Create a page with template page.wishlist"
+      },
+      {
+        "type": "page",
+        "id": "wishlist_page",
+        "label": "Wishlist page",
+        "info": "Assign the page that uses the Wishlist template"
+      }
+    ]
+  },
+  {
+    "name": "Advanced",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_scroll_top",
+        "label": "Show scroll to top",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_mobile_sticky_nav",
+        "label": "Enable mobile sticky bottom nav",
+        "default": true
+      },
+      {
+        "type": "textarea",
+        "id": "custom_css",
+        "label": "Custom CSS",
+        "info": "Optional merchant overrides"
+      }
+    ]
+  }
+]

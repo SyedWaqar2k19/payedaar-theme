@@ -1,0 +1,11 @@
+{%- if settings.whatsapp_number != blank and settings.show_whatsapp_float -%}
+  <a
+    class="whatsapp-float"
+    href="https://wa.me/{{ settings.whatsapp_number }}"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="{{ 'general.whatsapp' | t }}"
+  >
+    {% render 'icon', name: 'whatsapp', size: 28 %}
+  </a>
+{%- endif -%}

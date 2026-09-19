@@ -1,0 +1,135 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="{{ settings.mobile_browser_color | default: settings.color_primary }}">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="dns-prefetch" href="https://cdn.shopify.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+      <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180, height: 180 }}">
+    {%- else -%}
+      <link rel="icon" type="image/png" href="{{ 'favicon-payedaar.png' | asset_url }}">
+      <link rel="apple-touch-icon" href="{{ 'apple-touch-icon-payedaar.png' | asset_url }}">
+    {%- endif -%}
+
+    {%- if settings.logo != blank -%}
+      {{ settings.logo | image_url: width: 280 | preload_tag: as: 'image' }}
+    {%- endif -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {% render 'meta-tags' %}
+    {% render 'font-face' %}
+    {% render 'css-variables' %}
+
+    {{ 'critical.css' | asset_url | stylesheet_tag }}
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'component-navigation.css' | asset_url | stylesheet_tag }}
+    {{ 'component-cart.css' | asset_url | stylesheet_tag }}
+    {{ 'section-secondary.css' | asset_url | stylesheet_tag }}
+
+    {%- if template.name == 'index' -%}
+      {{ 'section-home.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
+    {%- if template.name == 'collection' or template.name == 'list-collections' or template.name == 'search' -%}
+      {{ 'template-collection.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
+    {%- if template.name == 'product' -%}
+      {{ 'section-product.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
+
+    {%- if settings.custom_css != blank -%}
+      <style>{{ settings.custom_css }}</style>
+    {%- endif -%}
+
+    <script>
+      window.themeRoutes = {
+        predictive_search_url: {{ routes.predictive_search_url | json }},
+        search_url: {{ routes.search_url | json }},
+        cart_url: {{ routes.cart_url | json }},
+        cart_add_url: {{ routes.cart_add_url | json }},
+        cart_change_url: {{ routes.cart_change_url | json }},
+        cart_update_url: {{ routes.cart_update_url | json }},
+        collections_url: {{ routes.collections_url | json }},
+        root_url: {{ routes.root_url | json }}
+      };
+      window.themeMoneyFormat = {{ shop.money_format | json }};
+      window.themeSettings = {
+        wishlistEnabled: {{ settings.enable_wishlist | json }},
+        popupDays: {{ settings.popup_reappear_days | default: 7 | json }},
+        popupDelay: {{ settings.popup_delay_seconds | default: 4 | json }},
+        analyticsEnabled: {{ settings.enable_analytics_events | default: true | json }}
+      };
+      window.themeStrings = {
+        addedToCart: {{ 'products.added_to_cart' | t | json }},
+        addToCart: {{ 'products.add_to_cart' | t | json }},
+        soldOut: {{ 'products.sold_out' | t | json }},
+        addToCartError: {{ 'products.add_to_cart_error' | t | json }},
+        cartCountOne: {{ 'general.cart_count.one' | t: count: 'COUNT' | json }},
+        cartCountOther: {{ 'general.cart_count.other' | t: count: 'COUNT' | json }},
+        copied: {{ 'sections.coupon_strip.copied' | t | json }},
+        inStock: {{ 'products.inventory.in_stock' | t | json }},
+        lowStockHtml: {{ 'products.inventory.low_stock' | t: count: 'COUNT' | json }},
+        left: {{ 'products.inventory.left' | t | json }},
+        suggestions: {{ 'general.search_suggestions' | t | json }},
+        noSuggestions: {{ 'general.search_no_suggestions' | t | json }}
+      };
+    </script>
+    {{ content_for_header }}
+
+    {% render 'organization-json-ld' %}
+
+    <script src="{{ 'global.js' | asset_url }}" defer></script>
+    <script src="{{ 'cart.js' | asset_url }}" defer></script>
+    <script src="{{ 'theme-extras.js' | asset_url }}" defer></script>
+    <script src="{{ 'motion.js' | asset_url }}" defer></script>
+    {%- if settings.enable_analytics_events != false -%}
+      <script src="{{ 'analytics.js' | asset_url }}" defer></script>
+    {%- endif -%}
+    {%- if template.name == 'index' -%}
+      <script src="{{ 'home.js' | asset_url }}" defer></script>
+    {%- endif -%}
+    {%- if template.name == 'collection' or template.name == 'search' -%}
+      <script src="{{ 'collection-filters.js' | asset_url }}" defer></script>
+    {%- endif -%}
+    {%- if template.name == 'product' -%}
+      <script src="{{ 'product.js' | asset_url }}" defer></script>
+    {%- endif -%}
+
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+    </script>
+  </head>
+  <body class="template-{{ template.name }}{% if template.suffix %} template-{{ template.name }}-{{ template.suffix }}{% endif %}">
+    <a class="skip-link" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
+
+    {% sections 'header-group' %}
+
+    <main id="MainContent" class="main-content" role="main" tabindex="-1">
+      {% render 'breadcrumbs' %}
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    {% section 'mobile-sticky-nav' %}
+    {% section 'cart-drawer' %}
+    {% section 'track-order-drawer' %}
+
+    {% render 'whatsapp-float' %}
+    {% render 'scroll-top' %}
+    {% render 'cookie-banner' %}
+    {% render 'theme-popup' %}
+  </body>
+</html>

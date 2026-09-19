@@ -1,0 +1,34 @@
+<section class="section section-404" data-section-id="{{ section.id }}">
+  <div class="page-width page-width--narrow text-center">
+    <p class="text-muted mb-2" aria-hidden="true">404</p>
+    <h1 class="page-header__title mb-2">{{ 'templates.404.title' | t }}</h1>
+    <p class="text-muted mb-3">{{ 'templates.404.subtext' | t }}</p>
+
+    <form action="{{ routes.search_url }}" method="get" role="search" class="search-page-form mb-3" style="max-width: 28rem; margin-inline: auto;">
+      <label class="visually-hidden" for="Search404">{{ 'general.search' | t }}</label>
+      <input
+        id="Search404"
+        class="input input--pill"
+        type="search"
+        name="q"
+        placeholder="{{ 'general.search_placeholder' | t }}"
+      >
+      <input type="hidden" name="type" value="product">
+      <button type="submit" class="button button--primary">{{ 'general.search' | t }}</button>
+    </form>
+
+    <div class="empty-state__actions" style="justify-content: center;">
+      <a class="button button--secondary" href="{{ routes.root_url }}">{{ 'general.home' | t }}</a>
+      <a class="button button--primary" href="{{ routes.collections_url }}/hot-deals">{{ 'general.hot_deals' | t }}</a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "404",
+  "tag": "section",
+  "class": "section-main-404",
+  "settings": []
+}
+{% endschema %}

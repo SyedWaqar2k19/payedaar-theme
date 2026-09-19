@@ -1,0 +1,47 @@
+{%- comment -%} Social follow links from theme settings {%- endcomment -%}
+{%- liquid
+  assign has_social = false
+  if settings.social_facebook != blank or settings.social_instagram != blank or settings.social_tiktok != blank or settings.social_youtube != blank or settings.social_twitter != blank
+    assign has_social = true
+  endif
+-%}
+
+{%- if has_social -%}
+  <ul class="social-icons list-unstyled" aria-label="{{ 'general.social' | t }}">
+    {%- if settings.social_facebook != blank -%}
+      <li>
+        <a href="{{ settings.social_facebook }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+          {% render 'icon', name: 'facebook', size: 18 %}
+        </a>
+      </li>
+    {%- endif -%}
+    {%- if settings.social_instagram != blank -%}
+      <li>
+        <a href="{{ settings.social_instagram }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          {% render 'icon', name: 'instagram', size: 18 %}
+        </a>
+      </li>
+    {%- endif -%}
+    {%- if settings.social_tiktok != blank -%}
+      <li>
+        <a href="{{ settings.social_tiktok }}" target="_blank" rel="noopener noreferrer" aria-label="TikTok">
+          {% render 'icon', name: 'tiktok', size: 18 %}
+        </a>
+      </li>
+    {%- endif -%}
+    {%- if settings.social_youtube != blank -%}
+      <li>
+        <a href="{{ settings.social_youtube }}" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+          {% render 'icon', name: 'youtube', size: 18 %}
+        </a>
+      </li>
+    {%- endif -%}
+    {%- if settings.social_twitter != blank -%}
+      <li>
+        <a href="{{ settings.social_twitter }}" target="_blank" rel="noopener noreferrer" aria-label="X">
+          {% render 'icon', name: 'twitter', size: 18 %}
+        </a>
+      </li>
+    {%- endif -%}
+  </ul>
+{%- endif -%}

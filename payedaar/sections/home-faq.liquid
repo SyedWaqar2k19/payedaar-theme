@@ -1,0 +1,119 @@
+{% render 'faq-json-ld', blocks: section.blocks %}
+<section
+  class="section section-home-faq"
+  data-section-id="{{ section.id }}"
+  data-section-type="home-faq"
+  data-reveal
+>
+  <div class="page-width page-width--narrow">
+    <header class="section-header section-header--center">
+      {%- if section.settings.heading != blank -%}
+        <h2 class="section-header__heading section-header__heading--accent">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="section-header__sub" style="margin-inline: auto;">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </header>
+
+    <div class="home-faq-list">
+      {%- for block in section.blocks -%}
+        <details class="faq-item product-accordion" {{ block.shopify_attributes }} {% if forloop.first and section.settings.open_first %}open{% endif %}>
+          <summary class="product-accordion__summary">{{ block.settings.question }}</summary>
+          <div class="product-accordion__content rte">
+            {{ block.settings.answer }}
+          </div>
+        </details>
+      {%- else -%}
+        <details class="faq-item product-accordion" open>
+          <summary class="product-accordion__summary">{{ 'sections.home_faq.default_q1' | t }}</summary>
+          <div class="product-accordion__content rte"><p>{{ 'sections.home_faq.default_a1' | t }}</p></div>
+        </details>
+        <details class="faq-item product-accordion">
+          <summary class="product-accordion__summary">{{ 'sections.home_faq.default_q2' | t }}</summary>
+          <div class="product-accordion__content rte"><p>{{ 'sections.home_faq.default_a2' | t }}</p></div>
+        </details>
+        <details class="faq-item product-accordion">
+          <summary class="product-accordion__summary">{{ 'sections.home_faq.default_q3' | t }}</summary>
+          <div class="product-accordion__content rte"><p>{{ 'sections.home_faq.default_a3' | t }}</p></div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Home FAQ",
+  "tag": "section",
+  "class": "section-home-faq",
+  "max_blocks": 10,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop with confidence"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "COD, delivery, and returns — answered simply"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_first",
+      "label": "Open first item by default",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "FAQ item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "How does Cash on Delivery work?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>Choose COD when it is available at checkout and pay the courier when your order arrives. Parcel inspection depends on the courier and shipment service.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home FAQ",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "question": "How does Cash on Delivery work?",
+            "answer": "<p>Choose COD when it is available at checkout and pay the courier when your order arrives. Parcel inspection depends on the courier and shipment service.</p>"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "question": "How long does delivery take?",
+            "answer": "<p>Most orders arrive within a few business days depending on your city across Pakistan.</p>"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "question": "What if I receive a damaged product?",
+            "answer": "<p>Contact us promptly on WhatsApp with your order number and photos. We will confirm the options available under the store's current return policy.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,8 @@
+.shopify
+.DS_Store
+Thumbs.db
+node_modules
+.env
+.env.*
+*.log
+config/settings_data.json.bak

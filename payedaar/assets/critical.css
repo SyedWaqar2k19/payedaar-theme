@@ -1,0 +1,29 @@
+/* Critical above-the-fold shell — keep tiny */
+body {
+  margin: 0;
+  background-color: var(--color-background, #fffdf9);
+  color: var(--color-text, #1f2421);
+  font-family: var(--font-body-family, system-ui, sans-serif);
+}
+
+.main-content:focus {
+  outline: none;
+}
+
+/* Reserve header / skip-link space to limit early CLS */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 10000;
+}
+
+.site-header {
+  min-height: 3.5rem;
+}
+
+.card__media,
+.product-gallery__viewer,
+.hero-banner__media {
+  background-color: #f7f5f1;
+}

@@ -1,0 +1,87 @@
+{
+  "product_metafield_definitions": [
+    {
+      "name": "Subtitle",
+      "namespace": "descriptors",
+      "key": "subtitle",
+      "type": "single_line_text_field",
+      "description": "Short PDP subtitle",
+      "ownerType": "PRODUCT"
+    },
+    {
+      "name": "Short description",
+      "namespace": "custom",
+      "key": "short_description",
+      "type": "multi_line_text_field",
+      "description": "Card / PDP blurb",
+      "ownerType": "PRODUCT"
+    },
+    {
+      "name": "COD available",
+      "namespace": "custom",
+      "key": "cod_available",
+      "type": "boolean",
+      "description": "Show COD badge when true",
+      "ownerType": "PRODUCT"
+    },
+    {
+      "name": "Delivery days",
+      "namespace": "custom",
+      "key": "delivery_days",
+      "type": "number_integer",
+      "description": "Estimated delivery days",
+      "ownerType": "PRODUCT"
+    },
+    {
+      "name": "Hot deal",
+      "namespace": "custom",
+      "key": "is_hot_deal",
+      "type": "boolean",
+      "description": "Badge + collection automation helper",
+      "ownerType": "PRODUCT"
+    },
+    {
+      "name": "Custom badge",
+      "namespace": "custom",
+      "key": "badge_label",
+      "type": "single_line_text_field",
+      "description": "Overrides default badge text",
+      "ownerType": "PRODUCT"
+    },
+    {
+      "name": "Specs",
+      "namespace": "custom",
+      "key": "spec_table",
+      "type": "multi_line_text_field",
+      "description": "Specs tab content",
+      "ownerType": "PRODUCT"
+    },
+    {
+      "name": "Bundle discount %",
+      "namespace": "custom",
+      "key": "bundle_discount_rate",
+      "type": "number_integer",
+      "description": "Bought-together discount percentage",
+      "ownerType": "PRODUCT"
+    }
+  ],
+  "collection_metafield_definitions": [
+    {
+      "name": "Category icon",
+      "namespace": "custom",
+      "key": "icon",
+      "type": "file_reference",
+      "description": "Circular category image/icon",
+      "ownerType": "COLLECTION"
+    },
+    {
+      "name": "Menu highlight",
+      "namespace": "custom",
+      "key": "menu_highlight",
+      "type": "boolean",
+      "description": "Highlight like Hot Deals in navigation",
+      "ownerType": "COLLECTION"
+    }
+  ],
+  "tag_conventions": ["hot-deal", "best-seller", "limited", "new"]
+}

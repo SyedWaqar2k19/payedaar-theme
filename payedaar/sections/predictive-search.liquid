@@ -1,0 +1,56 @@
+{%- comment -%}
+  Predictive search results — fetched via Section Rendering API.
+{%- endcomment -%}
+
+{%- if predictive_search.performed -%}
+  <div id="predictive-search-results" class="predictive-search__results" role="listbox" aria-label="{{ 'general.search_suggestions' | t }}">
+    {%- if predictive_search.resources.products.size > 0 -%}
+      <ul class="predictive-search__list list-unstyled" role="group">
+        {%- for product in predictive_search.resources.products -%}
+          <li
+            id="PredictiveOption-{{ section.id }}-{{ forloop.index }}"
+            class="predictive-search__item"
+            role="option"
+            aria-selected="false"
+          >
+            <a class="predictive-search__link" href="{{ product.url }}" tabindex="-1">
+              <div class="predictive-search__image">
+                {%- if product.featured_media -%}
+                  {{
+                    product.featured_media
+                    | image_url: width: 120
+                    | image_tag: loading: 'lazy', alt: product.title, widths: '60, 120'
+                  }}
+                {%- else -%}
+                  {{ 'product-1' | placeholder_svg_tag }}
+                {%- endif -%}
+              </div>
+              <div class="predictive-search__meta">
+                <span class="predictive-search__title">{{ product.title }}</span>
+                <span class="predictive-search__price">
+                  {% render 'price', product: product %}
+                </span>
+              </div>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+      <div class="predictive-search__footer">
+        <button type="submit" class="button button--primary button--full button--sm" form="HeaderSearchForm" tabindex="0">
+          {{ 'general.search_for' | t: terms: predictive_search.terms }}
+        </button>
+      </div>
+    {%- else -%}
+      <p class="predictive-search__empty" role="status">
+        {{ 'general.search_no_results' | t: terms: predictive_search.terms }}
+      </p>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Predictive search",
+  "settings": []
+}
+{% endschema %}

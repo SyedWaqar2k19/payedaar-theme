@@ -1,0 +1,25 @@
+# Project files that should remain local.
+/referance-theme/
+/store-assets-dump/
+/.gitattributes
+/.vscode/
+/PHASE-*-COMPLETE.md
+/payedaar-theme-implementation.md
+
+# Local tooling and generated files.
+.shopify/
+node_modules/
+.cache/
+tmp/
+temp/
+*.log
+
+# Secrets (keep the example file).
+.env
+.env.*
+!.env.example
+
+# OS noise.
+.DS_Store
+Thumbs.db
+Desktop.ini

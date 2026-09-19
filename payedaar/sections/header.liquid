@@ -1,0 +1,476 @@
+{%- liquid
+  assign main_menu = section.settings.menu
+  assign enable_predictive = settings.enable_predictive_search
+  assign search_placeholder = settings.search_placeholder | default: 'Search products, brands…'
+  assign hot_handle = section.settings.hot_deals_handle | default: 'hot-deals'
+  assign best_handle = section.settings.best_sellers_handle | default: 'best-sellers'
+  assign track_page = pages[section.settings.track_order_handle]
+  assign hot_collection = collections[hot_handle]
+  assign best_collection = collections[best_handle]
+  assign path = request.path | downcase
+  if hot_collection != blank and hot_collection.products_count > 0
+    assign hot_url = hot_collection.url
+  elsif hot_collection != blank
+    assign hot_url = hot_collection.url
+  else
+    assign hot_url = routes.collections_url
+  endif
+  if best_collection != blank
+    assign best_url = best_collection.url
+  else
+    assign best_url = routes.collections_url
+  endif
+  assign track_has_page = false
+  if track_page != blank
+    assign track_has_page = true
+    assign track_url = track_page.url
+  else
+    assign track_url = '#track-order'
+  endif
+  assign nav_home_active = false
+  assign nav_hot_active = false
+  assign nav_best_active = false
+  assign nav_track_active = false
+  assign nav_account_active = false
+  if request.page_type == 'index'
+    assign nav_home_active = true
+  endif
+  if path contains hot_handle
+    assign nav_hot_active = true
+  endif
+  if path contains best_handle
+    assign nav_best_active = true
+  endif
+  if path contains 'track-order' or template.suffix == 'track-order'
+    assign nav_track_active = true
+  endif
+  if request.page_type == 'customers/account' or request.page_type == 'customers/login' or request.page_type == 'customers/register' or request.page_type == 'customers/addresses' or request.page_type == 'customers/order'
+    assign nav_account_active = true
+  endif
+-%}
+
+<header class="site-header site-header--premium" data-section-id="{{ section.id }}">
+  <div class="site-header__utility hide-mobile">
+    <div class="page-width site-header__utility-inner">
+      <ul class="site-header__utility-list list-unstyled">
+        <li>
+          <span class="site-header__utility-icon" aria-hidden="true">{% render 'icon', name: 'truck', size: 14 %}</span>
+          {{ settings.trust_delivery }}
+        </li>
+        {%- if settings.enable_cod_messaging -%}
+          <li>
+            <span class="site-header__utility-icon" aria-hidden="true">{% render 'icon', name: 'shield', size: 14 %}</span>
+            {{ 'general.cod' | t }} · Available on eligible orders
+          </li>
+        {%- endif -%}
+      </ul>
+      <ul class="site-header__utility-list site-header__utility-list--end list-unstyled">
+        {%- if settings.support_phone != blank -%}
+          <li>
+            <a href="tel:{{ settings.support_phone }}">
+              {% render 'icon', name: 'phone', size: 14 %}
+              {{ settings.support_phone }}
+            </a>
+          </li>
+        {%- endif -%}
+        {%- if settings.whatsapp_number != blank -%}
+          <li>
+            <a href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" rel="noopener noreferrer">
+              {% render 'icon', name: 'whatsapp', size: 14 %}
+              {{ 'general.whatsapp' | t }}
+            </a>
+          </li>
+        {%- endif -%}
+        <li>
+          {%- if track_has_page -%}
+            <a href="{{ track_url }}">{{ 'general.track_order' | t }}</a>
+          {%- else -%}
+            <button type="button" class="site-header__utility-btn" data-track-drawer-open>
+              {{ 'general.track_order' | t }}
+            </button>
+          {%- endif -%}
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="page-width">
+    <div class="site-header__row">
+      <button
+        type="button"
+        class="site-header__icon-btn site-header__menu-toggle hide-desktop"
+        aria-expanded="false"
+        aria-controls="HeaderDrawer-{{ section.id }}"
+        data-drawer-open
+      >
+        <span class="visually-hidden">{{ 'accessibility.open_menu' | t }}</span>
+        {% render 'icon', name: 'menu', size: 22 %}
+      </button>
+
+      <a class="site-header__brand" href="{{ routes.root_url }}">
+        {% render 'brand-logo',
+          class: 'header-logo',
+          width: 280,
+          widths: '110, 140, 220, 280',
+          sizes: '(max-width: 749px) var(--logo-width-mobile), var(--logo-width)',
+          loading: 'eager',
+          fetchpriority: 'high'
+        %}
+      </a>
+
+      <div class="site-header__search{% if enable_predictive %} site-header__search--predictive{% endif %}">
+        <predictive-search
+          class="predictive-search"
+          data-enabled="{{ enable_predictive }}"
+          data-limit="{{ settings.predictive_search_limit | default: 6 }}"
+          {% unless enable_predictive %}data-disabled{% endunless %}
+        >
+          <form
+            id="HeaderSearchForm"
+            action="{{ routes.search_url }}"
+            method="get"
+            role="search"
+            class="predictive-search__form"
+          >
+            <label class="visually-hidden" for="HeaderSearch-{{ section.id }}">{{ 'general.search' | t }}</label>
+            <span class="predictive-search__icon" aria-hidden="true">
+              {% render 'icon', name: 'search', size: 18 %}
+            </span>
+            <input
+              id="HeaderSearch-{{ section.id }}"
+              class="input input--pill predictive-search__input"
+              type="search"
+              name="q"
+              value="{{ search.terms | escape }}"
+              placeholder="{{ search_placeholder | escape }}"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              role="combobox"
+              aria-expanded="false"
+              aria-owns="predictive-search-results-list"
+              aria-controls="predictive-search-results-list"
+              aria-haspopup="listbox"
+              aria-autocomplete="list"
+            >
+            <input type="hidden" name="options[prefix]" value="last">
+            <div class="predictive-search__status visually-hidden" role="status" aria-live="polite"></div>
+            <div id="predictive-search-results-list" class="predictive-search__panel" tabindex="-1" hidden></div>
+          </form>
+        </predictive-search>
+      </div>
+
+      <div class="site-header__actions">
+        {%- if settings.enable_wishlist -%}
+          {%- liquid
+            if settings.wishlist_page != blank
+              assign wishlist_url = settings.wishlist_page.url
+            else
+              assign wishlist_url = pages.wishlist.url | default: '/pages/wishlist'
+            endif
+          -%}
+          <a
+            class="site-header__icon-btn site-header__wishlist-btn"
+            href="{{ wishlist_url }}"
+            aria-label="{{ 'wishlist.title' | t }}"
+          >
+            {% render 'icon', name: 'heart', size: 22 %}
+            <span
+              class="cart-count wishlist-count is-empty"
+              data-wishlist-count
+              hidden
+            >
+              <span class="visually-hidden">{{ 'wishlist.count_label' | t }}</span>
+              <span data-wishlist-count-number aria-hidden="true">0</span>
+            </span>
+          </a>
+        {%- endif -%}
+        <div class="site-header__account" data-account-menu>
+          <button
+            type="button"
+            class="site-header__icon-btn{% if nav_account_active %} is-active{% endif %}"
+            aria-expanded="false"
+            aria-controls="AccountMenu-{{ section.id }}"
+            aria-label="{{ 'general.account' | t }}"
+            data-account-menu-trigger
+          >
+            {% render 'icon', name: 'account', size: 22 %}
+          </button>
+          <div
+            id="AccountMenu-{{ section.id }}"
+            class="account-menu"
+            data-account-menu-panel
+            role="menu"
+            hidden
+          >
+            {%- if customer -%}
+              <p class="account-menu__hello">{{ 'customer.account.welcome' | t: name: customer.first_name }}</p>
+              <a href="{{ routes.account_url }}" role="menuitem">{{ 'customer.account.title' | t }}</a>
+              <a href="{{ routes.account_url }}" role="menuitem">{{ 'customer.orders.title' | t }}</a>
+              <a href="{{ routes.account_addresses_url }}" role="menuitem">{{ 'customer.account.view_addresses' | t }}</a>
+              <button type="button" class="account-menu__btn" role="menuitem" data-track-drawer-open>
+                {{ 'general.track_order' | t }}
+              </button>
+              <a href="{{ routes.account_logout_url }}" role="menuitem">{{ 'customer.account.logout' | t }}</a>
+            {%- else -%}
+              <p class="account-menu__hello">{{ 'customer.login.title' | t }}</p>
+              <a class="account-menu__primary" href="{{ routes.account_login_url }}" role="menuitem">{{ 'customer.login.submit' | t }}</a>
+              <a href="{{ routes.account_register_url }}" role="menuitem">{{ 'customer.login.create_account' | t }}</a>
+              <button type="button" class="account-menu__btn" role="menuitem" data-track-drawer-open>
+                {{ 'general.track_order' | t }}
+              </button>
+              <p class="account-menu__note">{{ 'customer.account.theme_note' | t }}</p>
+            {%- endif -%}
+          </div>
+        </div>
+        <button
+          type="button"
+          class="site-header__icon-btn site-header__cart-btn"
+          aria-label="{{ 'general.cart' | t }}"
+          id="cart-icon-bubble-link"
+          data-cart-drawer-open
+        >
+          {% render 'icon', name: 'cart', size: 22 %}
+          {% render 'cart-icon-bubble' %}
+        </button>
+        <noscript>
+          <a class="site-header__icon-btn" href="{{ routes.cart_url }}">{{ 'general.cart' | t }}</a>
+        </noscript>
+      </div>
+    </div>
+
+    <nav class="site-nav site-nav--premium" aria-label="{{ 'accessibility.main_navigation' | t }}">
+      {%- if main_menu != blank -%}
+        {%- for link in linklists[main_menu].links -%}
+          {%- liquid
+            assign is_hot = false
+            assign link_url_down = link.url | downcase
+            if link_url_down contains hot_handle
+              assign is_hot = true
+            endif
+            assign title_down = link.title | downcase
+            if title_down contains 'hot'
+              assign is_hot = true
+            endif
+          -%}
+          {%- if link.links != blank -%}
+            <div class="site-nav__item site-nav__item--mega" data-nav-mega>
+              <button
+                type="button"
+                class="site-nav__link"
+                data-nav-mega-trigger
+                aria-expanded="false"
+                aria-haspopup="true"
+              >
+                {{ link.title }}
+                {% render 'icon', name: 'chevron-down', size: 14 %}
+              </button>
+              <div class="site-nav__mega" data-nav-mega-panel>
+                <ul class="site-nav__mega-list list-unstyled">
+                  {%- for child in link.links -%}
+                    <li>
+                      <a href="{{ child.url }}">{{ child.title }}</a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+                <a class="site-nav__mega-promo is-hot" href="{{ hot_url }}">
+                  <strong>{{ 'general.hot_deals' | t }}</strong>
+                  <span>{{ 'sections.hero.default_heading' | t }}</span>
+                </a>
+              </div>
+            </div>
+          {%- else -%}
+            <a
+              href="{{ link.url }}"
+              class="site-nav__link{% if is_hot %} is-hot{% endif %}{% if link.active or link.child_active %} is-active{% endif %}"
+              {% if link.active or link.child_active %}aria-current="page"{% endif %}
+            >
+              {{ link.title }}
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- else -%}
+        <a
+          class="site-nav__link{% if nav_home_active %} is-active{% endif %}"
+          href="{{ routes.root_url }}"
+          {% if nav_home_active %}aria-current="page"{% endif %}
+        >
+          {{ 'general.home' | t }}
+        </a>
+        <div class="site-nav__item site-nav__item--mega" data-nav-mega>
+          <button type="button" class="site-nav__link" data-nav-mega-trigger aria-expanded="false" aria-haspopup="true">
+            {{ 'general.categories' | t }}
+            {% render 'icon', name: 'chevron-down', size: 14 %}
+          </button>
+          <div class="site-nav__mega" data-nav-mega-panel>
+            <ul class="site-nav__mega-list list-unstyled">
+              <li><a href="{{ routes.collections_url }}">{{ 'general.home' | t }} &amp; Living</a></li>
+              <li><a href="{{ routes.collections_url }}">Kitchen</a></li>
+              <li><a href="{{ routes.collections_url }}">Beauty</a></li>
+              <li><a href="{{ routes.collections_url }}">Gadgets</a></li>
+              <li><a href="{{ routes.collections_url }}">Fashion</a></li>
+              <li><a href="{{ routes.collections_url }}">{{ 'collections.list_title' | t }}</a></li>
+            </ul>
+            <a class="site-nav__mega-promo" href="{{ hot_url }}">
+              <strong>{{ 'general.hot_deals' | t }}</strong>
+              <span>Up to 70% off · COD</span>
+            </a>
+          </div>
+        </div>
+        <a
+          class="site-nav__link is-hot{% if nav_hot_active %} is-active{% endif %}"
+          href="{{ hot_url }}"
+          {% if nav_hot_active %}aria-current="page"{% endif %}
+        >
+          {% render 'icon', name: 'flame', size: 14 %}
+          {{ 'general.hot_deals' | t }}
+        </a>
+        <a
+          class="site-nav__link{% if nav_best_active %} is-active{% endif %}"
+          href="{{ best_url }}"
+          {% if nav_best_active %}aria-current="page"{% endif %}
+        >
+          {{ 'general.best_sellers' | t }}
+        </a>
+        {%- if track_has_page -%}
+          <a
+            class="site-nav__link{% if nav_track_active %} is-active{% endif %}"
+            href="{{ track_url }}"
+            {% if nav_track_active %}aria-current="page"{% endif %}
+          >
+            {{ 'general.track_order' | t }}
+          </a>
+        {%- else -%}
+          <button
+            type="button"
+            class="site-nav__link"
+            data-track-drawer-open
+          >
+            {{ 'general.track_order' | t }}
+          </button>
+        {%- endif -%}
+      {%- endif -%}
+    </nav>
+  </div>
+
+  {%- comment -%} Mobile drawer {%- endcomment -%}
+  <div
+    id="HeaderDrawer-{{ section.id }}"
+    class="header-drawer"
+    data-header-drawer
+    hidden
+    aria-hidden="true"
+  >
+    <div class="header-drawer__overlay" data-drawer-close tabindex="-1"></div>
+    <div
+      class="header-drawer__panel"
+      role="dialog"
+      aria-modal="true"
+      aria-label="{{ 'accessibility.menu' | t }}"
+      tabindex="-1"
+      data-drawer-panel
+    >
+      <div class="header-drawer__top">
+        <a class="site-header__brand" href="{{ routes.root_url }}">
+          {% render 'brand-logo', class: 'header-logo', width: 220, widths: '110, 160, 220', sizes: '130px', loading: 'lazy' %}
+        </a>
+        <button type="button" class="site-header__icon-btn" data-drawer-close>
+          <span class="visually-hidden">{{ 'accessibility.close_menu' | t }}</span>
+          {% render 'icon', name: 'close', size: 22 %}
+        </button>
+      </div>
+
+      <nav class="header-drawer__nav" aria-label="{{ 'accessibility.mobile_navigation' | t }}">
+        {%- if main_menu != blank -%}
+          <ul class="list-unstyled">
+            {%- for link in linklists[main_menu].links -%}
+              <li>
+                {%- if link.links != blank -%}
+                  <details class="header-drawer__group">
+                    <summary>
+                      {{ link.title }}
+                      {% render 'icon', name: 'chevron-down', size: 16 %}
+                    </summary>
+                    <ul class="header-drawer__sublist list-unstyled">
+                      <li><a href="{{ link.url }}">{{ 'general.view_all' | t }}</a></li>
+                      {%- for child in link.links -%}
+                        <li><a href="{{ child.url }}">{{ child.title }}</a></li>
+                      {%- endfor -%}
+                    </ul>
+                  </details>
+                {%- else -%}
+                  <a href="{{ link.url }}" {% if link.active %}aria-current="page"{% endif %}>{{ link.title }}</a>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- else -%}
+          <ul class="list-unstyled">
+            <li><a href="{{ routes.root_url }}" {% if nav_home_active %}aria-current="page"{% endif %}>{{ 'general.home' | t }}</a></li>
+            <li><a href="{{ routes.collections_url }}">{{ 'general.categories' | t }}</a></li>
+            <li><a class="is-hot{% if nav_hot_active %} is-active{% endif %}" href="{{ hot_url }}" {% if nav_hot_active %}aria-current="page"{% endif %}>{{ 'general.hot_deals' | t }}</a></li>
+            <li><a href="{{ best_url }}" {% if nav_best_active %}aria-current="page"{% endif %}>{{ 'general.best_sellers' | t }}</a></li>
+            <li>
+              {%- if track_has_page -%}
+                <a href="{{ track_url }}" {% if nav_track_active %}aria-current="page"{% endif %}>{{ 'general.track_order' | t }}</a>
+              {%- else -%}
+                <button type="button" data-track-drawer-open data-drawer-close>{{ 'general.track_order' | t }}</button>
+              {%- endif -%}
+            </li>
+            <li><a href="{{ routes.account_login_url }}">{{ 'general.account' | t }}</a></li>
+          </ul>
+        {%- endif -%}
+      </nav>
+
+      <div class="header-drawer__footer">
+        {%- if settings.whatsapp_number != blank -%}
+          <a class="button button--primary button--full" href="https://wa.me/{{ settings.whatsapp_number }}" target="_blank" rel="noopener noreferrer">
+            {% render 'icon', name: 'whatsapp', size: 18 %}
+            {{ 'general.whatsapp' | t }}
+          </a>
+        {%- endif -%}
+        {%- if settings.support_phone != blank -%}
+          <a class="button button--secondary button--full mt-2" href="tel:{{ settings.support_phone }}">
+            {% render 'icon', name: 'phone', size: 18 %}
+            {{ settings.support_phone }}
+          </a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Header",
+  "tag": "section",
+  "class": "section-header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "info": "If empty, default Payedaar links are used (Home, Categories, Hot Deals, Best Sellers, Track Order)."
+    },
+    {
+      "type": "text",
+      "id": "hot_deals_handle",
+      "label": "Hot Deals collection handle",
+      "default": "hot-deals"
+    },
+    {
+      "type": "text",
+      "id": "best_sellers_handle",
+      "label": "Best Sellers collection handle",
+      "default": "best-sellers"
+    },
+    {
+      "type": "text",
+      "id": "track_order_handle",
+      "label": "Track Order page handle",
+      "default": "track-order"
+    }
+  ]
+}
+{% endschema %}

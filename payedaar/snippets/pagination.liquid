@@ -1,0 +1,52 @@
+{%- comment -%}
+  Pagination — preserves filter/sort query via Shopify paginate URLs.
+  Usage: {% render 'pagination', paginate: paginate %}
+{%- endcomment -%}
+
+{%- if paginate.pages > 1 -%}
+  <nav class="pagination" role="navigation" aria-label="{{ 'general.pagination.label' | t }}" data-facets-pagination>
+    <ul class="pagination__list list-unstyled" role="list">
+      <li>
+        {%- if paginate.previous -%}
+          <a class="pagination__item" href="{{ paginate.previous.url }}" aria-label="{{ 'general.pagination.previous' | t }}" data-facets-page>
+            {% render 'icon', name: 'arrow-right', size: 16 %}
+            <span class="pagination__prev-label">{{ 'general.pagination.previous' | t }}</span>
+          </a>
+        {%- else -%}
+          <span class="pagination__item pagination__item--disabled" aria-disabled="true">
+            {{ 'general.pagination.previous' | t }}
+          </span>
+        {%- endif -%}
+      </li>
+
+      {%- for part in paginate.parts -%}
+        <li>
+          {%- if part.is_link -%}
+            <a class="pagination__item" href="{{ part.url }}" data-facets-page aria-label="{{ 'general.pagination.page' | t: number: part.title }}">
+              {{ part.title }}
+            </a>
+          {%- else -%}
+            {%- if part.title == paginate.current_page -%}
+              <span class="pagination__item pagination__item--current" aria-current="page">{{ part.title }}</span>
+            {%- else -%}
+              <span class="pagination__item pagination__item--ellipsis">{{ part.title }}</span>
+            {%- endif -%}
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+
+      <li>
+        {%- if paginate.next -%}
+          <a class="pagination__item" href="{{ paginate.next.url }}" aria-label="{{ 'general.pagination.next' | t }}" data-facets-page>
+            <span>{{ 'general.pagination.next' | t }}</span>
+            {% render 'icon', name: 'arrow-right', size: 16 %}
+          </a>
+        {%- else -%}
+          <span class="pagination__item pagination__item--disabled" aria-disabled="true">
+            {{ 'general.pagination.next' | t }}
+          </span>
+        {%- endif -%}
+      </li>
+    </ul>
+  </nav>
+{%- endif -%}
