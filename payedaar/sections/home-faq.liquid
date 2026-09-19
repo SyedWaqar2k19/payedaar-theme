@@ -5,13 +5,18 @@
   data-section-type="home-faq"
   data-reveal
 >
-  <div class="page-width page-width--narrow">
-    <header class="section-header section-header--center">
-      {%- if section.settings.heading != blank -%}
-        <h2 class="section-header__heading section-header__heading--accent">{{ section.settings.heading }}</h2>
-      {%- endif -%}
-      {%- if section.settings.subheading != blank -%}
-        <p class="section-header__sub" style="margin-inline: auto;">{{ section.settings.subheading }}</p>
+  <div class="page-width{% unless section.settings.full_width %} page-width--narrow{% endunless %}">
+    <header class="section-header {% if section.settings.full_width %}section-header--split{% else %}section-header--center{% endif %}">
+      <div class="section-header__copy">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="section-header__heading section-header__heading--accent">{{ section.settings.heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subheading != blank -%}
+          <p class="section-header__sub"{% unless section.settings.full_width %} style="margin-inline: auto;"{% endunless %}>{{ section.settings.subheading }}</p>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.view_all_label != blank and section.settings.view_all_url != blank -%}
+        <a class="section-header__link" href="{{ section.settings.view_all_url }}">{{ section.settings.view_all_label }}</a>
       {%- endif -%}
     </header>
 
@@ -65,6 +70,23 @@
       "id": "open_first",
       "label": "Open first item by default",
       "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full width layout",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "View all label",
+      "default": "View all FAQs"
+    },
+    {
+      "type": "url",
+      "id": "view_all_url",
+      "label": "View all link"
     }
   ],
   "blocks": [

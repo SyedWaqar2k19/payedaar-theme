@@ -1,0 +1,159 @@
+{%- comment -%}
+  Two-column premium details: photo + highlights | scannable features, included, order CTA.
+{%- endcomment -%}
+
+{%- liquid
+  assign display_title = product.title
+  if product.title contains ' | '
+    assign display_title = product.title | split: ' | ' | last | strip
+  endif
+  assign short_title = display_title | truncate: 48
+  assign included_title = display_title | truncate: 40
+
+  assign wa_raw = settings.whatsapp_number | default: '' | strip
+  assign wa_digits = wa_raw | replace: '+', '' | replace: ' ', '' | replace: '-', ''
+  assign product_link = request.origin | append: product.url
+  assign wa_message = 'products.whatsapp_inquiry' | t: title: product.title, url: product_link | url_encode
+  if wa_digits != blank
+    assign order_href = 'https://wa.me/' | append: wa_digits | append: '?text=' | append: wa_message
+  else
+    assign order_href = '#ProductBuybox'
+  endif
+
+  assign feature_limit = 8
+  assign feature_count = 0
+  assign kf_meta = product.metafields.custom.key_features
+  assign kf_type = kf_meta.type | default: ''
+  if kf_type contains 'list.'
+    assign key_features = kf_meta.value
+  elsif kf_meta.value != blank
+    assign key_features = kf_meta.value | newline_to_br | replace: '<br/>', '<br />' | replace: '<br>', '<br />' | split: '<br />'
+  endif
+-%}
+
+{%- capture details_image_src -%}
+  {%- render 'product-image-src', product: product, slot: 'details' -%}
+{%- endcapture -%}
+{%- assign details_image_src = details_image_src | strip -%}
+
+<section class="product-details-premium">
+  <div class="product-details-premium__grid">
+    <div class="product-details-premium__visual">
+      <header class="product-details-premium__header">
+        <h2 class="product-details-premium__heading">
+          {%- if heading != blank -%}
+            {{ heading }}
+          {%- else -%}
+            {{ 'products.details_heading' | t }}
+          {%- endif -%}
+        </h2>
+        <p class="product-details-premium__sub">{{ 'products.details_subheading' | t }}</p>
+      </header>
+
+      {%- if details_image_src != blank -%}
+        <div class="product-details-premium__hero product-details-premium__hero--solo">
+          <figure class="product-details-premium__figure">
+            <img
+              class="product-details-premium__image"
+              src="{{ details_image_src }}"
+              alt="{{ product.title | escape }}"
+              loading="lazy"
+              width="1200"
+              height="800"
+            >
+          </figure>
+        </div>
+      {%- endif -%}
+
+      <ul class="product-details-premium__tiles list-unstyled">
+        <li class="product-details-premium__tile">
+          <span class="product-details-premium__tile-icon" aria-hidden="true">{% render 'icon', name: 'zap', size: 18 %}</span>
+          <span>{{ 'products.detail_tiles.one' | t }}</span>
+        </li>
+        <li class="product-details-premium__tile">
+          <span class="product-details-premium__tile-icon" aria-hidden="true">{% render 'icon', name: 'check', size: 18 %}</span>
+          <span>{{ 'products.detail_tiles.two' | t }}</span>
+        </li>
+        <li class="product-details-premium__tile">
+          <span class="product-details-premium__tile-icon" aria-hidden="true">{% render 'icon', name: 'shield', size: 18 %}</span>
+          <span>{{ 'products.detail_tiles.three' | t }}</span>
+        </li>
+        <li class="product-details-premium__tile">
+          <span class="product-details-premium__tile-icon" aria-hidden="true">{% render 'icon', name: 'package', size: 18 %}</span>
+          <span>{{ 'products.detail_tiles.four' | t }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="product-details-premium__side">
+      <article class="product-details-premium__card">
+        {%- capture features_html -%}
+          {%- if key_features != blank -%}
+            {%- for item in key_features -%}
+              {%- if feature_count >= feature_limit -%}
+                {%- break -%}
+              {%- endif -%}
+              {%- assign feature_text = item | strip -%}
+              {%- if feature_text != blank -%}
+                <li>{{ feature_text | escape }}</li>
+                {%- assign feature_count = feature_count | plus: 1 -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
+          {%- if feature_count == 0 and product.description contains '<li' -%}
+            {%- assign li_parts = product.description | split: '<li' -%}
+            {%- for part in li_parts offset: 1 -%}
+              {%- if feature_count >= feature_limit -%}
+                {%- break -%}
+              {%- endif -%}
+              {%- assign item = part | split: '</li' | first | strip_html | strip -%}
+              {%- if item.size > 8 -%}
+                <li>{{ item | escape }}</li>
+                {%- assign feature_count = feature_count | plus: 1 -%}
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endif -%}
+        {%- endcapture -%}
+
+        {%- if features_html != blank -%}
+          <h3 class="product-details-premium__card-title">
+            <span class="product-details-premium__card-icon" aria-hidden="true">{% render 'icon', name: 'star', size: 16 %}</span>
+            {{ 'products.features_heading' | t }}
+          </h3>
+          <ul class="product-details-premium__features list-unstyled">
+            {{ features_html }}
+          </ul>
+        {%- endif -%}
+
+        {%- if product.description != blank -%}
+          <details class="product-details-premium__full">
+            <summary>{{ 'products.details_show_more' | t }}</summary>
+            <div class="product-details-premium__rte rte">
+              {{ product.description }}
+            </div>
+          </details>
+        {%- endif -%}
+      </article>
+
+      <article class="product-details-premium__card">
+        <h3 class="product-details-premium__card-title">
+          <span class="product-details-premium__card-icon" aria-hidden="true">{% render 'icon', name: 'package', size: 16 %}</span>
+          {{ 'products.included_heading' | t }}
+        </h3>
+        <ul class="product-details-premium__included list-unstyled">
+          <li>{{ 'products.included_item' | t: title: included_title }}</li>
+          <li>{{ 'products.included_packaging' | t }}</li>
+          <li>{{ 'products.included_guide' | t }}</li>
+        </ul>
+      </article>
+
+      <a class="product-details-premium__order" href="{{ order_href }}" {% if wa_digits != blank %}target="_blank" rel="noopener noreferrer"{% endif %}>
+        <span class="product-details-premium__order-icon" aria-hidden="true">{% render 'icon', name: 'shield', size: 22 %}</span>
+        <span>
+          <strong>{{ 'products.order_now_heading' | t }}</strong>
+          <span>{{ 'products.order_now_text' | t: title: short_title }}</span>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>

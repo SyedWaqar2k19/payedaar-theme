@@ -24,16 +24,16 @@
             "inventory_threshold": 5
           }
         },
+        "trust": {
+          "type": "trust",
+          "settings": {}
+        },
         "buy_buttons": {
           "type": "buy_buttons",
           "settings": {
             "show_buy_now": true,
             "show_whatsapp_inquiry": true
           }
-        },
-        "trust": {
-          "type": "trust",
-          "settings": {}
         },
         "description": {
           "type": "description",
@@ -59,8 +59,8 @@
         "title",
         "price",
         "inventory",
-        "buy_buttons",
         "trust",
+        "buy_buttons",
         "description",
         "shipping",
         "share"
@@ -85,7 +85,52 @@
         "products_to_show": 4,
         "intent": "related"
       }
+    },
+    "product_faq": {
+      "type": "home-faq",
+      "blocks": {
+        "f1": {
+          "type": "item",
+          "settings": {
+            "question": "How does Cash on Delivery work?",
+            "answer": "<p>Choose COD when it is available at checkout and pay the courier when your order arrives.</p>"
+          }
+        },
+        "f2": {
+          "type": "item",
+          "settings": {
+            "question": "How long does delivery take?",
+            "answer": "<p>Most orders arrive within a few business days depending on your city across Pakistan.</p>"
+          }
+        },
+        "f3": {
+          "type": "item",
+          "settings": {
+            "question": "What if I receive a damaged product?",
+            "answer": "<p>Contact us on WhatsApp with your order number and photos. We will confirm options under the current return policy.</p>"
+          }
+        }
+      },
+      "block_order": ["f1", "f2", "f3"],
+      "settings": {
+        "heading": "Frequently asked questions",
+        "subheading": "Quick answers before you order",
+        "open_first": false,
+        "full_width": true,
+        "view_all_label": "View all FAQs",
+        "view_all_url": "/pages/faq"
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "Get deals in your inbox",
+        "subheading": "New drops, flash deals, and COD-friendly offers.",
+        "placeholder": "Enter your email",
+        "button_label": "Subscribe",
+        "disclaimer": "Unsubscribe anytime."
+      }
     }
   },
-  "order": ["main", "apps", "related"]
+  "order": ["main", "apps", "related", "product_faq", "newsletter"]
 }

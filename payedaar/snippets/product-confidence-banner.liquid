@@ -1,0 +1,36 @@
+{%- comment -%}
+  Wide “Buy with confidence” banner.
+  Image: metafield custom.confidence_image, else last description image, else extra media.
+{%- endcomment -%}
+
+{%- capture details_image_src -%}
+  {%- render 'product-image-src', product: product, slot: 'details' -%}
+{%- endcapture -%}
+{%- assign details_image_src = details_image_src | strip -%}
+{%- capture confidence_image_src -%}
+  {%- render 'product-image-src', product: product, slot: 'confidence', exclude: details_image_src -%}
+{%- endcapture -%}
+{%- assign confidence_image_src = confidence_image_src | strip -%}
+
+<aside class="product-confidence{% if confidence_image_src == blank %} product-confidence--copy{% endif %}" aria-label="{{ 'products.confidence.heading' | t }}">
+  {%- if confidence_image_src != blank -%}
+    <div class="product-confidence__media" aria-hidden="true">
+      <img
+        class="product-confidence__img"
+        src="{{ confidence_image_src }}"
+        alt=""
+        loading="lazy"
+        width="1200"
+        height="800"
+      >
+    </div>
+    <div class="product-confidence__fade" aria-hidden="true"></div>
+  {%- endif -%}
+  <div class="product-confidence__inner">
+    <span class="product-confidence__icon" aria-hidden="true">{% render 'icon', name: 'shield', size: 28 %}</span>
+    <div class="product-confidence__copy">
+      <h2 class="product-confidence__heading">{{ 'products.confidence.heading' | t }}</h2>
+      <p class="product-confidence__summary">{{ 'products.confidence.summary' | t }}</p>
+    </div>
+  </div>
+</aside>

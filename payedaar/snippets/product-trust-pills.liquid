@@ -1,0 +1,29 @@
+{%- comment -%}
+  Compact buy-box trust pills — COD / delivery / returns.
+{%- endcomment -%}
+
+<ul class="product-trust-pills list-unstyled" role="list">
+  {%- if settings.enable_cod_messaging -%}
+    <li class="product-trust-pills__item">
+      <span class="product-trust-pills__icon" aria-hidden="true">{% render 'icon', name: 'shield', size: 16 %}</span>
+      <span class="product-trust-pills__copy">
+        <span class="product-trust-pills__text">{{ 'products.trust_pills.cod' | t }}</span>
+        <span class="product-trust-pills__hint">{{ 'products.trust_pills.cod_hint' | t }}</span>
+      </span>
+    </li>
+  {%- endif -%}
+  <li class="product-trust-pills__item">
+    <span class="product-trust-pills__icon" aria-hidden="true">{% render 'icon', name: 'truck', size: 16 %}</span>
+    <span class="product-trust-pills__copy">
+      <span class="product-trust-pills__text">{{ 'products.trust_pills.delivery' | t }}</span>
+      <span class="product-trust-pills__hint">{{ 'products.trust_pills.delivery_hint' | t }}</span>
+    </span>
+  </li>
+  <li class="product-trust-pills__item">
+    <span class="product-trust-pills__icon" aria-hidden="true">{% render 'icon', name: 'return', size: 16 %}</span>
+    <span class="product-trust-pills__copy">
+      <span class="product-trust-pills__text">{{ 'products.trust_pills.support' | t }}</span>
+      <span class="product-trust-pills__hint">{{ 'products.trust_pills.support_hint' | t }}</span>
+    </span>
+  </li>
+</ul>

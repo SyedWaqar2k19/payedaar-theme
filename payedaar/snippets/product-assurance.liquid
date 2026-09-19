@@ -1,0 +1,20 @@
+{%- comment -%}
+  Post-CTA assurance list — orange icon markers (target mock).
+{%- endcomment -%}
+
+<ul class="product-assurance list-unstyled" role="list">
+  <li class="product-assurance__item">
+    <span class="product-assurance__icon" aria-hidden="true">{% render 'icon', name: 'shield', size: 14 %}</span>
+    <span>{{ 'products.assurance.original' | t }}</span>
+  </li>
+  <li class="product-assurance__item">
+    <span class="product-assurance__icon" aria-hidden="true">{% render 'icon', name: 'check', size: 14 %}</span>
+    <span>{{ 'products.assurance.secure' | t }}</span>
+  </li>
+  {%- if settings.enable_cod_messaging -%}
+    <li class="product-assurance__item">
+      <span class="product-assurance__icon" aria-hidden="true">{% render 'icon', name: 'truck', size: 14 %}</span>
+      <span>{{ 'products.assurance.cod' | t }}</span>
+    </li>
+  {%- endif -%}
+</ul>

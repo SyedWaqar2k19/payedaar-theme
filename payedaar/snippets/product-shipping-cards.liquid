@@ -1,0 +1,35 @@
+{%- comment -%}
+  Shipping & returns — 3 card grid for PDP.
+{%- endcomment -%}
+
+<div class="product-shipping-cards">
+  <article class="product-shipping-cards__card">
+    <span class="product-shipping-cards__icon" aria-hidden="true">{% render 'icon', name: 'truck', size: 22 %}</span>
+    <h3 class="product-shipping-cards__title">{{ 'products.shipping_cards.delivery_title' | t }}</h3>
+    <ul class="product-shipping-cards__list">
+      <li>{{ 'products.shipping_cards.delivery_1' | t }}</li>
+      <li>{{ 'products.shipping_cards.delivery_2' | t }}</li>
+      <li>{{ 'products.shipping_cards.delivery_3' | t }}</li>
+    </ul>
+  </article>
+  <article class="product-shipping-cards__card">
+    <span class="product-shipping-cards__icon" aria-hidden="true">{% render 'icon', name: 'shield', size: 22 %}</span>
+    <h3 class="product-shipping-cards__title">{{ 'products.shipping_cards.charges_title' | t }}</h3>
+    <ul class="product-shipping-cards__list">
+      <li>{{ settings.trust_delivery }}</li>
+      <li>{{ 'products.shipping_cards.charges_2' | t }}</li>
+      {%- if settings.enable_cod_messaging -%}
+        <li>{{ 'products.shipping_cards.charges_3' | t }}</li>
+      {%- endif -%}
+    </ul>
+  </article>
+  <article class="product-shipping-cards__card">
+    <span class="product-shipping-cards__icon" aria-hidden="true">{% render 'icon', name: 'return', size: 22 %}</span>
+    <h3 class="product-shipping-cards__title">{{ 'products.shipping_cards.returns_title' | t }}</h3>
+    <ul class="product-shipping-cards__list">
+      <li>{{ settings.trust_returns }}</li>
+      <li>{{ 'products.shipping_cards.returns_2' | t }}</li>
+      <li>{{ 'products.shipping_cards.returns_3' | t }}</li>
+    </ul>
+  </article>
+</div>

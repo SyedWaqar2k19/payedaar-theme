@@ -51,6 +51,13 @@
       this.prevBtn?.addEventListener('click', () => this.step(-1));
       this.nextBtn?.addEventListener('click', () => this.step(1));
 
+      this.querySelector('[data-thumbs-prev]')?.addEventListener('click', () => {
+        this.thumbsRail?.scrollBy({ left: -160, behavior: 'smooth' });
+      });
+      this.querySelector('[data-thumbs-next]')?.addEventListener('click', () => {
+        this.thumbsRail?.scrollBy({ left: 160, behavior: 'smooth' });
+      });
+
       this.querySelectorAll('[data-gallery-zoom]').forEach((btn) => {
         btn.addEventListener('click', () => {
           const src = btn.dataset.zoomSrc;

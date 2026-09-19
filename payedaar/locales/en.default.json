@@ -132,6 +132,7 @@
     "add_to_cart": "Add to Cart",
     "buy_now": "Buy Now",
     "ask_whatsapp": "Ask on WhatsApp",
+    "quantity_label": "Quantity:",
     "whatsapp_inquiry": "Hi Payedaar, I have a question about \"{{ title }}\"\n{{ url }}",
     "added_to_cart": "Added",
     "add_to_cart_error": "Could not add to cart. Please try again.",
@@ -172,6 +173,67 @@
     },
     "zoom_hint": "Tap to zoom",
     "details_heading": "Product details",
+    "original_badge": "100% Original",
+    "limited_stock_badge": "Limited Stock",
+    "details_subheading": "Get the complete information about this product.",
+    "features_heading": "Key features",
+    "order_now_heading": "Order now from Payedaar",
+    "order_now_text": "Get {{ title }} delivered across Pakistan with COD on eligible orders.",
+    "included_heading": "What's included",
+    "included_item": "1× {{ title }}",
+    "included_packaging": "Original packaging",
+    "included_guide": "User guide (if applicable)",
+    "details_show_more": "Show full details",
+    "details_show_less": "Show less",
+    "detail_tiles": {
+      "one": "Easy to use",
+      "two": "Quality checked",
+      "three": "Durable build",
+      "four": "Ready to ship"
+    },
+    "trust_pills": {
+      "cod": "Cash on Delivery",
+      "cod_hint": "Pay at your door",
+      "delivery": "Free Delivery",
+      "delivery_hint": "On eligible orders",
+      "support": "7-Day Support",
+      "support_hint": "Easy returns"
+    },
+    "assurance": {
+      "original": "100% Original Product",
+      "secure": "Easy & Secure Checkout",
+      "cod": "Cash on Delivery Available"
+    },
+    "trust_strip": {
+      "original_title": "100% Original",
+      "original_text": "Quality-checked products",
+      "delivery_title": "Free Delivery",
+      "delivery_text": "On eligible orders",
+      "cod_title": "Cash on Delivery",
+      "cod_text": "Pay when you receive",
+      "support_title": "7 Days Support",
+      "support_text": "Easy return help"
+    },
+    "shipping_cards": {
+      "heading": "Shipping & returns",
+      "delivery_title": "Delivery time",
+      "delivery_1": "Typically 3–5 business days across Pakistan",
+      "delivery_2": "Order tracking available after dispatch",
+      "delivery_3": "Major cities often arrive faster",
+      "charges_title": "Shipping charges",
+      "charges_2": "Calculated at checkout by city",
+      "charges_3": "COD available on eligible orders",
+      "returns_title": "Returns & refunds",
+      "returns_2": "Unused items in original condition",
+      "returns_3": "WhatsApp support for return help"
+    },
+    "confidence": {
+      "heading": "Buy with Confidence",
+      "summary": "Original product · Secure payment · Free delivery",
+      "point_1": "Authentic products sourced for everyday deals",
+      "point_2": "Secure checkout and order support",
+      "point_3": "Cash on Delivery on eligible orders"
+    },
     "badge": {
       "hot_deal": "Hot Deal",
       "best_seller": "Best Seller",

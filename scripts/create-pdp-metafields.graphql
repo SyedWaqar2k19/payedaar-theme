@@ -1,0 +1,38 @@
+mutation CreatePdpImageMetafields($details: MetafieldDefinitionInput!, $confidence: MetafieldDefinitionInput!, $keyFeatures: MetafieldDefinitionInput!) {
+  details: metafieldDefinitionCreate(definition: $details) {
+    createdDefinition {
+      id
+      namespace
+      key
+      name
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+  confidence: metafieldDefinitionCreate(definition: $confidence) {
+    createdDefinition {
+      id
+      namespace
+      key
+      name
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+  keyFeatures: metafieldDefinitionCreate(definition: $keyFeatures) {
+    createdDefinition {
+      id
+      namespace
+      key
+      name
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

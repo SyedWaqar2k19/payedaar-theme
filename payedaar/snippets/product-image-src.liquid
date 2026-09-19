@@ -1,0 +1,103 @@
+{%- comment -%}
+  Resolves one image URL for PDP slots.
+  slot: 'details' | 'confidence'
+  exclude: optional URL to avoid repeating (confidence vs details)
+
+  Priority:
+  1. Product metafield custom.details_image / custom.confidence_image
+  2. First / last <img> in product.description
+  3. Extra product media (never the gallery featured image)
+  Never outputs the same URL as exclude.
+{%- endcomment -%}
+
+{%- liquid
+  assign slot = slot | default: 'details'
+  assign exclude_url = exclude | default: '' | strip
+  assign exclude_key = exclude_url | split: '?' | first
+  assign out = ''
+
+  if slot == 'confidence'
+    assign mf = product.metafields.custom.confidence_image
+  else
+    assign mf = product.metafields.custom.details_image
+  endif
+
+  if mf != blank and mf.value != blank
+    assign mf_val = mf.value
+    assign mf_url = ''
+    if mf_val.preview_image != blank
+      assign mf_url = mf_val.preview_image | image_url: width: 1600
+    endif
+    if mf_url == blank
+      assign mf_url = mf_val | image_url: width: 1600
+    endif
+    if mf_url == blank
+      assign mf_url = mf_val | append: '' | strip
+    endif
+    if mf_url contains '//'
+      assign out = mf_url
+    endif
+  endif
+
+  assign first_src = ''
+  assign last_src = ''
+  if product.description contains '<img'
+    assign img_chunks = product.description | split: '<img'
+    for chunk in img_chunks offset: 1
+      assign src = ''
+      if chunk contains 'src="'
+        assign src = chunk | split: 'src="' | last | split: '"' | first | strip
+      endif
+      if src == blank and chunk contains "src='"
+        assign src = chunk | split: "src='" | last | split: "'" | first | strip
+      endif
+      if src != blank
+        unless src contains 'http'
+          if src contains '//'
+            assign src = src | prepend: 'https:'
+          endif
+        endunless
+        if first_src == blank
+          assign first_src = src
+        endif
+        assign last_src = src
+      endif
+    endfor
+  endif
+
+  if out == blank
+    if slot == 'details'
+      assign out = first_src
+    elsif last_src != blank and last_src != first_src
+      assign out = last_src
+    endif
+  endif
+
+  if out == blank
+    assign featured_id = product.featured_media.id
+    if slot == 'details'
+      for media in product.media
+        if media.id != featured_id and media.preview_image != blank
+          assign out = media.preview_image | image_url: width: 1600
+          break
+        endif
+      endfor
+    else
+      for media in product.media
+        if media.id != featured_id and media.preview_image != blank
+          assign candidate = media.preview_image | image_url: width: 1600
+          assign candidate_key = candidate | split: '?' | first
+          if exclude_key == blank or candidate_key != exclude_key
+            assign out = candidate
+          endif
+        endif
+      endfor
+    endif
+  endif
+
+  assign out_key = out | split: '?' | first
+  if exclude_key != blank and out_key == exclude_key
+    assign out = ''
+  endif
+-%}
+{{- out | strip -}}

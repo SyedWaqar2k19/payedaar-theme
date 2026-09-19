@@ -1,5 +1,5 @@
 {%- comment -%}
-  Buy box: quantity + ATC + Buy Now + WhatsApp inquiry.
+  Buy box: qty + ATC + Buy Now + WhatsApp (side by side).
 {%- endcomment -%}
 
 {%- liquid
@@ -12,12 +12,19 @@
   if block.settings.show_whatsapp_inquiry == false
     assign show_whatsapp = false
   endif
-  if settings.whatsapp_number == blank
-    assign show_whatsapp = false
-  endif
+
+  assign wa_raw = settings.whatsapp_number | default: '' | strip
+  assign wa_digits = wa_raw | replace: '+', '' | replace: ' ', '' | replace: '-', '' | replace: '(', '' | replace: ')', '' | replace: '.', ''
 
   assign product_link = request.origin | append: product.url
   assign wa_message = 'products.whatsapp_inquiry' | t: title: product.title, url: product_link
+  assign wa_text = wa_message | url_encode
+
+  if wa_digits != blank
+    assign wa_href = 'https://wa.me/' | append: wa_digits | append: '?text=' | append: wa_text
+  else
+    assign wa_href = 'https://api.whatsapp.com/send?text=' | append: wa_text
+  endif
 -%}
 
 <div class="buy-buttons" {{ block.shopify_attributes }}>
@@ -29,7 +36,8 @@
         product_form_id: product_form_id
       %}
 
-      <div class="buy-buttons__row">
+      <div class="buy-buttons__qty-row">
+        <span class="buy-buttons__qty-label">{{ 'products.quantity_label' | t }}</span>
         <div class="qty-control buy-buttons__qty" data-product-qty>
           <button type="button" class="qty-control__btn" data-qty-minus aria-label="{{ 'cart.decrease' | t }}">
             {% render 'icon', name: 'minus', size: 16 %}
@@ -51,28 +59,29 @@
             {% render 'icon', name: 'plus', size: 16 %}
           </button>
         </div>
-
-        <button
-          type="submit"
-          name="add"
-          class="button button--primary button--lg buy-buttons__atc"
-          data-add-to-cart
-          data-main-atc
-          {% unless current_variant.available %}disabled{% endunless %}
-        >
-          <span data-add-to-cart-text>
-            {%- if current_variant.available -%}
-              {{ 'products.add_to_cart' | t }}
-            {%- else -%}
-              {{ 'products.sold_out' | t }}
-            {%- endif -%}
-          </span>
-          <span class="product-form__spinner" hidden aria-hidden="true"></span>
-        </button>
       </div>
 
+      <button
+        type="submit"
+        name="add"
+        class="button button--primary button--lg buy-buttons__atc"
+        data-add-to-cart
+        data-main-atc
+        {% unless current_variant.available %}disabled{% endunless %}
+      >
+        <span class="buy-buttons__atc-icon" aria-hidden="true">{% render 'icon', name: 'cart', size: 18 %}</span>
+        <span data-add-to-cart-text>
+          {%- if current_variant.available -%}
+            {{ 'products.add_to_cart' | t }}
+          {%- else -%}
+            {{ 'products.sold_out' | t }}
+          {%- endif -%}
+        </span>
+        <span class="product-form__spinner" hidden aria-hidden="true"></span>
+      </button>
+
       {%- if show_buy_now or show_whatsapp -%}
-        <div class="buy-buttons__cta">
+        <div class="buy-buttons__cta{% if show_buy_now and show_whatsapp %} buy-buttons__cta--split{% endif %}">
           {%- if show_buy_now -%}
             <button
               type="button"
@@ -80,6 +89,7 @@
               data-buy-now
               {% unless current_variant.available %}disabled{% endunless %}
             >
+              <span class="buy-buttons__buy-now-icon" aria-hidden="true">{% render 'icon', name: 'bolt', size: 16 %}</span>
               <span data-buy-now-text>{{ 'products.buy_now' | t }}</span>
             </button>
           {%- endif -%}
@@ -87,12 +97,12 @@
           {%- if show_whatsapp -%}
             <a
               class="button button--lg buy-buttons__whatsapp"
-              href="https://wa.me/{{ settings.whatsapp_number }}?text={{ wa_message | url_encode }}"
+              href="{{ wa_href }}"
               target="_blank"
               rel="noopener noreferrer"
               data-product-whatsapp
             >
-              {% render 'icon', name: 'whatsapp', size: 18 %}
+              <span class="buy-buttons__whatsapp-icon" aria-hidden="true">{% render 'icon', name: 'whatsapp', size: 18 %}</span>
               <span>{{ 'products.ask_whatsapp' | t }}</span>
             </a>
           {%- endif -%}

@@ -1,8 +1,10 @@
-<div class="page-width" style="padding: 1rem 0;">
-  {% for block in section.blocks %}
-    {% render block %}
-  {% endfor %}
-</div>
+{%- if section.blocks.size > 0 -%}
+  <div class="page-width section-apps__inner">
+    {%- for block in section.blocks -%}
+      {% render block %}
+    {%- endfor -%}
+  </div>
+{%- endif -%}
 
 {% schema %}
 {

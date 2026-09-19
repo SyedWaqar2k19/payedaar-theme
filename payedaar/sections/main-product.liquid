@@ -25,7 +25,7 @@
         {% render 'product-media-gallery', product: product, section_id: section.id %}
       </div>
 
-      <div class="product-layout__info product-buybox" data-product-info>
+      <div id="ProductBuybox" class="product-layout__info product-buybox" data-product-info>
         {%- for block in section.blocks -%}
           {%- case block.type -%}
             {%- when '@app' -%}
@@ -35,12 +35,30 @@
 
             {%- when 'badge' -%}
               <div class="product-info__badges" {{ block.shopify_attributes }}>
-                {% render 'product-badge', product: product %}
+                <span class="badge badge--original">{{ 'products.original_badge' | t }}</span>
+                {%- liquid
+                  assign inv_variant = product.selected_or_first_available_variant
+                  assign show_limited = false
+                  if inv_variant.inventory_management and inv_variant.available and inv_variant.inventory_quantity > 0 and inv_variant.inventory_quantity <= 5
+                    assign show_limited = true
+                  elsif product.tags contains 'limited'
+                    assign show_limited = true
+                  endif
+                -%}
+                {%- if show_limited or inv_variant.compare_at_price > inv_variant.price -%}
+                  <span class="badge badge--limited-outline">{{ 'products.limited_stock_badge' | t }}</span>
+                {%- endif -%}
               </div>
 
             {%- when 'title' -%}
+              {%- liquid
+                assign display_title = product.title
+                if product.title contains ' | '
+                  assign display_title = product.title | split: ' | ' | last | strip
+                endif
+              -%}
               <div class="product-info__title" {{ block.shopify_attributes }}>
-                <h1 class="product-title">{{ product.title }}</h1>
+                <h1 class="product-title">{{ display_title }}</h1>
                 {%- if block.settings.show_vendor and product.vendor != blank -%}
                   <p class="product-vendor text-muted">{{ product.vendor }}</p>
                 {%- endif -%}
@@ -52,7 +70,7 @@
             {%- when 'price' -%}
               <div class="product-info__price" data-product-price {{ block.shopify_attributes }}>
                 {% render 'price', product: product, use_variant: true, show_badge: true, show_save_amount: true %}
-                <div class="product-info__sku text-muted" data-product-sku {% if current_variant.sku == blank %}hidden{% endif %}>
+                <div class="product-info__sku visually-hidden" data-product-sku {% if current_variant.sku == blank %}hidden{% endif %}>
                   {{ 'products.sku' | t }}: <span data-sku-value>{{ current_variant.sku }}</span>
                 </div>
               </div>
@@ -70,14 +88,17 @@
                       <p class="product-inventory__low">
                         {{ 'products.inventory.low_stock' | t: count: current_variant.inventory_quantity }}
                       </p>
-                    {%- elsif current_variant.inventory_quantity > block.settings.inventory_threshold -%}
-                      <p class="product-inventory__in">{{ 'products.inventory.in_stock' | t }}</p>
                     {%- endif -%}
                   {%- elsif current_variant.available == false -%}
                     <p class="product-inventory__out">{{ 'products.sold_out' | t }}</p>
                   {%- endif -%}
                 </div>
               {%- endif -%}
+
+            {%- when 'trust' -%}
+              <div class="product-info__trust product-info__trust--pills" {{ block.shopify_attributes }}>
+                {% render 'product-trust-pills' %}
+              </div>
 
             {%- when 'variant_picker' -%}
               {%- comment -%} Rendered inside buy_buttons for single form {%- endcomment -%}
@@ -91,24 +112,13 @@
                 show_dynamic_checkout: show_dynamic
               %}
 
+              {% render 'product-assurance' %}
+
               {%- if show_size_guide and section.settings.size_guide_page != blank -%}
                 <p class="product-size-guide">
                   <a href="{{ section.settings.size_guide_page.url }}">{{ 'products.size_guide' | t }}</a>
                 </p>
               {%- endif -%}
-
-            {%- when 'trust' -%}
-              <div class="product-info__trust" {{ block.shopify_attributes }}>
-                {% render 'trust-badges' %}
-                <div class="product-info__trust-meta">
-                  {% render 'cod-badge', product: product %}
-                  {% render 'delivery-estimate', product: product %}
-                </div>
-                {% render 'product-delivery-timeline' %}
-                {%- if settings.enable_cod_messaging -%}
-                  <p class="product-info__cod-note">{{ 'products.open_parcel_cod' | t }}</p>
-                {%- endif -%}
-              </div>
 
             {%- when 'complementary' -%}
               {%- if block.settings.product_list != blank -%}
@@ -132,11 +142,13 @@
               {%- endif -%}
 
             {%- when 'description', 'shipping', 'collapsible_tab', 'share' -%}
-              {%- comment -%} Rendered in full-width details panel below {%- endcomment -%}
+              {%- comment -%} Rendered below the fold {%- endcomment -%}
           {%- endcase -%}
         {%- endfor -%}
       </div>
     </div>
+
+    {% render 'product-trust-strip' %}
 
     {%- assign has_details = false -%}
     {%- for block in section.blocks -%}
@@ -147,58 +159,53 @@
     {%- endfor -%}
 
     {%- if has_details -%}
-      <div class="product-details">
-        <div class="product-details__panel">
-          {%- for block in section.blocks -%}
-            {%- case block.type -%}
-              {%- when 'description' -%}
-                {%- if product.description != blank -%}
-                  <details class="product-accordion product-accordion--premium product-accordion--details" {{ block.shopify_attributes }} {% if block.settings.open %}open{% endif %}>
-                    <summary class="product-accordion__summary">
-                      {%- if block.settings.heading != blank -%}
-                        {{ block.settings.heading }}
-                      {%- else -%}
-                        {{ 'products.details_heading' | t }}
-                      {%- endif -%}
-                    </summary>
-                    <div class="product-accordion__content product-accordion__content--readable rte">{{ product.description }}</div>
-                  </details>
-                {%- endif -%}
+      <div class="product-below">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'description' and product.description != blank -%}
+            <div {{ block.shopify_attributes }}>
+              {% render 'product-details-premium', product: product, heading: block.settings.heading %}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
 
-              {%- when 'collapsible_tab' -%}
-                <details class="product-accordion product-accordion--premium product-accordion--details" {{ block.shopify_attributes }} {% if block.settings.open %}open{% endif %}>
-                  <summary class="product-accordion__summary">{{ block.settings.heading }}</summary>
-                  <div class="product-accordion__content product-accordion__content--readable rte">
-                    {{ block.settings.content }}
-                    {%- if block.settings.page != blank -%}
-                      {{ block.settings.page.content }}
-                    {%- endif -%}
-                  </div>
-                </details>
+        {% render 'product-confidence-banner', product: product %}
 
-              {%- when 'shipping' -%}
-                <details class="product-accordion product-accordion--premium product-accordion--details" {{ block.shopify_attributes }} {% if block.settings.open %}open{% endif %}>
-                  <summary class="product-accordion__summary">{{ block.settings.heading | default: 'Shipping & returns' }}</summary>
-                  <div class="product-accordion__content product-accordion__content--readable rte">
-                    {%- if block.settings.content != blank -%}
-                      {{ block.settings.content }}
-                    {%- else -%}
-                      <p>{{ settings.trust_delivery }}</p>
-                      <p>{{ settings.trust_returns }}</p>
-                      {%- if settings.enable_cod_messaging -%}
-                        <p>{{ settings.trust_cod }}</p>
-                      {%- endif -%}
-                    {%- endif -%}
-                  </div>
-                </details>
-
-              {%- when 'share' -%}
-                <div class="product-details__share" {{ block.shopify_attributes }}>
-                  {% render 'share-buttons', product: product %}
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'collapsible_tab' -%}
+              <details class="product-accordion product-accordion--premium product-accordion--details" {{ block.shopify_attributes }} {% if block.settings.open %}open{% endif %}>
+                <summary class="product-accordion__summary">{{ block.settings.heading }}</summary>
+                <div class="product-accordion__content product-accordion__content--readable rte">
+                  {{ block.settings.content }}
+                  {%- if block.settings.page != blank -%}
+                    {{ block.settings.page.content }}
+                  {%- endif -%}
                 </div>
-            {%- endcase -%}
-          {%- endfor -%}
-        </div>
+              </details>
+
+            {%- when 'shipping' -%}
+              <section class="product-shipping product-shipping--panel" {{ block.shopify_attributes }}>
+                <header class="product-shipping__header">
+                  <h2 class="product-shipping__heading">
+                    <span class="product-shipping__heading-icon" aria-hidden="true">{% render 'icon', name: 'truck', size: 22 %}</span>
+                    {%- if block.settings.heading != blank -%}
+                      {{ block.settings.heading }}
+                    {%- else -%}
+                      {{ 'products.shipping_cards.heading' | t }}
+                    {%- endif -%}
+                  </h2>
+                </header>
+                {%- if block.settings.content != blank -%}
+                  <div class="product-shipping__custom rte">{{ block.settings.content }}</div>
+                {%- else -%}
+                  {% render 'product-shipping-cards' %}
+                {%- endif -%}
+              </section>
+
+            {%- when 'share' -%}
+              {%- comment -%} Kept out of the buy box and below-fold to match the clean mock. {%- endcomment -%}
+          {%- endcase -%}
+        {%- endfor -%}
       </div>
     {%- endif -%}
   </div>
@@ -265,6 +272,14 @@
       "type": "page",
       "id": "size_guide_page",
       "label": "Size guide page"
+    },
+    {
+      "type": "header",
+      "content": "Per-product detail images"
+    },
+    {
+      "type": "paragraph",
+      "content": "Key features bullets: metafield custom.key_features (list of text). Full article: product Description (expands under Show full details). Images: custom.details_image and custom.confidence_image, or first/last images in the description."
     }
   ],
   "blocks": [
@@ -358,6 +373,10 @@
           "id": "open",
           "label": "Open by default",
           "default": true
+        },
+        {
+          "type": "paragraph",
+          "content": "Details photo: product metafield custom.details_image, else the first image in the description. Banner photo: custom.confidence_image, else the last description image."
         }
       ]
     },

@@ -1,0 +1,41 @@
+{
+  "details": {
+    "name": "Details image",
+    "namespace": "custom",
+    "key": "details_image",
+    "description": "Photo for the Product details card. Overrides the first image in the description.",
+    "type": "file_reference",
+    "ownerType": "PRODUCT",
+    "pin": true,
+    "validations": [
+      {
+        "name": "file_type_options",
+        "value": "[\"Image\"]"
+      }
+    ]
+  },
+  "confidence": {
+    "name": "Confidence banner image",
+    "namespace": "custom",
+    "key": "confidence_image",
+    "description": "Photo for the Buy with confidence banner. Overrides the last image in the description.",
+    "type": "file_reference",
+    "ownerType": "PRODUCT",
+    "pin": true,
+    "validations": [
+      {
+        "name": "file_type_options",
+        "value": "[\"Image\"]"
+      }
+    ]
+  },
+  "keyFeatures": {
+    "name": "Key features",
+    "namespace": "custom",
+    "key": "key_features",
+    "description": "Short bullets shown on the product page. The Description field is the full article under Show full details.",
+    "type": "list.single_line_text_field",
+    "ownerType": "PRODUCT",
+    "pin": true
+  }
+}
