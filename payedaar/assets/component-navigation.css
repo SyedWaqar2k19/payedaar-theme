@@ -251,6 +251,19 @@ body.drawer-open {
   overflow: hidden;
 }
 
+/* Keep the mobile nav above page content (hero, etc.) while open.
+   backdrop-filter on the sticky header creates a containing block that
+   can trap the fixed drawer under later sections — disable it only then. */
+body.drawer-open .site-header--premium {
+  z-index: calc(var(--drawer-z) + 20);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+body.drawer-open .header-drawer {
+  z-index: calc(var(--drawer-z) + 30);
+}
+
 /* -------------------------------------------------------------------------- */
 /* Footer                                                                     */
 /* -------------------------------------------------------------------------- */

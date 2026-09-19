@@ -130,6 +130,9 @@
   },
   "products": {
     "add_to_cart": "Add to Cart",
+    "buy_now": "Buy Now",
+    "ask_whatsapp": "Ask on WhatsApp",
+    "whatsapp_inquiry": "Hi Payedaar, I have a question about \"{{ title }}\"\n{{ url }}",
     "added_to_cart": "Added",
     "add_to_cart_error": "Could not add to cart. Please try again.",
     "sold_out": "Sold out",
@@ -144,7 +147,10 @@
     },
     "media": {
       "zoom": "Zoom image",
-      "thumbnail": "View image {{ index }}"
+      "thumbnail": "View image {{ index }}",
+      "gallery": "Product images",
+      "previous": "Previous image",
+      "next": "Next image"
     },
     "inventory": {
       "in_stock": "In stock",
@@ -155,6 +161,17 @@
     "delivery_estimate": "Typically delivered in {{ days }} days",
     "delivery_fallback": "Estimated delivery in 3–5 business days across Pakistan",
     "open_parcel_cod": "Cash on Delivery is available on eligible orders.",
+    "you_save": "You save {{ amount }}",
+    "delivery_timeline": {
+      "ordered": "Ordered",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "ordered_hint": "Today",
+      "shipped_hint": "1–2 days",
+      "delivered_hint": "3–5 days"
+    },
+    "zoom_hint": "Tap to zoom",
+    "details_heading": "Product details",
     "badge": {
       "hot_deal": "Hot Deal",
       "best_seller": "Best Seller",

@@ -26,7 +26,10 @@
         },
         "buy_buttons": {
           "type": "buy_buttons",
-          "settings": {}
+          "settings": {
+            "show_buy_now": true,
+            "show_whatsapp_inquiry": true
+          }
         },
         "trust": {
           "type": "trust",
@@ -35,7 +38,7 @@
         "description": {
           "type": "description",
           "settings": {
-            "heading": "Description",
+            "heading": "Product details",
             "open": true
           }
         },

@@ -23,17 +23,33 @@
   /* -------------------------------------------------------------------- */
   class MediaGallery extends HTMLElement {
     connectedCallback() {
-      this.slides = Array.from(this.querySelectorAll('[data-media-id]')).filter((el) =>
-        el.classList.contains('product-gallery__slide')
-      );
+      this.slides = Array.from(this.querySelectorAll('.product-gallery__slide'));
       this.thumbs = Array.from(this.querySelectorAll('[data-thumb]'));
+      this.dots = Array.from(this.querySelectorAll('[data-gallery-dot]'));
+      this.counter = this.querySelector('[data-gallery-count]');
+      this.thumbsRail = this.querySelector('[data-gallery-thumbs]');
       this.lightbox = this.querySelector('[data-gallery-lightbox]');
       this.lightboxImg = this.querySelector('[data-lightbox-img]');
+      this.prevBtn = this.querySelector('[data-gallery-prev]');
+      this.nextBtn = this.querySelector('[data-gallery-next]');
+      this.viewer = this.querySelector('[data-gallery-viewer]');
       this.touchStartX = 0;
+      this.touchStartY = 0;
+      this.isAnimating = false;
+      this.activeIndex = Math.max(
+        0,
+        this.slides.findIndex((slide) => slide.classList.contains('is-active'))
+      );
+      if (this.activeIndex < 0) this.activeIndex = 0;
 
       this.thumbs.forEach((thumb) => {
-        thumb.addEventListener('click', () => this.setActiveMedia(thumb.dataset.mediaId));
+        thumb.addEventListener('click', () => this.goToMedia(thumb.dataset.mediaId));
       });
+      this.dots.forEach((dot) => {
+        dot.addEventListener('click', () => this.goToMedia(dot.dataset.mediaId));
+      });
+      this.prevBtn?.addEventListener('click', () => this.step(-1));
+      this.nextBtn?.addEventListener('click', () => this.step(1));
 
       this.querySelectorAll('[data-gallery-zoom]').forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -46,45 +62,137 @@
         });
       });
 
-      this.addEventListener(
-        'touchstart',
-        (event) => {
-          this.touchStartX = event.changedTouches[0]?.clientX || 0;
-        },
-        { passive: true }
-      );
-      this.addEventListener(
-        'touchend',
-        (event) => {
-          const delta = (event.changedTouches[0]?.clientX || 0) - this.touchStartX;
-          if (Math.abs(delta) < 45 || this.slides.length < 2) return;
-          const current = Math.max(0, this.slides.findIndex((slide) => !slide.hidden));
-          const next = delta < 0
-            ? Math.min(this.slides.length - 1, current + 1)
-            : Math.max(0, current - 1);
-          this.setActiveMedia(this.slides[next].dataset.mediaId);
-        },
-        { passive: true }
-      );
+      this.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowLeft') {
+          event.preventDefault();
+          this.step(-1);
+        } else if (event.key === 'ArrowRight') {
+          event.preventDefault();
+          this.step(1);
+        }
+      });
+
+      if (this.viewer) {
+        this.viewer.addEventListener(
+          'touchstart',
+          (event) => {
+            this.touchStartX = event.changedTouches[0]?.clientX || 0;
+            this.touchStartY = event.changedTouches[0]?.clientY || 0;
+          },
+          { passive: true }
+        );
+        this.viewer.addEventListener(
+          'touchend',
+          (event) => {
+            const touch = event.changedTouches[0];
+            if (!touch || this.slides.length < 2) return;
+            const dx = touch.clientX - this.touchStartX;
+            const dy = touch.clientY - this.touchStartY;
+            if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy)) return;
+            this.step(dx < 0 ? 1 : -1);
+          },
+          { passive: true }
+        );
+      }
 
       document.addEventListener('variant:change', (event) => {
         const mediaId = event.detail?.variant?.featured_media?.id;
-        if (mediaId) this.setActiveMedia(String(mediaId));
+        if (mediaId) this.goToMedia(String(mediaId));
       });
+
+      this.syncUi(false);
+    }
+
+    step(delta) {
+      if (this.slides.length < 2) return;
+      const next = (this.activeIndex + delta + this.slides.length) % this.slides.length;
+      this.goToIndex(next, delta);
+    }
+
+    goToMedia(mediaId) {
+      const index = this.slides.findIndex((slide) => String(slide.dataset.mediaId) === String(mediaId));
+      if (index < 0 || index === this.activeIndex) return;
+      const delta = index > this.activeIndex ? 1 : -1;
+      this.goToIndex(index, delta);
+    }
+
+    goToIndex(index, direction = 1) {
+      if (index < 0 || index >= this.slides.length || index === this.activeIndex) return;
+      if (this.isAnimating) return;
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const fromSlide = this.slides[this.activeIndex];
+      const toSlide = this.slides[index];
+      const dir = direction < 0 ? -1 : 1;
+
+      this.activeIndex = index;
+
+      if (reduceMotion) {
+        this.slides.forEach((slide, i) => {
+          slide.classList.toggle('is-active', i === index);
+          slide.classList.remove('is-enter-from-left', 'is-enter-from-right', 'is-exit-to-left', 'is-exit-to-right');
+          slide.setAttribute('aria-hidden', i === index ? 'false' : 'true');
+        });
+        this.syncUi(true);
+        return;
+      }
+
+      this.isAnimating = true;
+      fromSlide.classList.remove('is-active', 'is-enter-from-left', 'is-enter-from-right');
+      fromSlide.classList.add(dir > 0 ? 'is-exit-to-left' : 'is-exit-to-right');
+      fromSlide.setAttribute('aria-hidden', 'true');
+
+      toSlide.classList.remove('is-exit-to-left', 'is-exit-to-right');
+      toSlide.classList.add('is-active', dir > 0 ? 'is-enter-from-right' : 'is-enter-from-left');
+      toSlide.setAttribute('aria-hidden', 'false');
+
+      const finish = () => {
+        fromSlide.classList.remove('is-exit-to-left', 'is-exit-to-right');
+        toSlide.classList.remove('is-enter-from-left', 'is-enter-from-right');
+        this.isAnimating = false;
+        toSlide.removeEventListener('animationend', finish);
+      };
+      toSlide.addEventListener('animationend', finish, { once: true });
+      window.setTimeout(finish, 520);
+
+      this.syncUi(true);
+    }
+
+    syncUi(scrollThumb) {
+      this.slides.forEach((slide, i) => {
+        const active = i === this.activeIndex;
+        if (!slide.classList.contains('is-enter-from-left') && !slide.classList.contains('is-enter-from-right')) {
+          slide.classList.toggle('is-active', active);
+        }
+        slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+      });
+
+      this.thumbs.forEach((thumb, i) => {
+        const active = i === this.activeIndex;
+        thumb.classList.toggle('is-active', active);
+        thumb.setAttribute('aria-current', active ? 'true' : 'false');
+        if (active && scrollThumb && this.thumbsRail) {
+          thumb.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+      });
+
+      this.dots.forEach((dot, i) => {
+        const active = i === this.activeIndex;
+        dot.classList.toggle('is-active', active);
+        dot.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+
+      if (this.counter && this.slides.length > 1) {
+        const labelIndex = Number(this.slides[this.activeIndex]?.dataset.mediaIndex || this.activeIndex + 1);
+        this.counter.textContent = `${labelIndex} / ${this.slides.length}`;
+      }
+
+      if (this.prevBtn) this.prevBtn.disabled = this.slides.length < 2;
+      if (this.nextBtn) this.nextBtn.disabled = this.slides.length < 2;
     }
 
     setActiveMedia(mediaId) {
-      const id = String(mediaId);
-      this.slides.forEach((slide) => {
-        const active = String(slide.dataset.mediaId) === id;
-        slide.classList.toggle('is-active', active);
-        slide.hidden = !active;
-      });
-      this.thumbs.forEach((thumb) => {
-        const active = String(thumb.dataset.mediaId) === id;
-        thumb.classList.toggle('is-active', active);
-        thumb.setAttribute('aria-current', active ? 'true' : 'false');
-      });
+      this.goToMedia(mediaId);
     }
   }
 
@@ -208,12 +316,16 @@
       if (!variant.available) html += ' price--sold-out';
       html += '"><div class="price__regular">';
       if (onSale) {
-        const pct = Math.round(
-          ((variant.compare_at_price - variant.price) * 100) / variant.compare_at_price
-        );
+        const save = variant.compare_at_price - variant.price;
+        const pct = Math.round((save * 100) / variant.compare_at_price);
         html += `<span class="price__sale">${formatMoney(variant.price)}</span>`;
         html += `<s class="price__compare">${formatMoney(variant.compare_at_price)}</s>`;
         html += `<span class="badge badge--sale">-${pct}%</span>`;
+        const saveLabel = (window.themeStrings?.youSave || 'You save AMOUNT').replace(
+          /AMOUNT|\{\{\s*amount\s*\}\}/g,
+          formatMoney(save)
+        );
+        html += `<span class="price__save">${saveLabel}</span>`;
       } else {
         html += `<span class="price__current">${formatMoney(variant.price)}</span>`;
       }
@@ -230,6 +342,8 @@
     updateAvailability(variant) {
       const btn = this.section.querySelector('[data-main-atc]');
       const btnText = this.section.querySelector('[data-add-to-cart-text]');
+      const buyNowBtn = this.section.querySelector('[data-buy-now]');
+      const buyNowText = this.section.querySelector('[data-buy-now-text]');
       const stickyBtn = document.querySelector('[data-sticky-atc-trigger]');
       const stickyText = document.querySelector('[data-sticky-atc-text]');
       const available = Boolean(variant?.available);
@@ -239,12 +353,18 @@
         const form = btn.closest('product-form');
         if (form) form._available = available;
       }
+      if (buyNowBtn) buyNowBtn.disabled = !available;
       if (btnText) {
         btnText.textContent = available
           ? strings.addToCart || 'Add to Cart'
           : variant
             ? strings.soldOut || 'Sold out'
             : 'Choose an available combination';
+      }
+      if (buyNowText) {
+        buyNowText.textContent = available
+          ? strings.buyNow || 'Buy Now'
+          : strings.soldOut || 'Sold out';
       }
       if (stickyBtn) stickyBtn.disabled = !available;
       if (stickyText) {

@@ -1,96 +1,161 @@
 {%- comment -%}
-  Media gallery — main viewer + thumbs; supports image + video.
+  Media gallery — animated slider, arrows, dots, thumbs, lightbox.
 {%- endcomment -%}
 
 {%- liquid
   assign current_variant = product.selected_or_first_available_variant
   assign featured = current_variant.featured_media | default: product.featured_media
+  assign media_count = product.media.size
 -%}
 
-<media-gallery class="product-gallery" data-product-gallery>
+<media-gallery class="product-gallery" data-product-gallery tabindex="0" aria-roledescription="carousel" aria-label="{{ product.title | escape }}">
   <div class="product-gallery__viewer" data-gallery-viewer>
-    {%- if product.media.size > 0 -%}
-      {%- for media in product.media -%}
-        {%- liquid
-          assign is_active = false
+    {%- if media_count > 1 -%}
+      {%- liquid
+        assign active_index = 1
+        for media in product.media
           if featured and media.id == featured.id
-            assign is_active = true
-          elsif featured == blank and forloop.first
-            assign is_active = true
+            assign active_index = forloop.index
           endif
-        -%}
-        <div
-          class="product-gallery__slide{% if is_active %} is-active{% endif %}"
-          data-media-id="{{ media.id }}"
-          data-media-type="{{ media.media_type }}"
-          {% unless is_active %}hidden{% endunless %}
-        >
-          {%- case media.media_type -%}
-            {%- when 'image' -%}
-              <button
-                type="button"
-                class="product-gallery__zoom-trigger"
-                data-gallery-zoom
-                data-zoom-src="{{ media | image_url: width: 2000 }}"
-                aria-label="{{ 'products.media.zoom' | t }}"
-              >
-                {%- if is_active -%}
-                  {{
-                    media
-                    | image_url: width: 1400
-                    | image_tag:
-                      loading: 'eager',
-                      fetchpriority: 'high',
-                      widths: '400, 600, 800, 1000, 1200, 1400',
-                      sizes: '(min-width: 990px) 50vw, 100vw',
-                      class: 'product-gallery__image',
-                      alt: media.alt | default: product.title
-                  }}
-                {%- else -%}
-                  {{
-                    media
-                    | image_url: width: 1400
-                    | image_tag:
-                      loading: 'lazy',
-                      widths: '400, 600, 800, 1000, 1200, 1400',
-                      sizes: '(min-width: 990px) 50vw, 100vw',
-                      class: 'product-gallery__image',
-                      alt: media.alt | default: product.title
-                  }}
-                {%- endif -%}
-              </button>
-            {%- when 'external_video' -%}
-              <div class="product-gallery__video">
-                {{ media | external_video_tag: class: 'product-gallery__video-el' }}
-              </div>
-            {%- when 'video' -%}
-              <div class="product-gallery__video">
-                {{ media | video_tag: controls: true, class: 'product-gallery__video-el', image_size: '1100x' }}
-              </div>
-            {%- when 'model' -%}
-              <div class="product-gallery__model">
-                {{ media | model_viewer_tag }}
-              </div>
-            {%- else -%}
-              {{
-                media.preview_image
-                | image_url: width: 1400
-                | image_tag:
-                  loading: 'lazy',
-                  class: 'product-gallery__image',
-                  alt: media.alt | default: product.title
-              }}
-          {%- endcase -%}
+        endfor
+      -%}
+      <span class="product-gallery__count" data-gallery-count aria-hidden="true">{{ active_index }} / {{ media_count }}</span>
+
+      <button
+        type="button"
+        class="product-gallery__nav product-gallery__nav--prev"
+        data-gallery-prev
+        aria-label="{{ 'products.media.previous' | t }}"
+      >
+        {% render 'icon', name: 'arrow-left', size: 20 %}
+      </button>
+      <button
+        type="button"
+        class="product-gallery__nav product-gallery__nav--next"
+        data-gallery-next
+        aria-label="{{ 'products.media.next' | t }}"
+      >
+        {% render 'icon', name: 'arrow-right', size: 20 %}
+      </button>
+    {%- endif -%}
+
+    <span class="product-gallery__zoom-hint" aria-hidden="true">
+      {% render 'icon', name: 'search', size: 14 %}
+      {{ 'products.zoom_hint' | t }}
+    </span>
+
+    <div class="product-gallery__track" data-gallery-track>
+      {%- if media_count > 0 -%}
+        {%- for media in product.media -%}
+          {%- liquid
+            assign is_active = false
+            if featured and media.id == featured.id
+              assign is_active = true
+            elsif featured == blank and forloop.first
+              assign is_active = true
+            endif
+          -%}
+          <div
+            class="product-gallery__slide{% if is_active %} is-active{% endif %}"
+            data-media-id="{{ media.id }}"
+            data-media-type="{{ media.media_type }}"
+            data-media-index="{{ forloop.index }}"
+            role="group"
+            aria-roledescription="slide"
+            aria-label="{{ forloop.index }} of {{ media_count }}"
+            {% unless is_active %}aria-hidden="true"{% endunless %}
+          >
+            {%- case media.media_type -%}
+              {%- when 'image' -%}
+                <button
+                  type="button"
+                  class="product-gallery__zoom-trigger"
+                  data-gallery-zoom
+                  data-zoom-src="{{ media | image_url: width: 2000 }}"
+                  aria-label="{{ 'products.media.zoom' | t }}"
+                >
+                  {%- if is_active -%}
+                    {{
+                      media
+                      | image_url: width: 1400
+                      | image_tag:
+                        loading: 'eager',
+                        fetchpriority: 'high',
+                        widths: '400, 600, 800, 1000, 1200, 1400',
+                        sizes: '(min-width: 990px) 48vw, 100vw',
+                        class: 'product-gallery__image',
+                        alt: media.alt | default: product.title
+                    }}
+                  {%- else -%}
+                    {{
+                      media
+                      | image_url: width: 1400
+                      | image_tag:
+                        loading: 'lazy',
+                        widths: '400, 600, 800, 1000, 1200, 1400',
+                        sizes: '(min-width: 990px) 48vw, 100vw',
+                        class: 'product-gallery__image',
+                        alt: media.alt | default: product.title
+                    }}
+                  {%- endif -%}
+                </button>
+              {%- when 'external_video' -%}
+                <div class="product-gallery__video">
+                  {{ media | external_video_tag: class: 'product-gallery__video-el' }}
+                </div>
+              {%- when 'video' -%}
+                <div class="product-gallery__video">
+                  {{ media | video_tag: controls: true, class: 'product-gallery__video-el', image_size: '1100x' }}
+                </div>
+              {%- when 'model' -%}
+                <div class="product-gallery__model">
+                  {{ media | model_viewer_tag }}
+                </div>
+              {%- else -%}
+                {{
+                  media.preview_image
+                  | image_url: width: 1400
+                  | image_tag:
+                    loading: 'lazy',
+                    class: 'product-gallery__image',
+                    alt: media.alt | default: product.title
+                }}
+            {%- endcase -%}
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        <div class="product-gallery__slide is-active" data-media-id="0" data-media-index="1">
+          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg product-gallery__placeholder' }}
         </div>
-      {%- endfor -%}
-    {%- else -%}
-      <div class="product-gallery__slide is-active" data-media-id="0">
-        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg product-gallery__placeholder' }}
+      {%- endif -%}
+    </div>
+
+    {%- if media_count > 1 -%}
+      <div class="product-gallery__dots" data-gallery-dots role="tablist" aria-label="{{ 'products.media.gallery' | t }}">
+        {%- for media in product.media -%}
+          {%- liquid
+            assign is_active = false
+            if featured and media.id == featured.id
+              assign is_active = true
+            elsif featured == blank and forloop.first
+              assign is_active = true
+            endif
+          -%}
+          <button
+            type="button"
+            class="product-gallery__dot{% if is_active %} is-active{% endif %}"
+            data-gallery-dot
+            data-media-id="{{ media.id }}"
+            role="tab"
+            aria-selected="{% if is_active %}true{% else %}false{% endif %}"
+            aria-label="{{ 'products.media.thumbnail' | t: index: forloop.index }}"
+          ></button>
+        {%- endfor -%}
       </div>
     {%- endif -%}
   </div>
 
-  {%- if product.media.size > 1 -%}
+  {%- if media_count > 1 -%}
     <ul class="product-gallery__thumbs list-unstyled" role="list" data-gallery-thumbs>
       {%- for media in product.media -%}
         {%- liquid
@@ -115,11 +180,11 @@
             {%- endif -%}
             {{
               media.preview_image
-              | image_url: width: 160
+              | image_url: width: 200
               | image_tag:
                 loading: 'lazy',
-                widths: '80, 120, 160',
-                sizes: '64px',
+                widths: '80, 120, 160, 200',
+                sizes: '72px',
                 alt: media.alt | default: product.title
             }}
           </button>

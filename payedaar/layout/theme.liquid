@@ -74,6 +74,7 @@
       window.themeStrings = {
         addedToCart: {{ 'products.added_to_cart' | t | json }},
         addToCart: {{ 'products.add_to_cart' | t | json }},
+        buyNow: {{ 'products.buy_now' | t | json }},
         soldOut: {{ 'products.sold_out' | t | json }},
         addToCartError: {{ 'products.add_to_cart_error' | t | json }},
         cartCountOne: {{ 'general.cart_count.one' | t: count: 'COUNT' | json }},
@@ -82,6 +83,7 @@
         inStock: {{ 'products.inventory.in_stock' | t | json }},
         lowStockHtml: {{ 'products.inventory.low_stock' | t: count: 'COUNT' | json }},
         left: {{ 'products.inventory.left' | t | json }},
+        youSave: {{ 'products.you_save' | t: amount: 'AMOUNT' | json }},
         suggestions: {{ 'general.search_suggestions' | t | json }},
         noSuggestions: {{ 'general.search_no_suggestions' | t | json }}
       };

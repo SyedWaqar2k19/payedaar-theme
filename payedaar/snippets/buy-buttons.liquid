@@ -1,9 +1,23 @@
 {%- comment -%}
-  Buy box: quantity + ATC + optional dynamic checkout.
+  Buy box: quantity + ATC + Buy Now + WhatsApp inquiry.
 {%- endcomment -%}
 
 {%- liquid
   assign current_variant = product.selected_or_first_available_variant
+  assign show_buy_now = true
+  assign show_whatsapp = true
+  if block.settings.show_buy_now == false
+    assign show_buy_now = false
+  endif
+  if block.settings.show_whatsapp_inquiry == false
+    assign show_whatsapp = false
+  endif
+  if settings.whatsapp_number == blank
+    assign show_whatsapp = false
+  endif
+
+  assign product_link = request.origin | append: product.url
+  assign wa_message = 'products.whatsapp_inquiry' | t: title: product.title, url: product_link
 -%}
 
 <div class="buy-buttons" {{ block.shopify_attributes }}>
@@ -56,6 +70,34 @@
           <span class="product-form__spinner" hidden aria-hidden="true"></span>
         </button>
       </div>
+
+      {%- if show_buy_now or show_whatsapp -%}
+        <div class="buy-buttons__cta">
+          {%- if show_buy_now -%}
+            <button
+              type="button"
+              class="button button--lg buy-buttons__buy-now"
+              data-buy-now
+              {% unless current_variant.available %}disabled{% endunless %}
+            >
+              <span data-buy-now-text>{{ 'products.buy_now' | t }}</span>
+            </button>
+          {%- endif -%}
+
+          {%- if show_whatsapp -%}
+            <a
+              class="button button--lg buy-buttons__whatsapp"
+              href="https://wa.me/{{ settings.whatsapp_number }}?text={{ wa_message | url_encode }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-product-whatsapp
+            >
+              {% render 'icon', name: 'whatsapp', size: 18 %}
+              <span>{{ 'products.ask_whatsapp' | t }}</span>
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
 
       {%- if show_dynamic_checkout -%}
         <div class="buy-buttons__dynamic">

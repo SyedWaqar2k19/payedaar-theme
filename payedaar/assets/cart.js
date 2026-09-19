@@ -272,12 +272,15 @@
       this.form = this.querySelector('form');
       this.button = this.querySelector('[data-add-to-cart]');
       this.buttonText = this.querySelector('[data-add-to-cart-text]');
+      this.buyNowBtn = this.querySelector('[data-buy-now]');
+      this.buyNowText = this.querySelector('[data-buy-now-text]');
       this.spinner = this.querySelector('.product-form__spinner');
       this._busy = false;
       this._available = this.button ? !this.button.disabled : true;
       if (!this.form) return;
 
       this.form.addEventListener('submit', this.onSubmit.bind(this));
+      this.buyNowBtn?.addEventListener('click', this.onBuyNow.bind(this));
 
       const variantSelect = this.form.querySelector('[data-product-variant-select]');
       if (variantSelect) {
@@ -292,9 +295,15 @@
       const available = option.dataset.available !== 'false' && !option.disabled;
       this._available = available;
       this.button.disabled = !available;
+      if (this.buyNowBtn) this.buyNowBtn.disabled = !available;
       if (this.buttonText && !this._showAdded) {
         this.buttonText.textContent = available
           ? strings.addToCart || 'Add to Cart'
+          : strings.soldOut || 'Sold out';
+      }
+      if (this.buyNowText) {
+        this.buyNowText.textContent = available
+          ? strings.buyNow || 'Buy Now'
           : strings.soldOut || 'Sold out';
       }
     }
@@ -302,10 +311,12 @@
     setLoading(loading) {
       if (!this.button) return;
       this.button.setAttribute('aria-busy', loading ? 'true' : 'false');
+      if (this.buyNowBtn) this.buyNowBtn.setAttribute('aria-busy', loading ? 'true' : 'false');
       if (this.spinner) this.spinner.hidden = !loading;
       this.classList.toggle('is-loading', loading);
       if (loading) {
         this.button.setAttribute('disabled', '');
+        this.buyNowBtn?.setAttribute('disabled', '');
         return;
       }
       const select = this.form?.querySelector('[data-product-variant-select]');
@@ -314,22 +325,30 @@
         const available = option && option.dataset.available !== 'false' && !option.disabled;
         this._available = Boolean(available);
         this.button.disabled = !available;
+        if (this.buyNowBtn) this.buyNowBtn.disabled = !available;
       } else if (this._available === false) {
         this.button.setAttribute('disabled', '');
+        this.buyNowBtn?.setAttribute('disabled', '');
       } else {
         this.button.removeAttribute('disabled');
+        this.buyNowBtn?.removeAttribute('disabled');
       }
     }
 
-    async onSubmit(event) {
-      event.preventDefault();
-      if (!this.form || this._busy || this.button?.disabled) return;
+    checkoutUrl() {
+      const root = (window.themeRoutes?.root_url || '/').replace(/\/?$/, '/');
+      return `${root}checkout`;
+    }
+
+    async addToCart(options = {}) {
+      const { redirectCheckout = false } = options;
+      if (!this.form || this._busy || this.button?.disabled) return false;
 
       const formData = new FormData(this.form);
       const id = Number(formData.get('id'));
       if (!id) {
         document.querySelector('cart-drawer')?.showError(strings.addToCartError || 'Could not add to cart');
-        return;
+        return false;
       }
 
       formData.set('sections', SECTION_ID);
@@ -348,6 +367,12 @@
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
           throw new Error(data.description || data.message || strings.addToCartError || 'Add to cart failed');
+        }
+
+        if (redirectCheckout) {
+          added = true;
+          window.location.href = this.checkoutUrl();
+          return true;
         }
 
         const drawer = document.querySelector('cart-drawer');
@@ -380,8 +405,10 @@
         drawer?.showError(error.message || strings.addToCartError || 'Could not add to cart');
         drawer?.open(this.button);
       } finally {
-        this._busy = false;
-        this.setLoading(false);
+        if (!(redirectCheckout && added)) {
+          this._busy = false;
+          this.setLoading(false);
+        }
       }
 
       if (added && this.buttonText) {
@@ -398,6 +425,19 @@
           }
         }, 1200);
       }
+
+      return added;
+    }
+
+    async onSubmit(event) {
+      event.preventDefault();
+      await this.addToCart({ redirectCheckout: false });
+    }
+
+    async onBuyNow(event) {
+      event.preventDefault();
+      if (this.buyNowBtn?.disabled) return;
+      await this.addToCart({ redirectCheckout: true });
     }
   }
 

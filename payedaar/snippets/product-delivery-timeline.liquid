@@ -1,0 +1,21 @@
+{%- comment -%}
+  Estimated fulfillment timeline for PDP buy box.
+{%- endcomment -%}
+
+<ol class="product-timeline list-unstyled" aria-label="{{ 'products.delivery_fallback' | t }}">
+  <li class="product-timeline__step is-current">
+    <span class="product-timeline__dot" aria-hidden="true"></span>
+    <span class="product-timeline__label">{{ 'products.delivery_timeline.ordered' | t }}</span>
+    <span class="product-timeline__hint">{{ 'products.delivery_timeline.ordered_hint' | t }}</span>
+  </li>
+  <li class="product-timeline__step">
+    <span class="product-timeline__dot" aria-hidden="true"></span>
+    <span class="product-timeline__label">{{ 'products.delivery_timeline.shipped' | t }}</span>
+    <span class="product-timeline__hint">{{ 'products.delivery_timeline.shipped_hint' | t }}</span>
+  </li>
+  <li class="product-timeline__step">
+    <span class="product-timeline__dot" aria-hidden="true"></span>
+    <span class="product-timeline__label">{{ 'products.delivery_timeline.delivered' | t }}</span>
+    <span class="product-timeline__hint">{{ 'products.delivery_timeline.delivered_hint' | t }}</span>
+  </li>
+</ol>
