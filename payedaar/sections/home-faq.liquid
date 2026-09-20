@@ -1,47 +1,71 @@
 {% render 'faq-json-ld', blocks: section.blocks %}
 <section
-  class="section section-home-faq"
+  class="section home-faq"
   data-section-id="{{ section.id }}"
   data-section-type="home-faq"
   data-reveal
 >
-  <div class="page-width{% unless section.settings.full_width %} page-width--narrow{% endunless %}">
-    <header class="section-header {% if section.settings.full_width %}section-header--split{% else %}section-header--center{% endif %}">
-      <div class="section-header__copy">
-        {%- if section.settings.heading != blank -%}
-          <h2 class="section-header__heading section-header__heading--accent">{{ section.settings.heading }}</h2>
+  <div class="page-width">
+    <div class="home-faq__panel{% if section.settings.full_width %} home-faq__panel--split{% endif %}">
+      <header class="home-faq__intro section-header{% unless section.settings.full_width %} section-header--center{% endunless %}">
+        <div class="section-header__copy">
+          {%- if section.settings.heading != blank -%}
+            <h2 class="section-header__heading section-header__heading--accent">{{ section.settings.heading }}</h2>
+          {%- endif -%}
+          {%- if section.settings.subheading != blank -%}
+            <p class="section-header__sub">{{ section.settings.subheading }}</p>
+          {%- endif -%}
+        </div>
+        {%- if section.settings.view_all_label != blank and section.settings.view_all_url != blank -%}
+          <a class="section-header__link" href="{{ section.settings.view_all_url }}">{{ section.settings.view_all_label }}</a>
         {%- endif -%}
-        {%- if section.settings.subheading != blank -%}
-          <p class="section-header__sub"{% unless section.settings.full_width %} style="margin-inline: auto;"{% endunless %}>{{ section.settings.subheading }}</p>
-        {%- endif -%}
-      </div>
-      {%- if section.settings.view_all_label != blank and section.settings.view_all_url != blank -%}
-        <a class="section-header__link" href="{{ section.settings.view_all_url }}">{{ section.settings.view_all_label }}</a>
-      {%- endif -%}
-    </header>
+      </header>
 
-    <div class="home-faq-list">
-      {%- for block in section.blocks -%}
-        <details class="faq-item product-accordion" {{ block.shopify_attributes }} {% if forloop.first and section.settings.open_first %}open{% endif %}>
-          <summary class="product-accordion__summary">{{ block.settings.question }}</summary>
-          <div class="product-accordion__content rte">
-            {{ block.settings.answer }}
-          </div>
-        </details>
-      {%- else -%}
-        <details class="faq-item product-accordion" open>
-          <summary class="product-accordion__summary">{{ 'sections.home_faq.default_q1' | t }}</summary>
-          <div class="product-accordion__content rte"><p>{{ 'sections.home_faq.default_a1' | t }}</p></div>
-        </details>
-        <details class="faq-item product-accordion">
-          <summary class="product-accordion__summary">{{ 'sections.home_faq.default_q2' | t }}</summary>
-          <div class="product-accordion__content rte"><p>{{ 'sections.home_faq.default_a2' | t }}</p></div>
-        </details>
-        <details class="faq-item product-accordion">
-          <summary class="product-accordion__summary">{{ 'sections.home_faq.default_q3' | t }}</summary>
-          <div class="product-accordion__content rte"><p>{{ 'sections.home_faq.default_a3' | t }}</p></div>
-        </details>
-      {%- endfor -%}
+      <div class="home-faq-list">
+        {%- for block in section.blocks -%}
+          <details
+            class="home-faq-item faq-item product-accordion"
+            {{ block.shopify_attributes }}
+            {% if forloop.first and section.settings.open_first %}open{% endif %}
+          >
+            <summary class="home-faq-item__summary product-accordion__summary">
+              <span class="home-faq-item__question">{{ block.settings.question }}</span>
+              <span class="home-faq-item__icon" aria-hidden="true">{% render 'icon', name: 'chevron-down', size: 18 %}</span>
+            </summary>
+            <div class="home-faq-item__answer product-accordion__content rte">
+              {{ block.settings.answer }}
+            </div>
+          </details>
+        {%- else -%}
+          <details class="home-faq-item faq-item product-accordion" open>
+            <summary class="home-faq-item__summary product-accordion__summary">
+              <span class="home-faq-item__question">{{ 'sections.home_faq.default_q1' | t }}</span>
+              <span class="home-faq-item__icon" aria-hidden="true">{% render 'icon', name: 'chevron-down', size: 18 %}</span>
+            </summary>
+            <div class="home-faq-item__answer product-accordion__content rte">
+              <p>{{ 'sections.home_faq.default_a1' | t }}</p>
+            </div>
+          </details>
+          <details class="home-faq-item faq-item product-accordion">
+            <summary class="home-faq-item__summary product-accordion__summary">
+              <span class="home-faq-item__question">{{ 'sections.home_faq.default_q2' | t }}</span>
+              <span class="home-faq-item__icon" aria-hidden="true">{% render 'icon', name: 'chevron-down', size: 18 %}</span>
+            </summary>
+            <div class="home-faq-item__answer product-accordion__content rte">
+              <p>{{ 'sections.home_faq.default_a2' | t }}</p>
+            </div>
+          </details>
+          <details class="home-faq-item faq-item product-accordion">
+            <summary class="home-faq-item__summary product-accordion__summary">
+              <span class="home-faq-item__question">{{ 'sections.home_faq.default_q3' | t }}</span>
+              <span class="home-faq-item__icon" aria-hidden="true">{% render 'icon', name: 'chevron-down', size: 18 %}</span>
+            </summary>
+            <div class="home-faq-item__answer product-accordion__content rte">
+              <p>{{ 'sections.home_faq.default_a3' | t }}</p>
+            </div>
+          </details>
+        {%- endfor -%}
+      </div>
     </div>
   </div>
 </section>
@@ -74,8 +98,8 @@
     {
       "type": "checkbox",
       "id": "full_width",
-      "label": "Full width layout",
-      "default": false
+      "label": "Split layout (heading left, questions right)",
+      "default": true
     },
     {
       "type": "text",

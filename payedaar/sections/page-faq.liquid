@@ -1,77 +1,180 @@
-<section class="section section-faq" data-section-id="{{ section.id }}">
-  <div class="page-width page-width--narrow">
-    <header class="page-header page-header--center">
-      <h1 class="page-header__title">{{ page.title | default: section.settings.heading }}</h1>
+{%- liquid
+  assign track_page = pages['track-order']
+  assign shipping_page = pages['shipping-returns']
+  assign contact_page = pages['contact']
+  assign group_keys = 'orders,delivery,returns,account' | split: ','
+  assign group_opened = false
+-%}
+
+{% render 'faq-json-ld', blocks: section.blocks %}
+
+<section class="faq-page" data-section-id="{{ section.id }}" data-faq-page>
+  <div class="page-width">
+    <header class="faq-page__hero">
+      <p class="faq-page__kicker">{{ 'faq.kicker' | t }}</p>
+      <h1 class="faq-page__title">{{ page.title | default: section.settings.heading }}</h1>
       {%- if section.settings.subheading != blank -%}
-        <p class="page-header__sub">{{ section.settings.subheading }}</p>
+        <p class="faq-page__sub">{{ section.settings.subheading }}</p>
       {%- endif -%}
+      <ul class="faq-page__pills list-unstyled">
+        <li>{{ 'faq.pill_cod' | t }}</li>
+        <li>{{ 'faq.pill_delivery' | t }}</li>
+        <li>{{ 'faq.pill_returns' | t }}</li>
+      </ul>
     </header>
 
-    {%- if page.content != blank -%}
-      <div class="rte mb-3">{{ page.content }}</div>
+    <div class="faq-page__toolbar">
+      <label class="faq-page__search">
+        <span class="visually-hidden">{{ 'faq.search_label' | t }}</span>
+        <span class="faq-page__search-icon" aria-hidden="true">{% render 'icon', name: 'search', size: 16 %}</span>
+        <input
+          class="faq-page__search-input"
+          type="search"
+          data-faq-search
+          placeholder="{{ 'faq.search_placeholder' | t }}"
+          autocomplete="off"
+        >
+      </label>
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <nav class="faq-page__chips" aria-label="{{ 'faq.topics' | t }}">
+        {%- for key in group_keys -%}
+          {%- assign group_count = 0 -%}
+          {%- for block in section.blocks -%}
+            {%- assign cat = block.settings.category | default: 'orders' -%}
+            {%- if block.type == 'item' and cat == key -%}
+              {%- assign group_count = group_count | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if group_count > 0 -%}
+            <a class="faq-page__chip" href="#faq-{{ key }}">
+              {%- case key -%}
+                {%- when 'orders' -%}{{ 'faq.group_orders' | t }}
+                {%- when 'delivery' -%}{{ 'faq.group_delivery' | t }}
+                {%- when 'returns' -%}{{ 'faq.group_returns' | t }}
+                {%- else -%}{{ 'faq.group_account' | t }}
+              {%- endcase -%}
+            </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </nav>
     {%- endif -%}
 
-    <div class="faq-list" data-faq-accordion>
-      {%- for block in section.blocks -%}
-        <details class="faq-item product-accordion" {{ block.shopify_attributes }} {% if forloop.first and section.settings.open_first %}open{% endif %}>
-          <summary class="product-accordion__summary">{{ block.settings.question }}</summary>
-          <div class="product-accordion__content rte">
-            {{ block.settings.answer }}
-          </div>
-        </details>
-      {%- else -%}
-        <details class="faq-item product-accordion" open>
-          <summary class="product-accordion__summary">{{ 'faq.default_q1' | t }}</summary>
-          <div class="product-accordion__content rte"><p>{{ 'faq.default_a1' | t }}</p></div>
-        </details>
-        <details class="faq-item product-accordion">
-          <summary class="product-accordion__summary">{{ 'faq.default_q2' | t }}</summary>
-          <div class="product-accordion__content rte"><p>{{ 'faq.default_a2' | t }}</p></div>
-        </details>
-        <details class="faq-item product-accordion">
-          <summary class="product-accordion__summary">{{ 'faq.default_q3' | t }}</summary>
-          <div class="product-accordion__content rte"><p>{{ 'faq.default_a3' | t }}</p></div>
-        </details>
-      {%- endfor -%}
-    </div>
-  </div>
+    {%- if page.content != blank -%}
+      <div class="faq-page__intro rte">{{ page.content }}</div>
+    {%- endif -%}
 
-  {%- if section.blocks.size > 0 -%}
-    {% render 'faq-json-ld', blocks: section.blocks %}
-  {%- else -%}
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": {{ 'faq.default_q1' | t | json }},
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": {{ 'faq.default_a1' | t | json }}
-          }
-        },
-        {
-          "@type": "Question",
-          "name": {{ 'faq.default_q2' | t | json }},
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": {{ 'faq.default_a2' | t | json }}
-          }
-        },
-        {
-          "@type": "Question",
-          "name": {{ 'faq.default_q3' | t | json }},
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": {{ 'faq.default_a3' | t | json }}
-          }
-        }
-      ]
-    }
-    </script>
-  {%- endif -%}
+    <div class="faq-page__groups">
+      {%- if section.blocks.size > 0 -%}
+        {%- for key in group_keys -%}
+          {%- assign group_count = 0 -%}
+          {%- for block in section.blocks -%}
+            {%- assign cat = block.settings.category | default: 'orders' -%}
+            {%- if block.type == 'item' and cat == key -%}
+              {%- assign group_count = group_count | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if group_count > 0 -%}
+            <section class="faq-page__group" id="faq-{{ key }}" data-faq-group>
+              <h2 class="faq-page__group-title">
+                {%- case key -%}
+                  {%- when 'orders' -%}{{ 'faq.group_orders' | t }}
+                  {%- when 'delivery' -%}{{ 'faq.group_delivery' | t }}
+                  {%- when 'returns' -%}{{ 'faq.group_returns' | t }}
+                  {%- else -%}{{ 'faq.group_account' | t }}
+                {%- endcase -%}
+              </h2>
+              <div class="faq-page__list">
+                {%- for block in section.blocks -%}
+                  {%- assign cat = block.settings.category | default: 'orders' -%}
+                  {%- if block.type == 'item' and cat == key -%}
+                    {%- assign open_item = false -%}
+                    {%- if section.settings.open_first and group_opened == false -%}
+                      {%- assign open_item = true -%}
+                      {%- assign group_opened = true -%}
+                    {%- endif -%}
+                    <details
+                      class="faq-page__item"
+                      data-faq-item
+                      {{ block.shopify_attributes }}
+                      {% if open_item %}open{% endif %}
+                    >
+                      <summary class="faq-page__summary">
+                        <span class="faq-page__question">{{ block.settings.question }}</span>
+                        <span class="faq-page__icon" aria-hidden="true">{% render 'icon', name: 'chevron-down', size: 18 %}</span>
+                      </summary>
+                      <div class="faq-page__answer rte">{{ block.settings.answer }}</div>
+                    </details>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            </section>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- else -%}
+        <section class="faq-page__group" data-faq-group>
+          <div class="faq-page__list">
+            <details class="faq-page__item" data-faq-item open>
+              <summary class="faq-page__summary">
+                <span class="faq-page__question">{{ 'faq.default_q1' | t }}</span>
+                <span class="faq-page__icon" aria-hidden="true">{% render 'icon', name: 'chevron-down', size: 18 %}</span>
+              </summary>
+              <div class="faq-page__answer rte"><p>{{ 'faq.default_a1' | t }}</p></div>
+            </details>
+            <details class="faq-page__item" data-faq-item>
+              <summary class="faq-page__summary">
+                <span class="faq-page__question">{{ 'faq.default_q2' | t }}</span>
+                <span class="faq-page__icon" aria-hidden="true">{% render 'icon', name: 'chevron-down', size: 18 %}</span>
+              </summary>
+              <div class="faq-page__answer rte"><p>{{ 'faq.default_a2' | t }}</p></div>
+            </details>
+            <details class="faq-page__item" data-faq-item>
+              <summary class="faq-page__summary">
+                <span class="faq-page__question">{{ 'faq.default_q3' | t }}</span>
+                <span class="faq-page__icon" aria-hidden="true">{% render 'icon', name: 'chevron-down', size: 18 %}</span>
+              </summary>
+              <div class="faq-page__answer rte"><p>{{ 'faq.default_a3' | t }}</p></div>
+            </details>
+          </div>
+        </section>
+      {%- endif -%}
+    </div>
+
+    <p class="faq-page__empty" data-faq-empty hidden>{{ 'faq.search_empty' | t }}</p>
+
+    <aside class="faq-page__help">
+      <div class="faq-page__help-copy">
+        <p class="faq-page__help-kicker">{{ 'faq.help_kicker' | t }}</p>
+        <h2 class="faq-page__help-title">{{ 'faq.help_title' | t }}</h2>
+        <p class="faq-page__help-text">{{ 'faq.help_text' | t }}</p>
+      </div>
+      <div class="faq-page__help-actions">
+        {%- if settings.whatsapp_number != blank -%}
+          <a
+            class="button button--primary"
+            href="https://wa.me/{{ settings.whatsapp_number }}?text={{ 'faq.whatsapp_prefill' | t | url_encode }}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {% render 'icon', name: 'whatsapp', size: 18 %}
+            {{ 'general.whatsapp' | t }}
+          </a>
+        {%- endif -%}
+        {%- if track_page != blank -%}
+          <a class="button button--secondary" href="{{ track_page.url }}">{{ 'general.track_order' | t }}</a>
+        {%- else -%}
+          <button type="button" class="button button--secondary" data-track-drawer-open>{{ 'general.track_order' | t }}</button>
+        {%- endif -%}
+        {%- if shipping_page != blank -%}
+          <a class="button button--secondary" href="{{ shipping_page.url }}">{{ 'faq.shipping_link' | t }}</a>
+        {%- endif -%}
+        {%- if contact_page != blank -%}
+          <a class="button button--secondary" href="{{ contact_page.url }}">{{ 'general.contact' | t }}</a>
+        {%- endif -%}
+      </div>
+    </aside>
+  </div>
 </section>
 
 {% schema %}
@@ -91,7 +194,7 @@
       "type": "text",
       "id": "subheading",
       "label": "Subheading",
-      "default": "COD, delivery, returns — answered simply"
+      "default": "COD, delivery, and returns — answered simply"
     },
     {
       "type": "checkbox",
@@ -105,6 +208,18 @@
       "type": "item",
       "name": "FAQ item",
       "settings": [
+        {
+          "type": "select",
+          "id": "category",
+          "label": "Topic",
+          "options": [
+            { "value": "orders", "label": "Orders & COD" },
+            { "value": "delivery", "label": "Delivery & tracking" },
+            { "value": "returns", "label": "Returns" },
+            { "value": "account", "label": "Account & help" }
+          ],
+          "default": "orders"
+        },
         {
           "type": "text",
           "id": "question",
@@ -122,30 +237,7 @@
   ],
   "presets": [
     {
-      "name": "FAQ",
-      "blocks": [
-        {
-          "type": "item",
-          "settings": {
-            "question": "Do you offer Cash on Delivery?",
-            "answer": "<p>Yes — Cash on Delivery is available across Pakistan on eligible orders.</p>"
-          }
-        },
-        {
-          "type": "item",
-          "settings": {
-            "question": "How long does delivery take?",
-            "answer": "<p>Most orders arrive within a few business days depending on your city.</p>"
-          }
-        },
-        {
-          "type": "item",
-          "settings": {
-            "question": "What is your return policy?",
-            "answer": "<p>Easy returns within the stated window. See Shipping & Returns for full details.</p>"
-          }
-        }
-      ]
+      "name": "FAQ"
     }
   ]
 }

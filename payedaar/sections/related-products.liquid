@@ -9,7 +9,7 @@
   data-section-id="{{ section.id }}"
 >
   {%- if recommendations.performed and recommendations.products_count > 0 -%}
-    <div class="page-width section">
+    <div class="page-width">
       {% render 'section-header',
         heading: section.settings.heading,
         subheading: section.settings.subheading

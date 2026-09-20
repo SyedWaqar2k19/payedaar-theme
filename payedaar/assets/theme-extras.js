@@ -151,44 +151,97 @@
 
     const grid = document.querySelector('[data-wishlist-grid]');
     const template = document.querySelector('[data-wishlist-card-template]');
-    if (grid && template) {
-      const render = () => {
-        const items = readWishlist();
-        const empty = grid.querySelector('[data-wishlist-empty]');
-        grid.querySelectorAll('.wishlist-card').forEach((el) => el.remove());
-        if (!items.length) {
-          if (empty) empty.hidden = false;
-          return;
+    const empty = document.querySelector('[data-wishlist-empty]');
+    const pageCount = document.querySelector('[data-wishlist-page-count]');
+    const pageCountNum = document.querySelector('[data-wishlist-page-count-number]');
+
+    const countLabel = (count) => {
+      const one = window.themeStrings?.wishlistCountOne || 'COUNT saved item';
+      const other = window.themeStrings?.wishlistCountOther || 'COUNT saved items';
+      const templateStr = count === 1 ? one : other;
+      return templateStr.replace('COUNT', String(count));
+    };
+
+    const render = () => {
+      const items = readWishlist();
+
+      if (pageCount && pageCountNum) {
+        if (items.length) {
+          pageCount.hidden = false;
+          pageCountNum.textContent = countLabel(items.length);
+        } else {
+          pageCount.hidden = true;
         }
-        if (empty) empty.hidden = true;
-        items.forEach((item) => {
-          const node = template.content.cloneNode(true);
-          const card = node.querySelector('.wishlist-card');
-          node.querySelectorAll('[data-wishlist-url]').forEach((el) => {
-            el.href = item.url;
-          });
-          const title = node.querySelector('[data-wishlist-title]');
-          if (title) title.textContent = item.title;
-          const price = node.querySelector('[data-wishlist-price]');
-          if (price) price.textContent = item.price;
-          const img = node.querySelector('[data-wishlist-image]');
-          if (img) {
-            if (item.image) {
-              img.src = item.image;
-              img.alt = item.title;
-            } else {
-              img.remove();
-            }
-          }
-          node.querySelector('[data-wishlist-remove]')?.addEventListener('click', () => {
-            toggleWishlistItem(item);
-            render();
-          });
-          grid.appendChild(node);
+      }
+
+      if (!grid || !template) return;
+
+      grid.querySelectorAll('.wishlist-card').forEach((el) => el.remove());
+
+      if (!items.length) {
+        if (empty) empty.hidden = false;
+        grid.hidden = true;
+        return;
+      }
+
+      if (empty) empty.hidden = true;
+      grid.hidden = false;
+
+      items.forEach((item) => {
+        const node = template.content.cloneNode(true);
+        node.querySelectorAll('[data-wishlist-url]').forEach((el) => {
+          el.href = item.url;
         });
-      };
+        const title = node.querySelector('[data-wishlist-title]');
+        if (title) title.textContent = item.title;
+        const price = node.querySelector('[data-wishlist-price]');
+        if (price) price.textContent = item.price;
+        const img = node.querySelector('[data-wishlist-image]');
+        if (img) {
+          if (item.image) {
+            img.src = item.image;
+            img.alt = item.title;
+          } else {
+            img.remove();
+          }
+        }
+        node.querySelector('[data-wishlist-remove]')?.addEventListener('click', () => {
+          toggleWishlistItem(item);
+        });
+        grid.appendChild(node);
+      });
+    };
+
+    if (grid || empty || pageCount) {
       render();
       document.addEventListener('wishlist:updated', render);
     }
+  }
+
+  /* -------------------------------------------------------------------- */
+  /* FAQ page search                                                      */
+  /* -------------------------------------------------------------------- */
+  const faqPage = document.querySelector('[data-faq-page]');
+  if (faqPage) {
+    const search = faqPage.querySelector('[data-faq-search]');
+    const empty = faqPage.querySelector('[data-faq-empty]');
+    const items = Array.from(faqPage.querySelectorAll('[data-faq-item]'));
+    const groups = Array.from(faqPage.querySelectorAll('[data-faq-group]'));
+    const apply = () => {
+      const query = (search?.value || '').trim().toLowerCase();
+      let visible = 0;
+      items.forEach((item) => {
+        const text = item.textContent.toLowerCase();
+        const match = !query || text.includes(query);
+        item.hidden = !match;
+        if (match) visible += 1;
+      });
+      groups.forEach((group) => {
+        const any = group.querySelector('[data-faq-item]:not([hidden])');
+        group.hidden = !any;
+      });
+      if (empty) empty.hidden = visible > 0;
+    };
+    search?.addEventListener('input', apply);
   }
 })();

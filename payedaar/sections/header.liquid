@@ -27,22 +27,113 @@
   else
     assign track_url = '#track-order'
   endif
+
+  assign cat_home = collections['home']
+  if cat_home == blank
+    assign cat_home = collections['home-living']
+  endif
+  assign cat_kitchen = collections['kitchen']
+  assign cat_beauty = collections['beauty']
+  assign cat_gadgets = collections['gadgets']
+  assign cat_fashion = collections['fashion']
+  assign cat_home_url = routes.collections_url
+  assign cat_kitchen_url = routes.collections_url
+  assign cat_beauty_url = routes.collections_url
+  assign cat_gadgets_url = routes.collections_url
+  assign cat_fashion_url = routes.collections_url
+  if cat_home != blank
+    assign cat_home_url = cat_home.url
+  endif
+  if cat_kitchen != blank
+    assign cat_kitchen_url = cat_kitchen.url
+  endif
+  if cat_beauty != blank
+    assign cat_beauty_url = cat_beauty.url
+  endif
+  if cat_gadgets != blank
+    assign cat_gadgets_url = cat_gadgets.url
+  endif
+  if cat_fashion != blank
+    assign cat_fashion_url = cat_fashion.url
+  endif
+
   assign nav_home_active = false
   assign nav_hot_active = false
   assign nav_best_active = false
   assign nav_track_active = false
+  assign nav_categories_active = false
   assign nav_account_active = false
-  if request.page_type == 'index'
+  assign nav_current = blank
+
+  assign hot_path = hot_url | split: '?' | first | downcase
+  assign best_path = best_url | split: '?' | first | downcase
+  assign hot_collection_path = '/collections/' | append: hot_handle
+  assign best_collection_path = '/collections/' | append: best_handle
+
+  if template.suffix == 'track-order' or path contains 'track-order'
+    assign nav_current = 'track'
+  endif
+
+  if nav_current == blank
+    if request.page_type == 'collection' and collection.handle == hot_handle
+      assign nav_current = 'hot'
+    elsif path == hot_path or path contains hot_collection_path
+      assign nav_current = 'hot'
+    elsif request.page_type == 'product'
+      if collection.handle == hot_handle
+        assign nav_current = 'hot'
+      else
+        for col in product.collections
+          if col.handle == hot_handle
+            assign nav_current = 'hot'
+            break
+          endif
+        endfor
+      endif
+    endif
+  endif
+
+  if nav_current == blank and best_collection != blank
+    if request.page_type == 'collection' and collection.handle == best_handle
+      assign nav_current = 'best'
+    elsif path == best_path or path contains best_collection_path
+      assign nav_current = 'best'
+    elsif request.page_type == 'product'
+      if collection.handle == best_handle
+        assign nav_current = 'best'
+      else
+        for col in product.collections
+          if col.handle == best_handle
+            assign nav_current = 'best'
+            break
+          endif
+        endfor
+      endif
+    endif
+  endif
+
+  if nav_current == blank
+    if request.page_type == 'list-collections' or request.page_type == 'collection'
+      assign nav_current = 'categories'
+    elsif request.page_type == 'product'
+      assign nav_current = 'categories'
+    endif
+  endif
+
+  if nav_current == blank and request.page_type == 'index'
+    assign nav_current = 'home'
+  endif
+
+  if nav_current == 'home'
     assign nav_home_active = true
-  endif
-  if path contains hot_handle
+  elsif nav_current == 'hot'
     assign nav_hot_active = true
-  endif
-  if path contains best_handle
+  elsif nav_current == 'best'
     assign nav_best_active = true
-  endif
-  if path contains 'track-order' or template.suffix == 'track-order'
+  elsif nav_current == 'track'
     assign nav_track_active = true
+  elsif nav_current == 'categories'
+    assign nav_categories_active = true
   endif
   if request.page_type == 'customers/account' or request.page_type == 'customers/login' or request.page_type == 'customers/register' or request.page_type == 'customers/addresses' or request.page_type == 'customers/order'
     assign nav_account_active = true
@@ -245,7 +336,8 @@
         {%- for link in linklists[main_menu].links -%}
           {%- liquid
             assign is_hot = false
-            assign link_url_down = link.url | downcase
+            assign link_current = false
+            assign link_url_down = link.url | split: '?' | first | downcase
             if link_url_down contains hot_handle
               assign is_hot = true
             endif
@@ -253,15 +345,35 @@
             if title_down contains 'hot'
               assign is_hot = true
             endif
+            if link.active or link.child_active
+              assign link_current = true
+            endif
+            if is_hot and nav_hot_active
+              assign link_current = true
+            endif
+            if link_url_down == routes.root_url or link_url_down == '/' or link_url_down == blank
+              if nav_home_active
+                assign link_current = true
+              endif
+            elsif link_url_down == path
+              assign link_current = true
+            endif
+            if nav_best_active and link_url_down contains best_handle
+              assign link_current = true
+            endif
+            if nav_categories_active and link.links != blank
+              assign link_current = true
+            endif
           -%}
           {%- if link.links != blank -%}
             <div class="site-nav__item site-nav__item--mega" data-nav-mega>
               <button
                 type="button"
-                class="site-nav__link"
+                class="site-nav__link{% if link_current %} is-active{% endif %}"
                 data-nav-mega-trigger
                 aria-expanded="false"
                 aria-haspopup="true"
+                {% if link_current %}aria-current="true"{% endif %}
               >
                 {{ link.title }}
                 {% render 'icon', name: 'chevron-down', size: 14 %}
@@ -283,8 +395,8 @@
           {%- else -%}
             <a
               href="{{ link.url }}"
-              class="site-nav__link{% if is_hot %} is-hot{% endif %}{% if link.active or link.child_active %} is-active{% endif %}"
-              {% if link.active or link.child_active %}aria-current="page"{% endif %}
+              class="site-nav__link{% if is_hot %} is-hot{% endif %}{% if link_current %} is-active{% endif %}"
+              {% if link_current %}aria-current="page"{% endif %}
             >
               {{ link.title }}
             </a>
@@ -299,18 +411,41 @@
           {{ 'general.home' | t }}
         </a>
         <div class="site-nav__item site-nav__item--mega" data-nav-mega>
-          <button type="button" class="site-nav__link" data-nav-mega-trigger aria-expanded="false" aria-haspopup="true">
+          <button
+            type="button"
+            class="site-nav__link{% if nav_categories_active %} is-active{% endif %}"
+            data-nav-mega-trigger
+            aria-expanded="false"
+            aria-haspopup="true"
+            {% if nav_categories_active %}aria-current="true"{% endif %}
+          >
             {{ 'general.categories' | t }}
             {% render 'icon', name: 'chevron-down', size: 14 %}
           </button>
           <div class="site-nav__mega" data-nav-mega-panel>
             <ul class="site-nav__mega-list list-unstyled">
-              <li><a href="{{ routes.collections_url }}">{{ 'general.home' | t }} &amp; Living</a></li>
-              <li><a href="{{ routes.collections_url }}">Kitchen</a></li>
-              <li><a href="{{ routes.collections_url }}">Beauty</a></li>
-              <li><a href="{{ routes.collections_url }}">Gadgets</a></li>
-              <li><a href="{{ routes.collections_url }}">Fashion</a></li>
-              <li><a href="{{ routes.collections_url }}">{{ 'collections.list_title' | t }}</a></li>
+              <li>
+                <a href="{{ cat_home_url }}"{% if cat_home != blank and collection.handle == cat_home.handle %} aria-current="page"{% endif %}>
+                  {{ 'general.home' | t }} &amp; Living
+                </a>
+              </li>
+              <li>
+                <a href="{{ cat_kitchen_url }}"{% if collection.handle == 'kitchen' %} aria-current="page"{% endif %}>Kitchen</a>
+              </li>
+              <li>
+                <a href="{{ cat_beauty_url }}"{% if collection.handle == 'beauty' %} aria-current="page"{% endif %}>Beauty</a>
+              </li>
+              <li>
+                <a href="{{ cat_gadgets_url }}"{% if collection.handle == 'gadgets' %} aria-current="page"{% endif %}>Gadgets</a>
+              </li>
+              <li>
+                <a href="{{ cat_fashion_url }}"{% if collection.handle == 'fashion' %} aria-current="page"{% endif %}>Fashion</a>
+              </li>
+              <li>
+                <a href="{{ routes.collections_url }}"{% if request.page_type == 'list-collections' %} aria-current="page"{% endif %}>
+                  {{ 'collections.list_title' | t }}
+                </a>
+              </li>
             </ul>
             <a class="site-nav__mega-promo" href="{{ hot_url }}">
               <strong>{{ 'general.hot_deals' | t }}</strong>
@@ -408,7 +543,22 @@
         {%- else -%}
           <ul class="list-unstyled">
             <li><a href="{{ routes.root_url }}" {% if nav_home_active %}aria-current="page"{% endif %}>{{ 'general.home' | t }}</a></li>
-            <li><a href="{{ routes.collections_url }}">{{ 'general.categories' | t }}</a></li>
+            <li>
+              <details class="header-drawer__group"{% if nav_categories_active %} open{% endif %}>
+                <summary>
+                  {{ 'general.categories' | t }}
+                  {% render 'icon', name: 'chevron-down', size: 16 %}
+                </summary>
+                <ul class="header-drawer__sublist list-unstyled">
+                  <li><a href="{{ cat_home_url }}"{% if cat_home != blank and collection.handle == cat_home.handle %} aria-current="page"{% endif %}>{{ 'general.home' | t }} &amp; Living</a></li>
+                  <li><a href="{{ cat_kitchen_url }}"{% if collection.handle == 'kitchen' %} aria-current="page"{% endif %}>Kitchen</a></li>
+                  <li><a href="{{ cat_beauty_url }}"{% if collection.handle == 'beauty' %} aria-current="page"{% endif %}>Beauty</a></li>
+                  <li><a href="{{ cat_gadgets_url }}"{% if collection.handle == 'gadgets' %} aria-current="page"{% endif %}>Gadgets</a></li>
+                  <li><a href="{{ cat_fashion_url }}"{% if collection.handle == 'fashion' %} aria-current="page"{% endif %}>Fashion</a></li>
+                  <li><a href="{{ routes.collections_url }}"{% if request.page_type == 'list-collections' %} aria-current="page"{% endif %}>{{ 'collections.list_title' | t }}</a></li>
+                </ul>
+              </details>
+            </li>
             <li><a class="is-hot{% if nav_hot_active %} is-active{% endif %}" href="{{ hot_url }}" {% if nav_hot_active %}aria-current="page"{% endif %}>{{ 'general.hot_deals' | t }}</a></li>
             <li><a href="{{ best_url }}" {% if nav_best_active %}aria-current="page"{% endif %}>{{ 'general.best_sellers' | t }}</a></li>
             <li>

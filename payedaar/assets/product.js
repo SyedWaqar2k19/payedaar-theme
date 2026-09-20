@@ -458,20 +458,15 @@
   class ProductRecommendations extends HTMLElement {
     connectedCallback() {
       const url = this.dataset.url;
-      if (!url) return;
+      if (!url || this.dataset.recommendationsFetched === 'true') return;
+      this.dataset.recommendationsFetched = 'true';
       fetch(url)
         .then((res) => res.text())
         .then((html) => {
           const doc = new DOMParser().parseFromString(html, 'text/html');
-          const sectionId = this.dataset.sectionId;
-          const next =
-            doc.querySelector(`#shopify-section-${sectionId}`) ||
-            doc.querySelector('product-recommendations');
-          if (!next) return;
-          const content = next.querySelector('.page-width') || next;
-          if (content && content.innerHTML.trim()) {
-            this.innerHTML = next.innerHTML;
-          }
+          const content = doc.querySelector('product-recommendations .page-width');
+          if (!content || !content.innerHTML.trim()) return;
+          this.innerHTML = content.outerHTML;
         })
         .catch((error) => console.error('[Payedaar recommendations]', error));
     }
@@ -511,6 +506,143 @@
     });
   });
 
+  /* -------------------------------------------------------------------- */
+  /* Product reviews slider                                               */
+  /* -------------------------------------------------------------------- */
+  class ProductReviewsSlider extends HTMLElement {
+    connectedCallback() {
+      this.viewport = this.querySelector('[data-reviews-viewport]');
+      this.track = this.querySelector('[data-reviews-track]');
+      this.prevBtn = this.querySelector('[data-reviews-prev]');
+      this.nextBtn = this.querySelector('[data-reviews-next]');
+      if (!this.viewport || !this.track) return;
+
+      this.originalCards = Array.from(this.track.querySelectorAll('.product-reviews__card'));
+      this.looping = this.originalCards.length > 1;
+      this.timer = 0;
+      this.autoMs = 4200;
+
+      if (this.looping) this.setupLoop();
+
+      this.prevBtn?.addEventListener('click', () => this.userStep(-1));
+      this.nextBtn?.addEventListener('click', () => this.userStep(1));
+      this.viewport.addEventListener(
+        'scroll',
+        () => {
+          window.clearTimeout(this.scrollTimer);
+          this.scrollTimer = window.setTimeout(() => this.normalize(), 90);
+        },
+        { passive: true }
+      );
+      this.addEventListener('pointerenter', () => this.pause());
+      this.addEventListener('pointerleave', () => this.resume());
+      this.addEventListener('focusin', () => this.pause());
+      this.addEventListener('focusout', () => this.resume());
+      this.onVisibility = () => {
+        if (document.hidden) this.pause();
+        else this.resume();
+      };
+      document.addEventListener('visibilitychange', this.onVisibility);
+      this.onResize = () => this.measure();
+      window.addEventListener('resize', this.onResize, { passive: true });
+
+      this.measure();
+      this.syncNav();
+      this.startAuto();
+    }
+
+    disconnectedCallback() {
+      this.stopAuto();
+      document.removeEventListener('visibilitychange', this.onVisibility);
+      window.removeEventListener('resize', this.onResize);
+    }
+
+    setupLoop() {
+      if (this.track.dataset.loopReady === 'true') return;
+      this.originalCards.forEach((card) => {
+        const clone = card.cloneNode(true);
+        clone.setAttribute('aria-hidden', 'true');
+        clone.querySelectorAll('[aria-label]').forEach((el) => el.removeAttribute('aria-label'));
+        this.track.appendChild(clone);
+      });
+      this.track.dataset.loopReady = 'true';
+    }
+
+    measure() {
+      const card = this.originalCards[0];
+      if (!card) return;
+      const gap = parseFloat(window.getComputedStyle(this.track).gap) || 14;
+      this.cardStep = card.getBoundingClientRect().width + gap;
+      this.loopWidth = this.cardStep * this.originalCards.length;
+    }
+
+    step(direction) {
+      if (!this.viewport) return;
+      this.measure();
+      if (this.looping && direction < 0 && this.viewport.scrollLeft <= 2) {
+        this.jump(this.viewport.scrollLeft + this.loopWidth);
+      }
+      this.viewport.scrollBy({ left: direction * this.cardStep, behavior: 'smooth' });
+      window.setTimeout(() => this.normalize(), 480);
+    }
+
+    userStep(direction) {
+      this.pause();
+      this.step(direction);
+      this.resume();
+    }
+
+    jump(left) {
+      const snap = this.viewport.style.scrollSnapType;
+      this.viewport.style.scrollSnapType = 'none';
+      this.viewport.scrollLeft = left;
+      requestAnimationFrame(() => {
+        this.viewport.style.scrollSnapType = snap;
+      });
+    }
+
+    normalize() {
+      if (!this.looping || !this.loopWidth) return;
+      const x = this.viewport.scrollLeft;
+      if (x >= this.loopWidth - 1) this.jump(x - this.loopWidth);
+      this.syncNav();
+    }
+
+    syncNav() {
+      if (!this.prevBtn || !this.nextBtn) return;
+      if (this.looping) {
+        this.prevBtn.disabled = false;
+        this.nextBtn.disabled = false;
+        return;
+      }
+      const max = this.viewport.scrollWidth - this.viewport.clientWidth - 8;
+      this.prevBtn.disabled = this.viewport.scrollLeft <= 8;
+      this.nextBtn.disabled = max <= 8 || this.viewport.scrollLeft >= max;
+    }
+
+    startAuto() {
+      this.stopAuto();
+      if (!this.looping) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      this.timer = window.setInterval(() => this.step(1), this.autoMs);
+    }
+
+    pause() {
+      this.stopAuto();
+    }
+
+    resume() {
+      this.startAuto();
+    }
+
+    stopAuto() {
+      if (this.timer) {
+        window.clearInterval(this.timer);
+        this.timer = 0;
+      }
+    }
+  }
+
   if (!customElements.get('media-gallery')) {
     customElements.define('media-gallery', MediaGallery);
   }
@@ -519,6 +651,9 @@
   }
   if (!customElements.get('sticky-atc')) {
     customElements.define('sticky-atc', StickyAtc);
+  }
+  if (!customElements.get('product-reviews-slider')) {
+    customElements.define('product-reviews-slider', ProductReviewsSlider);
   }
   if (!customElements.get('product-recommendations')) {
     customElements.define('product-recommendations', ProductRecommendations);

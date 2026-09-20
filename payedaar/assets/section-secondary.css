@@ -1,4 +1,4 @@
-/*! Payedaar Phase 7 â?? Content, customers, blog, popups, wishlist */
+/*! Payedaar Phase 7 ï¿½?? Content, customers, blog, popups, wishlist */
 
 .page-width--narrow {
   max-width: 42rem;
@@ -224,7 +224,7 @@
   /* reuse cart-count styles */
 }
 
-/* Cookie banner â?? bottom, never covers full ATC permanently */
+/* Cookie banner ï¿½?? bottom, never covers full ATC permanently */
 .cookie-banner {
   position: fixed;
   left: 0;
@@ -539,4 +539,495 @@ body.theme-popup-open {
   display: inline-flex;
   align-items: center;
   margin: 0.35rem 0;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Wishlist page                                                              */
+/* -------------------------------------------------------------------------- */
+
+body.template-page-wishlist {
+  background: #f7f5f1;
+}
+
+.section-wishlist {
+  padding-block: 0.75rem 2.5rem;
+  background: #f7f5f1;
+}
+
+.wishlist-header {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.05rem;
+  border-bottom: 1px solid rgba(232, 228, 222, 0.95);
+}
+
+.wishlist-header__kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 0.4rem;
+  color: var(--color-primary);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.wishlist-header__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.wishlist-header__title {
+  margin: 0;
+  font-size: clamp(1.7rem, 3.2vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--color-text);
+}
+
+.wishlist-header__count {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.wishlist-header__sub {
+  margin: 0.4rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+.wishlist-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 28rem;
+  margin: 0.5rem auto 0;
+  padding: 2.25rem 1.25rem;
+  background: #fff;
+  border: 1px solid rgba(232, 228, 222, 0.95);
+  border-radius: 1.15rem;
+  box-shadow: 0 12px 32px rgba(40, 28, 16, 0.045);
+}
+
+.wishlist-empty[hidden],
+.wishlist-grid[hidden],
+.wishlist-header__count[hidden] {
+  display: none;
+}
+
+.wishlist-empty__icon {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin-bottom: 0.85rem;
+  border-radius: 50%;
+  background: #fffaf4;
+  color: var(--color-primary);
+  box-shadow: 0 6px 16px rgba(241, 122, 1, 0.12);
+}
+
+.wishlist-empty__heading {
+  margin: 0 0 0.35rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.wishlist-empty__text {
+  margin: 0 0 1.15rem;
+  color: var(--color-text-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.wishlist-grid {
+  display: grid;
+  align-items: stretch;
+  gap: 1.15rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 750px) {
+  .wishlist-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  .wishlist-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.wishlist-card {
+  height: 100%;
+}
+
+.wishlist-card__price {
+  margin: 0 0 0.45rem;
+  color: var(--color-primary);
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+}
+
+.wishlist-card__remove {
+  display: block;
+  width: 100%;
+  margin-top: 0.45rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.wishlist-card__remove:hover {
+  color: var(--color-sale);
+}
+
+/* -------------------------------------------------------------------------- */
+/* FAQ page                                                                   */
+/* -------------------------------------------------------------------------- */
+
+body.template-page-faq {
+  background: #f7f5f1;
+}
+
+.shopify-section.section-faq {
+  background: none;
+  padding: 0;
+}
+
+.faq-page {
+  padding-block: 0.35rem 2.5rem;
+}
+
+.faq-page__hero {
+  margin-bottom: 1.15rem;
+  padding: 0.85rem 1rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 0.95rem;
+  color: #fff;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 48%),
+    linear-gradient(100deg, #dc6200 0%, #f17a01 52%, #ff8c28 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 8px 20px rgba(241, 122, 1, 0.18);
+}
+
+.faq-page__kicker {
+  margin: 0 0 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.faq-page__title {
+  margin: 0;
+  font-size: clamp(1.45rem, 4vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: #fff;
+}
+
+h1.faq-page__title {
+  color: #fff;
+}
+
+.faq-page__sub {
+  margin: 0.4rem 0 0;
+  max-width: 34rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.faq-page__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.85rem 0 0;
+}
+
+.faq-page__pills li {
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.faq-page__toolbar {
+  margin-bottom: 0.75rem;
+}
+
+.faq-page__search {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 2.85rem;
+  padding: 0 0.9rem;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.faq-page__search-icon {
+  display: grid;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.faq-page__search-input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--color-text);
+}
+
+.faq-page__search-input:focus {
+  outline: none;
+}
+
+.faq-page__search:focus-within {
+  border-color: color-mix(in srgb, var(--color-primary) 55%, var(--color-border));
+  box-shadow: 0 0 0 4px var(--color-primary-soft);
+}
+
+.faq-page__chips {
+  display: flex;
+  gap: 0.45rem;
+  overflow-x: auto;
+  margin: 0 0 1.15rem;
+  padding-bottom: 0.15rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.faq-page__chip {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  min-height: 2.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.faq-page__chip:hover,
+.faq-page__chip:focus-visible {
+  color: var(--color-primary-dark);
+  background: var(--color-primary-soft);
+  border-color: transparent;
+}
+
+.faq-page__intro {
+  margin: 0 0 1.15rem;
+  color: var(--color-text-muted);
+}
+
+.faq-page__group {
+  margin-bottom: 1.15rem;
+  scroll-margin-top: 5.5rem;
+}
+
+.faq-page__group[hidden],
+.faq-page__item[hidden],
+.faq-page__empty[hidden] {
+  display: none;
+}
+
+.faq-page__group-title {
+  margin: 0 0 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary-dark);
+}
+
+.faq-page__list {
+  overflow: hidden;
+  background: var(--color-primary-soft, #fff4e8);
+  border: 1px solid rgba(241, 122, 1, 0.16);
+  border-radius: var(--radius-lg, 1.15rem);
+}
+
+.faq-page__item {
+  margin: 0;
+  border-bottom: 1px solid rgba(241, 122, 1, 0.12);
+}
+
+.faq-page__item:last-child {
+  border-bottom: 0;
+}
+
+.faq-page__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  min-height: 3.25rem;
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: var(--color-text);
+}
+
+.faq-page__summary::-webkit-details-marker,
+.faq-page__summary::marker {
+  display: none;
+  content: '';
+}
+
+.faq-page__question {
+  min-width: 0;
+  line-height: 1.35;
+}
+
+.faq-page__icon {
+  display: grid;
+  place-items: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #fffaf4;
+  color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(241, 122, 1, 0.12);
+  transition: transform 0.2s ease;
+}
+
+.faq-page__item[open] .faq-page__icon {
+  transform: rotate(180deg);
+}
+
+.faq-page__answer {
+  padding: 0 1rem 1.05rem;
+  color: var(--color-text-muted);
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.faq-page__answer p {
+  margin: 0;
+}
+
+.faq-page__answer p + p {
+  margin-top: 0.55rem;
+}
+
+.faq-page__empty {
+  margin: 0.25rem 0 1.25rem;
+  padding: 1rem;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.92rem;
+  background: #fff;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.faq-page__help {
+  display: grid;
+  gap: 1rem;
+  margin-top: 0.35rem;
+  padding: 1.15rem 1rem;
+  background: #fff;
+  border: 1px solid rgba(232, 228, 222, 0.95);
+  border-radius: 1.05rem;
+  box-shadow: 0 12px 32px rgba(40, 28, 16, 0.045);
+}
+
+.faq-page__help-kicker {
+  margin: 0 0 0.25rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.faq-page__help-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.faq-page__help-text {
+  margin: 0.35rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.faq-page__help-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.faq-page__help-actions .button {
+  min-height: 2.7rem;
+}
+
+@media (min-width: 750px) {
+  .faq-page__hero {
+    padding: 1.05rem 1.25rem 1.15rem;
+  }
+
+  .faq-page__help {
+    grid-template-columns: minmax(0, 1.2fr) auto;
+    align-items: center;
+    padding: 1.25rem 1.35rem;
+  }
+
+  .faq-page__help-actions {
+    justify-content: flex-end;
+  }
+}
+
+@media (min-width: 990px) {
+  .faq-page {
+    padding-block: 0.5rem 3rem;
+  }
+
+  .faq-page__summary {
+    padding: 0.95rem 1.2rem;
+  }
+
+  .faq-page__answer {
+    padding: 0 1.2rem 1.1rem;
+  }
 }

@@ -14,7 +14,10 @@
     when 'product'
       assign show_crumbs = true
       if collection
-        assign crumb_2_name = collection.title
+        assign crumb_2_name = collection.title | replace: '-', ' '
+        if collection.handle == 'hot-deals' or collection.handle == 'hot-deal'
+          assign crumb_2_name = 'general.hot_deals' | t
+        endif
         assign crumb_2_path = collection.url
         assign crumb_3_name = product.title
         assign crumb_3_path = product.url
@@ -24,7 +27,10 @@
       endif
     when 'collection'
       assign show_crumbs = true
-      assign crumb_2_name = collection.title
+      assign crumb_2_name = collection.title | replace: '-', ' '
+      if collection.handle == 'hot-deals' or collection.handle == 'hot-deal'
+        assign crumb_2_name = 'general.hot_deals' | t
+      endif
       assign crumb_2_path = collection.url
     when 'list-collections'
       assign show_crumbs = true

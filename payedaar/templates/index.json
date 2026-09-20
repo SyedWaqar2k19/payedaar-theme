@@ -57,27 +57,27 @@
       "blocks": {
         "cat_home": {
           "type": "category",
-          "settings": { "label": "Home", "icon": "home" }
+          "settings": { "label": "Home", "icon": "home", "collection": "home" }
         },
         "cat_kitchen": {
           "type": "category",
-          "settings": { "label": "Kitchen", "icon": "grid" }
+          "settings": { "label": "Kitchen", "icon": "grid", "collection": "kitchen" }
         },
         "cat_beauty": {
           "type": "category",
-          "settings": { "label": "Beauty", "icon": "heart" }
+          "settings": { "label": "Beauty", "icon": "heart", "collection": "beauty" }
         },
         "cat_gadgets": {
           "type": "category",
-          "settings": { "label": "Gadgets", "icon": "grid" }
+          "settings": { "label": "Gadgets", "icon": "grid", "collection": "gadgets" }
         },
         "cat_fashion": {
           "type": "category",
-          "settings": { "label": "Fashion", "icon": "heart" }
+          "settings": { "label": "Fashion", "icon": "heart", "collection": "fashion" }
         },
         "cat_deals": {
           "type": "category",
-          "settings": { "label": "Hot Deals", "icon": "flame" }
+          "settings": { "label": "Hot Deals", "icon": "flame", "collection": "hot-deals" }
         }
       },
       "block_order": [
@@ -184,7 +184,8 @@
       "settings": {
         "heading": "Shop with confidence",
         "subheading": "COD, delivery, and returns — answered simply",
-        "open_first": true
+        "open_first": true,
+        "full_width": true
       }
     },
     "newsletter": {

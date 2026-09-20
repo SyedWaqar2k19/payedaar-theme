@@ -18,18 +18,20 @@
 
   if slot == 'confidence'
     assign mf = product.metafields.custom.confidence_image
+    assign img_width = 1920
   else
     assign mf = product.metafields.custom.details_image
+    assign img_width = 1600
   endif
 
   if mf != blank and mf.value != blank
     assign mf_val = mf.value
     assign mf_url = ''
     if mf_val.preview_image != blank
-      assign mf_url = mf_val.preview_image | image_url: width: 1600
+      assign mf_url = mf_val.preview_image | image_url: width: img_width
     endif
     if mf_url == blank
-      assign mf_url = mf_val | image_url: width: 1600
+      assign mf_url = mf_val | image_url: width: img_width
     endif
     if mf_url == blank
       assign mf_url = mf_val | append: '' | strip
@@ -78,14 +80,14 @@
     if slot == 'details'
       for media in product.media
         if media.id != featured_id and media.preview_image != blank
-          assign out = media.preview_image | image_url: width: 1600
+          assign out = media.preview_image | image_url: width: img_width
           break
         endif
       endfor
     else
       for media in product.media
         if media.id != featured_id and media.preview_image != blank
-          assign candidate = media.preview_image | image_url: width: 1600
+          assign candidate = media.preview_image | image_url: width: img_width
           assign candidate_key = candidate | split: '?' | first
           if exclude_key == blank or candidate_key != exclude_key
             assign out = candidate

@@ -18,6 +18,9 @@
         data-filter-type="{{ filter.type }}"
         {% liquid
           assign group_open = false
+          if forloop.index <= 2
+            assign group_open = true
+          endif
           if filter.active_values.size > 0
             assign group_open = true
           endif
@@ -31,9 +34,12 @@
       >
         <summary class="facets__summary">
           <span>{{ filter.label | escape }}</span>
-          {%- if filter.active_values.size > 0 -%}
-            <span class="facets__count">{{ filter.active_values.size }}</span>
-          {%- endif -%}
+          <span class="facets__summary-end">
+            {%- if filter.active_values.size > 0 -%}
+              <span class="facets__count">{{ filter.active_values.size }}</span>
+            {%- endif -%}
+            <span class="facets__chevron" aria-hidden="true">{% render 'icon', name: 'chevron-down', size: 16 %}</span>
+          </span>
         </summary>
 
         <div class="facets__panel">

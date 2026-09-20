@@ -1238,6 +1238,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
 }
 
 .category-icons__fallback {
@@ -1804,9 +1805,146 @@
 }
 
 .section-categories,
-.section-testimonials,
-.section-home-faq {
+.section-testimonials {
   background: linear-gradient(180deg, rgba(232, 93, 4, 0.04), transparent 60%);
+}
+
+/* Schema class is on the Shopify wrapper AND the inner <section>.
+   Keep the wash/padding on the inner only so two peach bands don't stack. */
+.shopify-section.section-home-faq {
+  background: none;
+  padding-block: 0;
+}
+
+.section.home-faq {
+  padding-block: 2rem 1.15rem;
+  background: none;
+}
+
+.home-faq__intro {
+  margin-bottom: 1.15rem;
+}
+
+.home-faq__intro .section-header__sub {
+  max-width: 28rem;
+}
+
+.home-faq-list {
+  overflow: hidden;
+  background: var(--color-primary-soft, #fff4e8);
+  border: 1px solid rgba(241, 122, 1, 0.16);
+  border-radius: var(--radius-lg, 1.15rem);
+  box-shadow: none;
+}
+
+.home-faq-item,
+.home-faq-item.faq-item,
+.home-faq-item.product-accordion {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  border-bottom: 1px solid rgba(241, 122, 1, 0.12);
+}
+
+.home-faq-item:last-child {
+  border-bottom: 0;
+}
+
+.home-faq-item__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.4rem;
+  padding: 0.95rem 1.2rem;
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: var(--color-text);
+}
+
+.home-faq-item__summary::-webkit-details-marker,
+.home-faq-item__summary::marker {
+  display: none;
+  content: '';
+}
+
+.home-faq-item__question {
+  min-width: 0;
+  line-height: 1.35;
+  color: var(--color-text);
+}
+
+.home-faq-item__icon {
+  display: grid;
+  place-items: center;
+  width: 1.85rem;
+  height: 1.85rem;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #fffaf4;
+  color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(241, 122, 1, 0.12);
+  transition: transform 0.2s ease;
+}
+
+.home-faq-item[open] .home-faq-item__icon {
+  transform: rotate(180deg);
+}
+
+.home-faq-item__answer {
+  padding: 0 1.2rem 1.1rem;
+  color: var(--color-text-muted);
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.home-faq-item__answer p {
+  margin: 0;
+}
+
+.home-faq-item__answer p + p {
+  margin-top: 0.55rem;
+}
+
+@media (min-width: 990px) {
+  .section.home-faq {
+    padding-block: 2.25rem 1.35rem;
+  }
+
+  .home-faq__panel--split {
+    display: grid;
+    grid-template-columns: minmax(16rem, 22rem) minmax(0, 1fr);
+    gap: 2rem 3rem;
+    align-items: start;
+  }
+
+  .home-faq__panel--split .home-faq__intro {
+    margin-bottom: 0;
+    position: sticky;
+    top: 6.5rem;
+  }
+
+  .home-faq__panel--split .section-header--center,
+  .home-faq__panel--split .home-faq__intro {
+    text-align: left;
+  }
+
+  .home-faq-item__summary {
+    padding: 1.05rem 1.4rem;
+    font-size: 1.02rem;
+  }
+
+  .home-faq-item__answer {
+    padding: 0 1.4rem 1.2rem;
+    font-size: 0.95rem;
+  }
 }
 
 [data-reveal] {

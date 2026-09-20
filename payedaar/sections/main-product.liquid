@@ -170,6 +170,8 @@
 
         {% render 'product-confidence-banner', product: product %}
 
+        {% render 'product-reviews-slider', product: product %}
+
         {%- for block in section.blocks -%}
           {%- case block.type -%}
             {%- when 'collapsible_tab' -%}
@@ -279,7 +281,7 @@
     },
     {
       "type": "paragraph",
-      "content": "Key features bullets: metafield custom.key_features (list of text). Full article: product Description (expands under Show full details). Images: custom.details_image and custom.confidence_image, or first/last images in the description."
+      "content": "Key features: custom.key_features. Images: custom.details_image and custom.confidence_image. Reviews slider: custom.reviews (JSON list or metaobject list)."
     }
   ],
   "blocks": [
@@ -376,7 +378,7 @@
         },
         {
           "type": "paragraph",
-          "content": "Details photo: product metafield custom.details_image, else the first image in the description. Banner photo: custom.confidence_image, else the last description image."
+          "content": "Details photo: product metafield custom.details_image, else the first image in the description. Banner photo: custom.confidence_image at 5:2 (e.g. 1600×640), else the last description image."
         }
       ]
     },

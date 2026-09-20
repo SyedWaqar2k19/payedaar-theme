@@ -16,42 +16,51 @@
       {%- for block in section.blocks -%}
         {%- liquid
           assign cat_label = block.settings.label
-          assign cat_link = block.settings.link
-          if block.settings.collection != blank
-            assign cat_collection = block.settings.collection
-            if cat_label == blank
-              assign cat_label = cat_collection.title
-            endif
-            if cat_link == blank
-              assign cat_link = cat_collection.url
-            endif
+          assign cat_collection = block.settings.collection
+          if cat_label == blank and cat_collection != blank
+            assign cat_label = cat_collection.title
           endif
-          if cat_link == blank
-            assign cat_link = routes.collections_url
+          if cat_collection == blank and cat_label != blank
+            assign handle_guess = cat_label | handle
+            assign label_down = cat_label | downcase
+            if handle_guess == 'home-living' or handle_guess == 'home-and-living'
+              assign handle_guess = 'home'
+            elsif label_down contains 'best'
+              assign handle_guess = 'best-sellers'
+            elsif label_down contains 'hot' or label_down contains 'deal'
+              assign handle_guess = 'hot-deals'
+            endif
+            assign cat_collection = collections[handle_guess]
+          endif
+          assign tile_image = block.settings.image
+          if tile_image == blank and cat_collection != blank and cat_collection.featured_image != blank
+            assign tile_image = cat_collection.featured_image
+          endif
+          if section.settings.layout == 'tiles'
+            assign img_width = 960
+            assign img_widths = '320, 480, 640, 800, 960, 1200'
+            assign img_sizes = '(min-width: 990px) 16vw, (min-width: 750px) 30vw, 42vw'
+          else
+            assign img_width = 240
+            assign img_widths = '80, 120, 160, 240'
+            assign img_sizes = '72px'
           endif
         -%}
+        {%- capture cat_link -%}
+          {%- render 'collection-url', target_collection: cat_collection, target_url: block.settings.link, target_label: cat_label -%}
+        {%- endcapture -%}
+        {%- assign cat_link = cat_link | strip -%}
         <li class="category-icons__item" {{ block.shopify_attributes }}>
           <a class="category-icons__link" href="{{ cat_link }}">
             <span class="category-icons__circle">
-              {%- if block.settings.image != blank -%}
+              {%- if tile_image != blank -%}
                 {{
-                  block.settings.image
-                  | image_url: width: 200
+                  tile_image
+                  | image_url: width: img_width
                   | image_tag:
                     loading: 'lazy',
-                    widths: '100, 150, 200',
-                    sizes: '72px',
-                    alt: cat_label,
-                    class: 'category-icons__img'
-                }}
-              {%- elsif block.settings.collection != blank and block.settings.collection.featured_image != blank -%}
-                {{
-                  block.settings.collection.featured_image
-                  | image_url: width: 200
-                  | image_tag:
-                    loading: 'lazy',
-                    widths: '100, 150, 200',
-                    sizes: '72px',
+                    widths: img_widths,
+                    sizes: img_sizes,
                     alt: cat_label,
                     class: 'category-icons__img'
                 }}
@@ -78,8 +87,11 @@
       {%- else -%}
         {%- assign placeholders = 'Home,Kitchen,Beauty,Gadgets,Fashion,Deals' | split: ',' -%}
         {%- for label in placeholders -%}
+          {%- capture cat_link -%}
+            {%- render 'collection-url', target_label: label -%}
+          {%- endcapture -%}
           <li class="category-icons__item">
-            <a class="category-icons__link" href="{{ routes.collections_url }}">
+            <a class="category-icons__link" href="{{ cat_link | strip }}">
               <span class="category-icons__circle">
                 <span class="category-icons__fallback" aria-hidden="true">
                   {% render 'icon', name: 'grid', size: 28 %}
@@ -171,12 +183,12 @@
     {
       "name": "Category icons",
       "blocks": [
-        { "type": "category", "settings": { "label": "Home", "icon": "home" } },
-        { "type": "category", "settings": { "label": "Kitchen", "icon": "grid" } },
-        { "type": "category", "settings": { "label": "Beauty", "icon": "heart" } },
-        { "type": "category", "settings": { "label": "Gadgets", "icon": "grid" } },
-        { "type": "category", "settings": { "label": "Fashion", "icon": "heart" } },
-        { "type": "category", "settings": { "label": "Hot Deals", "icon": "flame" } }
+        { "type": "category", "settings": { "label": "Home", "icon": "home", "collection": "home" } },
+        { "type": "category", "settings": { "label": "Kitchen", "icon": "grid", "collection": "kitchen" } },
+        { "type": "category", "settings": { "label": "Beauty", "icon": "heart", "collection": "beauty" } },
+        { "type": "category", "settings": { "label": "Gadgets", "icon": "grid", "collection": "gadgets" } },
+        { "type": "category", "settings": { "label": "Fashion", "icon": "heart", "collection": "fashion" } },
+        { "type": "category", "settings": { "label": "Hot Deals", "icon": "flame", "collection": "hot-deals" } }
       ]
     }
   ]

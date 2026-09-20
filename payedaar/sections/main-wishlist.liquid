@@ -1,23 +1,55 @@
-<section class="section section-wishlist" data-section-id="{{ section.id }}">
-  <div class="page-width">
-    <header class="page-header">
-      <h1 class="page-header__title">{{ 'wishlist.title' | t }}</h1>
-      <p class="page-header__sub">{{ 'wishlist.subtext' | t }}</p>
+{%- liquid
+  assign hot_deals_url = routes.collections_url | append: '/hot-deals'
+-%}
+
+<section class="section-wishlist" data-section-id="{{ section.id }}">
+  <div class="page-width wishlist-page">
+    <header class="wishlist-header">
+      <p class="wishlist-header__kicker">
+        <span aria-hidden="true">{% render 'icon', name: 'heart', size: 14 %}</span>
+        {{ 'wishlist.kicker' | t }}
+      </p>
+      <div class="wishlist-header__row">
+        <h1 class="wishlist-header__title">{{ 'wishlist.title' | t }}</h1>
+        <p class="wishlist-header__count" data-wishlist-page-count hidden>
+          <span data-wishlist-page-count-number>0</span>
+        </p>
+      </div>
+      <p class="wishlist-header__sub">{{ 'wishlist.subtext' | t }}</p>
     </header>
 
-    <div class="wishlist-grid grid grid--2 grid--4" data-wishlist-grid>
-      <p class="text-muted" data-wishlist-empty>{{ 'wishlist.empty' | t }}</p>
+    <div class="wishlist-empty" data-wishlist-empty>
+      <span class="wishlist-empty__icon" aria-hidden="true">{% render 'icon', name: 'heart', size: 28 %}</span>
+      <h2 class="wishlist-empty__heading">{{ 'wishlist.empty_heading' | t }}</h2>
+      <p class="wishlist-empty__text">{{ 'wishlist.empty' | t }}</p>
+      <a class="button button--primary" href="{{ hot_deals_url }}">{{ 'general.hot_deals' | t }}</a>
     </div>
 
+    <div class="wishlist-grid" data-wishlist-grid hidden></div>
+
     <template data-wishlist-card-template>
-      <article class="card product-card wishlist-card">
-        <a class="card__media" data-wishlist-url>
-          <img data-wishlist-image alt="" loading="lazy" width="400" height="400">
-        </a>
+      <article class="card card--interactive product-card wishlist-card">
+        <div class="card__media-wrap">
+          <a class="card__media" data-wishlist-url>
+            <img
+              class="card__media-img"
+              data-wishlist-image
+              alt=""
+              loading="lazy"
+              width="400"
+              height="400"
+            >
+          </a>
+        </div>
         <div class="card__body">
-          <h3 class="card__title"><a data-wishlist-url data-wishlist-title></a></h3>
-          <p class="text-primary font-bold" data-wishlist-price></p>
-          <button type="button" class="button button--secondary button--full" data-wishlist-remove>
+          <h3 class="card__title line-clamp-2">
+            <a data-wishlist-url data-wishlist-title></a>
+          </h3>
+          <p class="wishlist-card__price" data-wishlist-price></p>
+          <a class="button button--primary button--full" data-wishlist-url>
+            {{ 'products.view_product' | t }}
+          </a>
+          <button type="button" class="wishlist-card__remove" data-wishlist-remove>
             {{ 'wishlist.remove' | t }}
           </button>
         </div>

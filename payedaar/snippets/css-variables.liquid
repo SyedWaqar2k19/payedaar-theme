@@ -95,7 +95,13 @@
     --font-hero-heading: clamp(1.75rem, 5vw, 3rem);
 
     /* Layout */
-    --page-width: {{ settings.page_width | default: 1200 }}px;
+    {%- liquid
+      assign content_width = settings.page_width | default: 1520
+      if content_width < 1520
+        assign content_width = 1520
+      endif
+    -%}
+    --page-width: {{ content_width }}px;
     --page-gutter: {{ settings.page_gutter | default: 16 }}px;
     --content-narrow: 720px;
     --header-height-mobile: 116px;

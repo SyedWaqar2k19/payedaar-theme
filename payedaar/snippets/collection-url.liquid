@@ -1,0 +1,52 @@
+{%- comment -%}
+  Resolves a collection URL from picker, explicit URL, handle, or label.
+  Usage:
+    {% render 'collection-url', target_collection: col, target_url: link, target_label: 'Kitchen', target_handle: 'kitchen' %}
+{%- endcomment -%}
+{%- liquid
+  assign dest = routes.collections_url
+  assign col = target_collection
+  assign key = target_handle | default: '' | strip | downcase
+  assign raw = target_label | default: '' | downcase
+
+  if key == blank and target_label != blank
+    assign key = target_label | handle
+  endif
+
+  if raw contains 'kitchen'
+    assign key = 'kitchen'
+  elsif raw contains 'beauty'
+    assign key = 'beauty'
+  elsif raw contains 'gadget'
+    assign key = 'gadgets'
+  elsif raw contains 'fashion'
+    assign key = 'fashion'
+  elsif raw contains 'best seller' or raw contains 'best-seller'
+    assign key = 'best-sellers'
+  elsif raw contains 'hot deal' or raw contains 'hot-deal' or raw == 'deals'
+    assign key = 'hot-deals'
+  elsif raw contains 'living' or raw == 'home' or raw contains 'shop home'
+    assign key = 'home'
+  elsif key == 'home-living' or key == 'home-and-living' or key == 'home-amp-living'
+    assign key = 'home'
+  elsif key == 'deals' or key == 'hot-deal'
+    assign key = 'hot-deals'
+  elsif key == 'best-seller' or key == 'bestsellers'
+    assign key = 'best-sellers'
+  endif
+
+  if target_url != blank
+    assign dest = target_url
+  elsif col != blank
+    assign dest = col.url
+  elsif key != blank
+    assign mapped = collections[key]
+    if mapped == blank and key == 'home'
+      assign mapped = collections['home-living']
+    endif
+    if mapped != blank
+      assign dest = mapped.url
+    endif
+  endif
+-%}
+{{- dest -}}

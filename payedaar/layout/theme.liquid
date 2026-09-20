@@ -42,7 +42,7 @@
     {%- if template.name == 'index' -%}
       {{ 'section-home.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
-    {%- if template.name == 'collection' or template.name == 'list-collections' or template.name == 'search' -%}
+    {%- if template.name == 'collection' or template.name == 'list-collections' or template.name == 'search' or template.suffix == 'wishlist' -%}
       {{ 'template-collection.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
     {%- if template.name == 'product' -%}
@@ -85,7 +85,9 @@
         left: {{ 'products.inventory.left' | t | json }},
         youSave: {{ 'products.you_save' | t: amount: 'AMOUNT' | json }},
         suggestions: {{ 'general.search_suggestions' | t | json }},
-        noSuggestions: {{ 'general.search_no_suggestions' | t | json }}
+        noSuggestions: {{ 'general.search_no_suggestions' | t | json }},
+        wishlistCountOne: {{ 'wishlist.count.one' | t: count: 'COUNT' | json }},
+        wishlistCountOther: {{ 'wishlist.count.other' | t: count: 'COUNT' | json }}
       };
     </script>
     {{ content_for_header }}

@@ -37,6 +37,7 @@
     "continue_shopping": "Continue shopping",
     "view_all": "View all",
     "whatsapp": "Chat on WhatsApp",
+    "whatsapp_short": "WhatsApp",
     "call_us": "Call us",
     "contact": "Contact",
     "faq": "FAQ",
@@ -50,6 +51,8 @@
     "trust_heading": "Why Payedaar",
     "made_for_pakistan": "Shopping made easy across Pakistan",
     "trust_delivery_short": "Free Delivery",
+    "trust_cod_short": "Cash on Delivery",
+    "trust_returns_short": "Easy Returns",
     "password": "Password",
     "password_message": "This store is password protected.",
     "submit": "Enter",
@@ -234,6 +237,13 @@
       "point_2": "Secure checkout and order support",
       "point_3": "Cash on Delivery on eligible orders"
     },
+    "reviews": {
+      "heading": "Customer reviews",
+      "rating_summary": "out of 5 · {{ count }} reviews",
+      "verified": "Verified buyer",
+      "previous": "Previous reviews",
+      "next": "Next reviews"
+    },
     "badge": {
       "hot_deal": "Hot Deal",
       "best_seller": "Best Seller",
@@ -269,6 +279,20 @@
     "empty_hint": "Browse Hot Deals for bestsellers and flash offers.",
     "list_title": "Categories",
     "list_empty": "No categories to show yet.",
+    "hero_kicker": "Shop the collection",
+    "hero_subheading": "Original products with Cash on Delivery across Pakistan.",
+    "hot": {
+      "kicker": "Limited-time picks",
+      "subheading": "Flash prices, original products, and Cash on Delivery across Pakistan.",
+      "pill_cod": "Cash on Delivery",
+      "pill_delivery": "Free delivery on eligible orders",
+      "pill_returns": "Easy return support",
+      "stat_count": {
+        "one": "deal live now",
+        "other": "deals live now"
+      },
+      "stat_note": "Original products · Pay at your door"
+    },
     "product_count": {
       "one": "{{ count }} product",
       "other": "{{ count }} products"
@@ -311,6 +335,23 @@
     "quick_help": "Quick help"
   },
   "faq": {
+    "kicker": "Help centre",
+    "topics": "FAQ topics",
+    "group_orders": "Orders & COD",
+    "group_delivery": "Delivery & tracking",
+    "group_returns": "Returns",
+    "group_account": "Account & help",
+    "pill_cod": "Cash on Delivery",
+    "pill_delivery": "Nationwide delivery",
+    "pill_returns": "Easy returns",
+    "search_label": "Search FAQs",
+    "search_placeholder": "Search a question…",
+    "search_empty": "No matching questions. Try another word, or message us on WhatsApp.",
+    "help_kicker": "Still stuck?",
+    "help_title": "We’re here on WhatsApp",
+    "help_text": "Share your order number and we’ll help you from there.",
+    "whatsapp_prefill": "Hi Payedaar, I have a question from the FAQ page.",
+    "shipping_link": "Shipping & returns",
     "default_q1": "Do you offer Cash on Delivery?",
     "default_a1": "Yes — Cash on Delivery is available across Pakistan on eligible orders.",
     "default_q2": "How long does delivery take?",
@@ -351,11 +392,17 @@
   },
   "wishlist": {
     "title": "Wishlist",
-    "subtext": "Saved on this device — add items from product cards.",
-    "empty": "Your wishlist is empty. Browse Hot Deals and tap the heart.",
+    "kicker": "Saved for later",
+    "subtext": "Items you save stay on this device until you remove them.",
+    "empty_heading": "Nothing saved yet",
+    "empty": "Tap the heart on any product to keep it here.",
     "remove": "Remove",
     "add": "Add to wishlist",
-    "count_label": "Wishlist items"
+    "count_label": "Wishlist items",
+    "count": {
+      "one": "{{ count }} saved item",
+      "other": "{{ count }} saved items"
+    }
   },
   "blogs": {
     "article": {

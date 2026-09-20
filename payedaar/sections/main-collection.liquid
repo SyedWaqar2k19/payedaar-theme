@@ -33,18 +33,30 @@
   assign empty_filtered_text = 'products.facets.empty_filtered_text' | t
   assign empty_collection_heading = 'collections.empty' | t
   assign empty_collection_text = 'collections.empty_hint' | t
+
+  assign is_hot = false
+  if collection.handle == 'hot-deals' or collection.handle == 'hot-deal'
+    assign is_hot = true
+  endif
+  assign display_title = collection.title | replace: '-', ' '
+  if is_hot
+    assign display_title = 'general.hot_deals' | t
+  endif
 -%}
 
 <div
-  class="page-width"
+  class="page-width collection-page{% if is_hot %} collection-page--hot{% endif %}"
   id="ProductGridContainer"
   data-facets-root
   data-section="{{ section.id }}"
   data-url="{{ results_url }}"
 >
-  <header class="collection-banner">
+  <header class="collection-hero{% if is_hot %} collection-hero--hot{% endif %}">
+    {%- if is_hot -%}
+      <span class="collection-hero__mark" aria-hidden="true">{% render 'icon', name: 'flame', size: 92 %}</span>
+    {%- endif -%}
     {%- if section.settings.show_image and collection.image -%}
-      <div class="collection-banner__media">
+      <div class="collection-hero__media">
         {{
           collection.image
           | image_url: width: 1600
@@ -53,17 +65,43 @@
             fetchpriority: 'high',
             widths: '600, 900, 1200, 1600',
             sizes: '100vw',
-            class: 'collection-banner__img',
+            class: 'collection-hero__img',
             alt: collection.title
         }}
       </div>
     {%- endif -%}
-    <div class="collection-banner__content">
-      <h1 class="collection-banner__title">{{ collection.title }}</h1>
+    <div class="collection-hero__content">
+      <p class="collection-hero__kicker">
+        {%- if is_hot -%}
+          <span class="collection-hero__kicker-icon" aria-hidden="true">{% render 'icon', name: 'flame', size: 13 %}</span>
+          {{ 'collections.hot.kicker' | t }}
+        {%- else -%}
+          {{ 'collections.hero_kicker' | t }}
+        {%- endif -%}
+      </p>
+      <h1 class="collection-hero__title">{{ display_title }}</h1>
       {%- if section.settings.show_description and collection.description != blank -%}
-        <div class="collection-banner__description rte">{{ collection.description }}</div>
+        <div class="collection-hero__description rte">{{ collection.description }}</div>
+      {%- elsif is_hot -%}
+        <p class="collection-hero__description">{{ 'collections.hot.subheading' | t }}</p>
+      {%- else -%}
+        <p class="collection-hero__description">{{ 'collections.hero_subheading' | t }}</p>
       {%- endif -%}
     </div>
+    <ul class="collection-hero__pills list-unstyled">
+      <li class="collection-hero__pill">
+        <span aria-hidden="true">{% render 'icon', name: 'truck', size: 14 %}</span>
+        {{ 'collections.hot.pill_delivery' | t }}
+      </li>
+      <li class="collection-hero__pill">
+        <span aria-hidden="true">{% render 'icon', name: 'shield', size: 14 %}</span>
+        {{ 'collections.hot.pill_cod' | t }}
+      </li>
+      <li class="collection-hero__pill">
+        <span aria-hidden="true">{% render 'icon', name: 'return', size: 14 %}</span>
+        {{ 'collections.hot.pill_returns' | t }}
+      </li>
+    </ul>
   </header>
 
   <div class="collection-layout{% unless show_facets %} collection-layout--no-facets{% endunless %}">
@@ -139,7 +177,7 @@
 
         {%- if enable_sorting -%}
           <div class="collection-toolbar__sort">
-            <label class="visually-hidden" for="SortBy-{{ section.id }}">{{ 'products.facets.sort_by_label' | t }}</label>
+            <label class="collection-toolbar__sort-label" for="SortBy-{{ section.id }}">{{ 'products.facets.sort_by_label' | t }}</label>
             {%- if show_facets -%}
               <select
                 id="SortBy-{{ section.id }}"

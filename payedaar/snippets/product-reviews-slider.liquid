@@ -1,0 +1,136 @@
+{%- comment -%}
+  Product reviews slider.
+  Source: product.metafields.custom.reviews
+  - json array, or
+  - list of metaobject references
+  Hidden when empty so the rest of the PDP is unchanged.
+{%- endcomment -%}
+
+{%- liquid
+  assign reviews_meta = product.metafields.custom.reviews
+  assign reviews = reviews_meta.value
+  assign is_metaobject = false
+  if reviews_meta.type contains 'metaobject'
+    assign is_metaobject = true
+  endif
+  assign review_count = 0
+  assign rating_sum = 0
+-%}
+
+{%- if reviews != blank -%}
+  {%- capture review_cards -%}
+    {%- for item in reviews -%}
+      {%- liquid
+        if is_metaobject
+          assign author = item.name.value | default: item.author.value
+          assign title = item.title.value
+          assign body = item.body.value | default: item.quote.value
+          assign location = item.location.value | default: item.city.value
+          assign verified = item.verified.value
+          assign date_raw = item.date.value
+          assign rating_raw = item.rating.value
+        else
+          assign author = item.name | default: item.author
+          assign title = item.title
+          assign body = item.body | default: item.quote | default: item.review
+          assign location = item.location | default: item.city
+          assign verified = item.verified
+          assign date_raw = item.date
+          assign rating_raw = item.rating
+        endif
+
+        if rating_raw.rating != blank
+          assign rating_n = rating_raw.rating | times: 1
+        else
+          assign rating_n = rating_raw | times: 1
+        endif
+        if rating_n > 5
+          assign rating_n = 5
+        endif
+        if rating_n < 0
+          assign rating_n = 0
+        endif
+        assign rating_int = rating_n | round
+        assign author = author | strip
+        assign title = title | strip
+        assign body = body | strip
+        assign location = location | strip
+        assign initial = author | slice: 0 | upcase
+      -%}
+
+      {%- if author != blank or body != blank or title != blank -%}
+        {%- assign review_count = review_count | plus: 1 -%}
+        {%- assign rating_sum = rating_sum | plus: rating_n -%}
+        <article class="product-reviews__card">
+          <div class="product-reviews__stars" aria-label="{{ rating_int }} / 5">
+            {%- for i in (1..5) -%}
+              <span class="product-reviews__star{% if i <= rating_int %} is-filled{% endif %}">{% render 'icon', name: 'star', size: 14 %}</span>
+            {%- endfor -%}
+          </div>
+          {%- if title != blank -%}
+            <h3 class="product-reviews__title">{{ title | escape }}</h3>
+          {%- endif -%}
+          {%- if body != blank -%}
+            <p class="product-reviews__body">{{ body | escape }}</p>
+          {%- endif -%}
+          <footer class="product-reviews__author">
+            <span class="product-reviews__avatar" aria-hidden="true">{{ initial | default: 'P' | escape }}</span>
+            <span class="product-reviews__meta">
+              {%- if author != blank -%}
+                <strong>{{ author | escape }}</strong>
+              {%- endif -%}
+              {%- if verified == true or verified == 'true' -%}
+                <span class="product-reviews__verified">
+                  {% render 'icon', name: 'check', size: 12 %}
+                  {{ 'products.reviews.verified' | t }}
+                </span>
+              {%- endif -%}
+              {%- if location != blank or date_raw != blank -%}
+                <span class="product-reviews__place">
+                  {%- if location != blank -%}{{ location | escape }}{%- endif -%}
+                  {%- if location != blank and date_raw != blank %} · {% endif -%}
+                  {%- if date_raw != blank -%}{{ date_raw | date: '%d %b %Y' }}{%- endif -%}
+                </span>
+              {%- endif -%}
+            </span>
+          </footer>
+        </article>
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+
+  {%- if review_count > 0 -%}
+    {%- assign rating_avg = rating_sum | times: 10.0 | divided_by: review_count | round | divided_by: 10.0 -%}
+    <section class="product-reviews product-reviews--count-{{ review_count }}" aria-label="{{ 'products.reviews.heading' | t }}">
+      <product-reviews-slider>
+        <header class="product-reviews__header">
+          <div class="product-reviews__heading-wrap">
+            <h2 class="product-reviews__heading">
+              <span class="product-reviews__heading-icon" aria-hidden="true">{% render 'icon', name: 'star', size: 18 %}</span>
+              {{ 'products.reviews.heading' | t }}
+            </h2>
+            <p class="product-reviews__summary">
+              <span class="product-reviews__avg">{{ rating_avg }}</span>
+              {{ 'products.reviews.rating_summary' | t: count: review_count }}
+            </p>
+          </div>
+          {%- if review_count > 1 -%}
+            <div class="product-reviews__nav">
+              <button type="button" class="product-reviews__nav-btn" data-reviews-prev aria-label="{{ 'products.reviews.previous' | t }}">
+                {% render 'icon', name: 'arrow-left', size: 18 %}
+              </button>
+              <button type="button" class="product-reviews__nav-btn" data-reviews-next aria-label="{{ 'products.reviews.next' | t }}">
+                {% render 'icon', name: 'arrow-right', size: 18 %}
+              </button>
+            </div>
+          {%- endif -%}
+        </header>
+        <div class="product-reviews__viewport" data-reviews-viewport>
+          <div class="product-reviews__track" data-reviews-track>
+            {{ review_cards }}
+          </div>
+        </div>
+      </product-reviews-slider>
+    </section>
+  {%- endif -%}
+{%- endif -%}

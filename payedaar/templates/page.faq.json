@@ -3,32 +3,102 @@
     "main": {
       "type": "page-faq",
       "blocks": {
-        "q1": {
+        "q_cod": {
           "type": "item",
           "settings": {
-            "question": "Do you offer Cash on Delivery?",
-            "answer": "<p>Yes — Cash on Delivery is available across Pakistan on eligible orders.</p>"
+            "category": "orders",
+            "question": "How does Cash on Delivery work?",
+            "answer": "<p>Choose COD when it is available at checkout and pay the courier when your order arrives. Parcel inspection depends on the courier and shipment service.</p>"
           }
         },
-        "q2": {
+        "q_cod_where": {
           "type": "item",
           "settings": {
+            "category": "orders",
+            "question": "Do you offer Cash on Delivery everywhere?",
+            "answer": "<p>Yes — Cash on Delivery is available across Pakistan on eligible orders. If COD is not offered for an item, checkout will show the payment options that apply.</p>"
+          }
+        },
+        "q_change": {
+          "type": "item",
+          "settings": {
+            "category": "orders",
+            "question": "Can I cancel or change an order?",
+            "answer": "<p>Message us on WhatsApp as soon as you can with your order number. We will confirm whether the order can still be updated before it is packed or handed to the courier.</p>"
+          }
+        },
+        "q_delivery": {
+          "type": "item",
+          "settings": {
+            "category": "delivery",
             "question": "How long does delivery take?",
-            "answer": "<p>Most orders arrive within a few business days depending on your city.</p>"
+            "answer": "<p>Most orders arrive within a few business days depending on your city across Pakistan.</p>"
           }
         },
-        "q3": {
+        "q_free": {
           "type": "item",
           "settings": {
+            "category": "delivery",
+            "question": "Is delivery free?",
+            "answer": "<p>Free delivery may apply above the store threshold shown in the header. Shipping for smaller orders is calculated at checkout.</p>"
+          }
+        },
+        "q_track": {
+          "type": "item",
+          "settings": {
+            "category": "delivery",
+            "question": "How do I track my order?",
+            "answer": "<p>Use the tracking link in your confirmation message, sign in to view fulfilled orders, or send your order number to our team from Track Order.</p>"
+          }
+        },
+        "q_damaged": {
+          "type": "item",
+          "settings": {
+            "category": "returns",
+            "question": "What if I receive a damaged product?",
+            "answer": "<p>Contact us promptly on WhatsApp with your order number and photos. We will confirm the options available under the store’s current return policy.</p>"
+          }
+        },
+        "q_returns": {
+          "type": "item",
+          "settings": {
+            "category": "returns",
             "question": "What is your return policy?",
-            "answer": "<p>Easy returns within the stated window. See Shipping & Returns for full details.</p>"
+            "answer": "<p>Easy returns within the stated window for unused items in original condition. See Shipping &amp; Returns for full details.</p>"
+          }
+        },
+        "q_account": {
+          "type": "item",
+          "settings": {
+            "category": "account",
+            "question": "Do I need an account to order?",
+            "answer": "<p>No. You can check out as a guest. Creating an account makes it easier to view past orders and save addresses.</p>"
+          }
+        },
+        "q_support": {
+          "type": "item",
+          "settings": {
+            "category": "account",
+            "question": "How do I contact Payedaar?",
+            "answer": "<p>WhatsApp is the fastest way to reach us. You can also use the contact page or the Track Order form with your order number and email or phone.</p>"
           }
         }
       },
-      "block_order": ["q1", "q2", "q3"],
+      "block_order": [
+        "q_cod",
+        "q_cod_where",
+        "q_change",
+        "q_delivery",
+        "q_free",
+        "q_track",
+        "q_damaged",
+        "q_returns",
+        "q_account",
+        "q_support"
+      ],
       "settings": {
         "heading": "Frequently asked questions",
-        "subheading": "COD, delivery, returns — answered simply",
+        "subheading": "COD, delivery, and returns — answered simply",
         "open_first": true
       }
     }

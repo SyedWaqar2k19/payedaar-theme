@@ -1,0 +1,9 @@
+{
+  "page": {
+    "title": "Wishlist",
+    "handle": "wishlist",
+    "templateSuffix": "wishlist",
+    "isPublished": true,
+    "body": ""
+  }
+}

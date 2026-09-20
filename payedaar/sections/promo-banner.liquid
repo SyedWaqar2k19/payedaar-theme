@@ -20,9 +20,12 @@
             assign fallback_promo = 'promo-home.jpg'
           endif
         -%}
+        {%- capture promo_link -%}
+          {%- render 'collection-url', target_url: block.settings.link, target_label: block.settings.button_label -%}
+        {%- endcapture -%}
         <a
           class="promo-banner__card promo-banner__card--{{ tone }}"
-          href="{{ block.settings.link | default: routes.collections_url }}"
+          href="{{ promo_link | strip }}"
           {{ block.shopify_attributes }}
         >
           {%- if block.settings.image != blank -%}
