@@ -625,9 +625,18 @@
   }
 }
 
+.product-details-premium__hero--solo .product-details-premium__figure {
+  min-height: 0;
+  height: auto;
+}
+
 .product-details-premium__hero--solo .product-details-premium__image {
-  aspect-ratio: 16 / 10;
-  min-height: 12rem;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  aspect-ratio: auto;
+  object-fit: unset;
+  display: block;
 }
 
 .product-details-premium__highlights {
