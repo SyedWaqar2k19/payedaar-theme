@@ -32,6 +32,19 @@
             endif
             assign cat_collection = collections[handle_guess]
           endif
+          assign is_hot = false
+          assign label_down = cat_label | downcase
+          if cat_collection != blank
+            if cat_collection.handle == 'hot-deals' or cat_collection.handle == 'hot-deal'
+              assign is_hot = true
+            endif
+          endif
+          if label_down contains 'hot' or label_down contains 'deal'
+            assign is_hot = true
+          endif
+          if block.settings.icon == 'flame'
+            assign is_hot = true
+          endif
           assign tile_image = block.settings.image
           if tile_image == blank and cat_collection != blank and cat_collection.featured_image != blank
             assign tile_image = cat_collection.featured_image
@@ -50,7 +63,7 @@
           {%- render 'collection-url', target_collection: cat_collection, target_url: block.settings.link, target_label: cat_label -%}
         {%- endcapture -%}
         {%- assign cat_link = cat_link | strip -%}
-        <li class="category-icons__item" {{ block.shopify_attributes }}>
+        <li class="category-icons__item{% if is_hot %} category-icons__item--hot{% endif %}" {{ block.shopify_attributes }}>
           <a class="category-icons__link" href="{{ cat_link }}">
             <span class="category-icons__circle">
               {%- if tile_image != blank -%}
@@ -81,22 +94,34 @@
                 </span>
               {%- endif -%}
             </span>
+            {%- if is_hot -%}
+              <span class="category-icons__hot-badge">
+                {% render 'icon', name: 'flame', size: 12 %}
+                {{ 'general.hot_badge' | t }}
+              </span>
+            {%- endif -%}
             <span class="category-icons__label">{{ cat_label | default: 'Category' }}</span>
           </a>
         </li>
       {%- else -%}
-        {%- assign placeholders = 'Home,Kitchen,Beauty,Gadgets,Fashion,Deals' | split: ',' -%}
+        {%- assign placeholders = 'Deals,Home,Kitchen,Beauty,Gadgets,Fashion' | split: ',' -%}
         {%- for label in placeholders -%}
           {%- capture cat_link -%}
             {%- render 'collection-url', target_label: label -%}
           {%- endcapture -%}
-          <li class="category-icons__item">
+          <li class="category-icons__item{% if label == 'Deals' %} category-icons__item--hot{% endif %}">
             <a class="category-icons__link" href="{{ cat_link | strip }}">
               <span class="category-icons__circle">
                 <span class="category-icons__fallback" aria-hidden="true">
                   {% render 'icon', name: 'grid', size: 28 %}
                 </span>
               </span>
+              {%- if label == 'Deals' -%}
+                <span class="category-icons__hot-badge">
+                  {% render 'icon', name: 'flame', size: 12 %}
+                  {{ 'general.hot_badge' | t }}
+                </span>
+              {%- endif -%}
               <span class="category-icons__label">{{ label }}</span>
             </a>
           </li>
@@ -183,12 +208,12 @@
     {
       "name": "Category icons",
       "blocks": [
+        { "type": "category", "settings": { "label": "Hot Deals", "icon": "flame", "collection": "hot-deals" } },
         { "type": "category", "settings": { "label": "Home", "icon": "home", "collection": "home" } },
         { "type": "category", "settings": { "label": "Kitchen", "icon": "grid", "collection": "kitchen" } },
         { "type": "category", "settings": { "label": "Beauty", "icon": "heart", "collection": "beauty" } },
         { "type": "category", "settings": { "label": "Gadgets", "icon": "grid", "collection": "gadgets" } },
-        { "type": "category", "settings": { "label": "Fashion", "icon": "heart", "collection": "fashion" } },
-        { "type": "category", "settings": { "label": "Hot Deals", "icon": "flame", "collection": "hot-deals" } }
+        { "type": "category", "settings": { "label": "Fashion", "icon": "heart", "collection": "fashion" } }
       ]
     }
   ]

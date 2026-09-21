@@ -81,12 +81,12 @@
         }
       },
       "block_order": [
+        "cat_deals",
         "cat_home",
         "cat_kitchen",
         "cat_beauty",
         "cat_gadgets",
-        "cat_fashion",
-        "cat_deals"
+        "cat_fashion"
       ],
       "settings": {
         "heading": "Shop by category",

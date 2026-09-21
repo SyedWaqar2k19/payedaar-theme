@@ -97,11 +97,16 @@
       </p>
     {%- endif -%}
 
-    {% render 'price', product: card_product %}
+    <div class="product-card__meta">
+      {% render 'price', product: card_product %}
 
-    {%- if show_cod -%}
-      <span class="product-card__cod">{{ 'general.cod_available' | t }}</span>
-    {%- endif -%}
+      {%- if show_cod -%}
+        <span class="product-card__cod">
+          <span class="hide-mobile">{{ 'general.cod_available' | t }}</span>
+          <span class="hide-desktop">{{ 'general.cod' | t }}</span>
+        </span>
+      {%- endif -%}
+    </div>
 
     {%- if can_quick_add -%}
       <product-form class="product-form product-form--card" data-product-form>

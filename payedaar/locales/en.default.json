@@ -16,6 +16,7 @@
     "home": "Home",
     "categories": "Categories",
     "hot_deals": "Hot Deals",
+    "hot_badge": "Hot",
     "best_sellers": "Best Sellers",
     "track_order": "Track Order",
     "account": "Account",
@@ -208,14 +209,14 @@
       "cod": "Cash on Delivery Available"
     },
     "trust_strip": {
-      "original_title": "100% Original",
-      "original_text": "Quality-checked products",
-      "delivery_title": "Free Delivery",
-      "delivery_text": "On eligible orders",
-      "cod_title": "Cash on Delivery",
-      "cod_text": "Pay when you receive",
-      "support_title": "7 Days Support",
-      "support_text": "Easy return help"
+      "pack_title": "Packed with care",
+      "pack_text": "Sealed before dispatch",
+      "nationwide_title": "Across Pakistan",
+      "nationwide_text": "Towns and cities nationwide",
+      "whatsapp_title": "WhatsApp help",
+      "whatsapp_text": "Chat about your order",
+      "dispatch_title": "Fast dispatch",
+      "dispatch_text": "Packed and sent promptly"
     },
     "shipping_cards": {
       "heading": "Shipping & returns",

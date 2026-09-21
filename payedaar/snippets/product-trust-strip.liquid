@@ -1,48 +1,34 @@
 {%- comment -%}
-  Full-width 4-up trust strip under PDP buy box.
+  Full-width 4-up trust strip under PDP gallery — distinct from buy-box pills.
 {%- endcomment -%}
 
 <div class="product-trust-strip" role="list">
   <div class="product-trust-strip__item" role="listitem">
-    <span class="product-trust-strip__icon" aria-hidden="true">{% render 'icon', name: 'shield', size: 22 %}</span>
+    <span class="product-trust-strip__icon" aria-hidden="true">{% render 'icon', name: 'package', size: 22 %}</span>
     <div class="product-trust-strip__copy">
-      <p class="product-trust-strip__title">{{ 'products.trust_strip.original_title' | t }}</p>
-      <p class="product-trust-strip__text">{{ 'products.trust_strip.original_text' | t }}</p>
+      <p class="product-trust-strip__title">{{ 'products.trust_strip.pack_title' | t }}</p>
+      <p class="product-trust-strip__text">{{ 'products.trust_strip.pack_text' | t }}</p>
     </div>
   </div>
   <div class="product-trust-strip__item" role="listitem">
-    <span class="product-trust-strip__icon" aria-hidden="true">{% render 'icon', name: 'truck', size: 22 %}</span>
+    <span class="product-trust-strip__icon" aria-hidden="true">{% render 'icon', name: 'home', size: 22 %}</span>
     <div class="product-trust-strip__copy">
-      <p class="product-trust-strip__title">{{ 'products.trust_strip.delivery_title' | t }}</p>
-      <p class="product-trust-strip__text">
-        {%- if settings.trust_delivery != blank -%}
-          {{ settings.trust_delivery }}
-        {%- else -%}
-          {{ 'products.trust_strip.delivery_text' | t }}
-        {%- endif -%}
-      </p>
+      <p class="product-trust-strip__title">{{ 'products.trust_strip.nationwide_title' | t }}</p>
+      <p class="product-trust-strip__text">{{ 'products.trust_strip.nationwide_text' | t }}</p>
     </div>
   </div>
-  {%- if settings.enable_cod_messaging -%}
-    <div class="product-trust-strip__item" role="listitem">
-      <span class="product-trust-strip__icon" aria-hidden="true">{% render 'icon', name: 'check', size: 22 %}</span>
-      <div class="product-trust-strip__copy">
-        <p class="product-trust-strip__title">{{ 'products.trust_strip.cod_title' | t }}</p>
-        <p class="product-trust-strip__text">{{ 'products.trust_strip.cod_text' | t }}</p>
-      </div>
-    </div>
-  {%- endif -%}
   <div class="product-trust-strip__item" role="listitem">
-    <span class="product-trust-strip__icon" aria-hidden="true">{% render 'icon', name: 'return', size: 22 %}</span>
+    <span class="product-trust-strip__icon" aria-hidden="true">{% render 'icon', name: 'whatsapp', size: 22 %}</span>
     <div class="product-trust-strip__copy">
-      <p class="product-trust-strip__title">{{ 'products.trust_strip.support_title' | t }}</p>
-      <p class="product-trust-strip__text">
-        {%- if settings.trust_returns != blank -%}
-          {{ settings.trust_returns }}
-        {%- else -%}
-          {{ 'products.trust_strip.support_text' | t }}
-        {%- endif -%}
-      </p>
+      <p class="product-trust-strip__title">{{ 'products.trust_strip.whatsapp_title' | t }}</p>
+      <p class="product-trust-strip__text">{{ 'products.trust_strip.whatsapp_text' | t }}</p>
+    </div>
+  </div>
+  <div class="product-trust-strip__item" role="listitem">
+    <span class="product-trust-strip__icon" aria-hidden="true">{% render 'icon', name: 'zap', size: 22 %}</span>
+    <div class="product-trust-strip__copy">
+      <p class="product-trust-strip__title">{{ 'products.trust_strip.dispatch_title' | t }}</p>
+      <p class="product-trust-strip__text">{{ 'products.trust_strip.dispatch_text' | t }}</p>
     </div>
   </div>
 </div>

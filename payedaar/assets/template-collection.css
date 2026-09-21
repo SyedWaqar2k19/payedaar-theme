@@ -397,6 +397,12 @@ body.template-list-collections {
   gap: 1.15rem;
 }
 
+@media (max-width: 749px) {
+  .collection-main .product-grid {
+    gap: 0.7rem;
+  }
+}
+
 .collection-main .product-grid.grid--4 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
