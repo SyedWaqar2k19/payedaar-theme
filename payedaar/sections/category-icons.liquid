@@ -11,7 +11,7 @@
       accent: true
     %}
 
-    {%- assign fallback_assets = 'category-home.jpg,category-kitchen.jpg,category-beauty.jpg,category-gadgets.jpg,category-fashion.jpg,category-deals.jpg' | split: ',' -%}
+    {%- comment -%} Named per-category fallbacks are resolved per block, not by tile index. {%- endcomment -%}
     <ul class="category-icons list-unstyled{% if section.settings.layout == 'tiles' %} category-icons--tiles{% endif %}" role="list" data-reveal-stagger>
       {%- for block in section.blocks -%}
         {%- liquid
@@ -20,20 +20,36 @@
           if cat_label == blank and cat_collection != blank
             assign cat_label = cat_collection.title
           endif
-          if cat_collection == blank and cat_label != blank
-            assign handle_guess = cat_label | handle
-            assign label_down = cat_label | downcase
-            if handle_guess == 'home-living' or handle_guess == 'home-and-living'
-              assign handle_guess = 'home'
-            elsif label_down contains 'best'
-              assign handle_guess = 'best-sellers'
-            elsif label_down contains 'hot' or label_down contains 'deal'
-              assign handle_guess = 'hot-deals'
-            endif
+          assign label_down = cat_label | downcase
+          assign handle_guess = cat_label | handle
+          if label_down contains 'kitchen'
+            assign handle_guess = 'kitchen'
+          elsif label_down contains 'beauty'
+            assign handle_guess = 'beauty'
+          elsif label_down contains 'gadget'
+            assign handle_guess = 'gadgets'
+          elsif label_down contains 'fashion' or label_down contains 'fasion' or handle_guess == 'fasion'
+            assign handle_guess = 'fashion'
+          elsif label_down contains 'best'
+            assign handle_guess = 'best-sellers'
+          elsif label_down contains 'hot' or label_down contains 'deal'
+            assign handle_guess = 'hot-deals'
+          elsif label_down == 'home' or label_down contains 'living' or handle_guess == 'home-living' or handle_guess == 'home-and-living' or handle_guess == 'home-amp-living'
+            assign handle_guess = 'home'
+          endif
+          if cat_collection == blank and handle_guess != blank
             assign cat_collection = collections[handle_guess]
           endif
+          if cat_collection == blank and handle_guess == 'home'
+            assign cat_collection = collections['home-living']
+            if cat_collection == blank
+              assign cat_collection = collections['home-and-living']
+            endif
+          endif
+          if cat_collection == blank and handle_guess == 'fashion'
+            assign cat_collection = collections['fasion']
+          endif
           assign is_hot = false
-          assign label_down = cat_label | downcase
           if cat_collection != blank
             if cat_collection.handle == 'hot-deals' or cat_collection.handle == 'hot-deal'
               assign is_hot = true
@@ -48,6 +64,26 @@
           assign tile_image = block.settings.image
           if tile_image == blank and cat_collection != blank and cat_collection.featured_image != blank
             assign tile_image = cat_collection.featured_image
+          endif
+          assign fallback_file = ''
+          assign col_handle = ''
+          if cat_collection != blank
+            assign col_handle = cat_collection.handle
+          endif
+          if is_hot or col_handle == 'hot-deals' or col_handle == 'hot-deal' or label_down contains 'hot' or label_down contains 'deal'
+            assign fallback_file = 'category-deals.jpg'
+          elsif col_handle == 'kitchen' or label_down contains 'kitchen'
+            assign fallback_file = 'category-kitchen.jpg'
+          elsif col_handle contains 'beauty' or label_down contains 'beauty'
+            assign fallback_file = 'category-beauty.jpg'
+          elsif col_handle contains 'gadget' or label_down contains 'gadget'
+            assign fallback_file = 'category-gadgets.jpg'
+          elsif col_handle contains 'fashion' or col_handle == 'fasion' or label_down contains 'fashion' or label_down contains 'fasion'
+            assign fallback_file = 'category-fashion.jpg'
+          elsif col_handle contains 'best' or label_down contains 'best'
+            assign fallback_file = 'category-best-sellers.jpg'
+          elsif col_handle == 'home' or col_handle contains 'home' or label_down == 'home' or label_down contains 'living'
+            assign fallback_file = 'category-home.jpg'
           endif
           if section.settings.layout == 'tiles'
             assign img_width = 960
@@ -77,9 +113,9 @@
                     alt: cat_label,
                     class: 'category-icons__img'
                 }}
-              {%- elsif section.settings.layout == 'tiles' and forloop.index <= fallback_assets.size -%}
+              {%- elsif section.settings.layout == 'tiles' and fallback_file != blank -%}
                 <img
-                  src="{{ fallback_assets[forloop.index0] | asset_url }}"
+                  src="{{ fallback_file | asset_url }}"
                   alt="{{ cat_label | escape }}"
                   class="category-icons__img"
                   width="640"

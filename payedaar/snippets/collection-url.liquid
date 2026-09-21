@@ -19,7 +19,7 @@
     assign key = 'beauty'
   elsif raw contains 'gadget'
     assign key = 'gadgets'
-  elsif raw contains 'fashion'
+  elsif raw contains 'fashion' or raw contains 'fasion' or key == 'fasion'
     assign key = 'fashion'
   elsif raw contains 'best seller' or raw contains 'best-seller'
     assign key = 'best-sellers'
@@ -43,6 +43,12 @@
     assign mapped = collections[key]
     if mapped == blank and key == 'home'
       assign mapped = collections['home-living']
+      if mapped == blank
+        assign mapped = collections['home-and-living']
+      endif
+    endif
+    if mapped == blank and key == 'fashion'
+      assign mapped = collections['fasion']
     endif
     if mapped != blank
       assign dest = mapped.url

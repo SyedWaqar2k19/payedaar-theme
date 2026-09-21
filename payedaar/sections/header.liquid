@@ -36,6 +36,9 @@
   assign cat_beauty = collections['beauty']
   assign cat_gadgets = collections['gadgets']
   assign cat_fashion = collections['fashion']
+  if cat_fashion == blank
+    assign cat_fashion = collections['fasion']
+  endif
   assign cat_home_url = routes.collections_url
   assign cat_kitchen_url = routes.collections_url
   assign cat_beauty_url = routes.collections_url
@@ -439,7 +442,7 @@
                 <a href="{{ cat_gadgets_url }}"{% if collection.handle == 'gadgets' %} aria-current="page"{% endif %}>Gadgets</a>
               </li>
               <li>
-                <a href="{{ cat_fashion_url }}"{% if collection.handle == 'fashion' %} aria-current="page"{% endif %}>Fashion</a>
+                <a href="{{ cat_fashion_url }}"{% if cat_fashion != blank and collection.handle == cat_fashion.handle %} aria-current="page"{% endif %}>Fashion</a>
               </li>
               <li>
                 <a href="{{ routes.collections_url }}"{% if request.page_type == 'list-collections' %} aria-current="page"{% endif %}>
@@ -554,7 +557,7 @@
                   <li><a href="{{ cat_kitchen_url }}"{% if collection.handle == 'kitchen' %} aria-current="page"{% endif %}>Kitchen</a></li>
                   <li><a href="{{ cat_beauty_url }}"{% if collection.handle == 'beauty' %} aria-current="page"{% endif %}>Beauty</a></li>
                   <li><a href="{{ cat_gadgets_url }}"{% if collection.handle == 'gadgets' %} aria-current="page"{% endif %}>Gadgets</a></li>
-                  <li><a href="{{ cat_fashion_url }}"{% if collection.handle == 'fashion' %} aria-current="page"{% endif %}>Fashion</a></li>
+                  <li><a href="{{ cat_fashion_url }}"{% if cat_fashion != blank and collection.handle == cat_fashion.handle %} aria-current="page"{% endif %}>Fashion</a></li>
                   <li><a href="{{ routes.collections_url }}"{% if request.page_type == 'list-collections' %} aria-current="page"{% endif %}>{{ 'collections.list_title' | t }}</a></li>
                 </ul>
               </details>
