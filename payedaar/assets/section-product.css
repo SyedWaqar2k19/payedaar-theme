@@ -2680,6 +2680,21 @@ input:checked + .variant-selects__swatch {
 }
 
 /* -------------------------------------------------------------------------- */
+/* Mobile PDP only: hide search row + buy-box trust pills                     */
+/* Desktop / tablet desktop-nav / other templates stay unchanged.             */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 749px) {
+  .template-product .site-header__search {
+    display: none;
+  }
+
+  .template-product .product-info__trust--pills {
+    display: none;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
 /* Sticky ATC (mobile only)                                                   */
 /* -------------------------------------------------------------------------- */
 
