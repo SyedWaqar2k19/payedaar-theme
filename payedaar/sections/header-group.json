@@ -8,13 +8,13 @@
         "msg1": {
           "type": "message",
           "settings": {
-            "text": "Free delivery across Pakistan on orders over Rs. 2,999"
+            "text": "Free delivery across all over Pakistan!"
           }
         },
         "msg2": {
           "type": "message",
           "settings": {
-            "text": "Cash on Delivery available on eligible orders"
+            "text": "Cash on Delivery available on all orders"
           }
         },
         "msg3": {

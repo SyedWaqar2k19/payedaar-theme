@@ -2091,48 +2091,8 @@ input:checked + .variant-selects__swatch {
 
 .buy-buttons__qty,
 .buy-buttons .qty-control.buy-buttons__qty {
-  display: inline-flex;
-  align-items: stretch;
-  overflow: hidden;
-  min-width: 8.75rem;
-  border: 1px solid rgba(232, 228, 222, 0.98);
-  border-radius: 0.85rem;
-  background: #fff;
-  box-shadow: none;
-}
-
-.buy-buttons__qty .qty-control__btn {
-  width: 2.55rem;
-  height: 2.55rem;
-  min-height: 2.55rem;
-  border: 0;
-  background: transparent;
-  color: var(--color-text);
-}
-
-.buy-buttons__qty .qty-control__btn:hover {
-  background: #fff7ed;
-  color: var(--color-primary);
-}
-
-.buy-buttons__qty .qty-control__input,
-.buy-buttons__qty input[type='number'] {
-  width: 2.6rem;
-  min-width: 2.6rem;
-  max-width: 2.8rem;
-  height: 2.55rem;
-  min-height: 2.55rem;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-inline: 1px solid rgba(232, 228, 222, 0.95);
-  border-radius: 0;
-  background: transparent;
-  font-size: 0.95rem;
-  font-weight: 800;
-  line-height: 1;
-  text-align: center;
-  box-shadow: none;
+  width: 8.25rem;
+  min-width: 8.25rem;
 }
 
 .buy-buttons .buy-buttons__atc,

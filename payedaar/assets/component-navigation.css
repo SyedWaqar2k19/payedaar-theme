@@ -1110,7 +1110,6 @@ body.drawer-open .header-drawer {
 }
 
 @media (max-width: 420px) {
-  .site-header__wishlist-btn,
   .site-header__account {
     display: none;
   }

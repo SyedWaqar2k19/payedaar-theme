@@ -1,70 +1,133 @@
-<section class="section" data-section-id="{{ section.id }}">
-  <div class="page-width">
-    <h1 class="mb-3">{{ 'cart.title' | t }}</h1>
+{%- liquid
+  assign hot_deals_url = routes.collections_url | append: '/hot-deals'
+-%}
+
+<section class="section section-main-cart" data-section-id="{{ section.id }}">
+  <div class="page-width cart-page-wrap">
+    <header class="cart-page__header">
+      <p class="cart-page__kicker">
+        <span aria-hidden="true">{% render 'icon', name: 'cart', size: 14 %}</span>
+        {{ 'cart.kicker' | t }}
+      </p>
+      <div class="cart-page__heading-row">
+        <h1 class="cart-page__title">{{ 'cart.title' | t }}</h1>
+        {%- if cart.item_count > 0 -%}
+          <p class="cart-page__count" data-cart-page-count>
+            {{ 'general.cart_count' | t: count: cart.item_count }}
+          </p>
+        {%- endif -%}
+      </div>
+    </header>
 
     {%- if cart.item_count == 0 -%}
-      <div class="ds-block text-center">
-        <p class="mb-3">{{ 'cart.empty' | t }}</p>
-        <a class="button button--primary" href="{{ routes.collections_url }}/hot-deals">{{ 'general.hot_deals' | t }}</a>
+      <div class="cart-page__empty">
+        <span class="cart-page__empty-icon" aria-hidden="true">{% render 'icon', name: 'cart', size: 28 %}</span>
+        <h2 class="cart-page__empty-heading">{{ 'cart.empty_heading' | t }}</h2>
+        <p class="cart-page__empty-text">{{ 'cart.empty' | t }}</p>
+        <a class="button button--primary" href="{{ hot_deals_url }}">{{ 'general.hot_deals' | t }}</a>
       </div>
     {%- else -%}
-      <div class="mb-3">
-        {% render 'free-shipping-bar' %}
-      </div>
-
-      <form action="{{ routes.cart_url }}" method="post" id="cart-page-form" class="cart-page card">
-        <div class="cart-page__items">
-          {%- for item in cart.items -%}
-            <div class="cart-drawer__item cart-page__item">
-              <a href="{{ item.url }}" class="cart-drawer__image">
-                {%- if item.image -%}
-                  {{ item.image | image_url: width: 180 | image_tag: loading: 'lazy', alt: item.product.title }}
-                {%- else -%}
-                  {{ 'product-1' | placeholder_svg_tag }}
-                {%- endif -%}
-              </a>
-              <div class="cart-drawer__details">
-                <a class="cart-drawer__item-title" href="{{ item.url }}">{{ item.product.title }}</a>
-                {%- unless item.product.has_only_default_variant -%}
-                  <p class="cart-drawer__variant text-muted">{{ item.variant.title }}</p>
-                {%- endunless -%}
-                <p class="cart-drawer__price text-primary font-bold">
-                  {{ item.final_line_price | money }}
-                  {%- if item.original_line_price > item.final_line_price -%}
-                    <s class="cart-drawer__compare text-muted">{{ item.original_line_price | money }}</s>
-                  {%- endif -%}
-                </p>
-                <div class="cart-page__qty-row">
-                  <label class="visually-hidden" for="Updates-{{ item.key }}">{{ 'cart.quantity' | t }}</label>
-                  <input
-                    id="Updates-{{ item.key }}"
-                    class="input cart-page__qty-input"
-                    type="number"
-                    name="updates[]"
-                    value="{{ item.quantity }}"
-                    min="0"
-                    {% if item.variant.inventory_management and item.variant.inventory_policy == 'deny' and item.variant.inventory_quantity > 0 %}
-                      max="{{ item.variant.inventory_quantity }}"
-                    {% endif %}
-                  >
-                  <a class="cart-page__remove" href="{{ item.url_to_remove }}">{{ 'cart.remove' | t }}</a>
-                </div>
-              </div>
+      <form action="{{ routes.cart_url }}" method="post" id="cart-page-form" class="cart-page">
+        <div class="cart-page__layout">
+          <div class="cart-page__main">
+            <div class="cart-page__shipping">
+              {% render 'free-shipping-bar' %}
             </div>
-          {%- endfor -%}
-        </div>
 
-        <p class="mt-3 font-bold">
-          {{ 'cart.subtotal' | t }}: <span class="text-primary">{{ cart.total_price | money }}</span>
-        </p>
-        <div class="cart-drawer__cod mt-2">
-          {% render 'trust-badges', compact: true %}
-        </div>
-        <div class="ds-row mt-3">
-          <button type="submit" name="update" class="button button--secondary">{{ 'cart.update' | t }}</button>
-          <button type="submit" name="checkout" class="button button--primary" formaction="/checkout" formmethod="post">
-            {{ 'cart.checkout' | t }}
-          </button>
+            <div class="cart-page__items">
+              {%- for item in cart.items -%}
+                {%- liquid
+                  assign display_title = item.product.title
+                  if display_title contains ' | '
+                    assign display_title = display_title | split: ' | ' | last | strip
+                  endif
+                -%}
+                <div class="cart-page__item" data-key="{{ item.key | escape }}">
+                  <a href="{{ item.url }}" class="cart-page__image">
+                    {%- if item.image -%}
+                      {{
+                        item.image
+                        | image_url: width: 240
+                        | image_tag: loading: 'lazy', alt: item.product.title, widths: '120, 180, 240'
+                      }}
+                    {%- else -%}
+                      {{ 'product-1' | placeholder_svg_tag }}
+                    {%- endif -%}
+                  </a>
+                  <div class="cart-page__details">
+                    <a class="cart-page__item-title" href="{{ item.url }}">{{ display_title }}</a>
+                    {%- unless item.product.has_only_default_variant -%}
+                      <p class="cart-page__variant">{{ item.variant.title }}</p>
+                    {%- endunless -%}
+                    {%- if item.properties.size > 0 -%}
+                      <ul class="cart-page__properties list-unstyled">
+                        {%- for property in item.properties -%}
+                          {%- unless property.last == blank or property.first contains '_' -%}
+                            <li>{{ property.first }}: {{ property.last }}</li>
+                          {%- endunless -%}
+                        {%- endfor -%}
+                      </ul>
+                    {%- endif -%}
+                    <p class="cart-page__price" data-cart-page-line-price>
+                      {{ item.final_line_price | money }}
+                      {%- if item.original_line_price > item.final_line_price -%}
+                        <s class="cart-page__compare">{{ item.original_line_price | money }}</s>
+                      {%- endif -%}
+                      {%- if item.quantity > 1 -%}
+                        <span class="cart-page__unit">{{ item.final_price | money }} {{ 'cart.each' | t }}</span>
+                      {%- endif -%}
+                    </p>
+                    <div class="cart-page__qty-row">
+                      <label class="visually-hidden" for="Updates-{{ item.key }}">{{ 'cart.quantity' | t }}</label>
+                      <div class="qty-control cart-page__qty" data-cart-page-qty data-line="{{ forloop.index }}">
+                        <button type="button" class="qty-control__btn" data-cart-page-qty-btn="-1" aria-label="{{ 'cart.decrease' | t }}">
+                          {% render 'icon', name: 'minus', size: 16 %}
+                        </button>
+                        <input
+                          id="Updates-{{ item.key }}"
+                          class="qty-control__input cart-page__qty-input"
+                          type="number"
+                          name="updates[]"
+                          value="{{ item.quantity }}"
+                          min="0"
+                          {% if item.variant.inventory_management and item.variant.inventory_policy == 'deny' and item.variant.inventory_quantity > 0 %}
+                            max="{{ item.variant.inventory_quantity }}"
+                          {% endif %}
+                          data-cart-page-qty-input
+                          data-line="{{ forloop.index }}"
+                          aria-label="{{ 'cart.quantity' | t }}"
+                        >
+                        <button type="button" class="qty-control__btn" data-cart-page-qty-btn="1" aria-label="{{ 'cart.increase' | t }}">
+                          {% render 'icon', name: 'plus', size: 16 %}
+                        </button>
+                      </div>
+                      <a class="cart-page__remove" href="{{ item.url_to_remove }}">{{ 'cart.remove' | t }}</a>
+                    </div>
+                  </div>
+                </div>
+              {%- endfor -%}
+            </div>
+          </div>
+
+          <aside class="cart-page__summary" aria-label="{{ 'cart.summary' | t }}">
+            <h2 class="cart-page__summary-title">{{ 'cart.summary' | t }}</h2>
+            <p class="cart-page__subtotal">
+              <span>{{ 'cart.subtotal' | t }}</span>
+              <strong data-cart-page-subtotal>{{ cart.total_price | money }}</strong>
+            </p>
+            <div class="cart-page__trust">
+              {% render 'trust-badges' %}
+            </div>
+            <div class="cart-page__actions">
+              <button type="submit" name="checkout" class="button button--primary button--lg button--full" formaction="/checkout" formmethod="post" data-cart-checkout>
+                {{ 'cart.checkout' | t }}
+              </button>
+              <button type="submit" name="update" class="button button--secondary button--full">
+                {{ 'cart.update' | t }}
+              </button>
+              <a class="cart-page__continue" href="{{ routes.collections_url }}">{{ 'general.continue_shopping' | t }}</a>
+            </div>
+          </aside>
         </div>
       </form>
     {%- endif -%}
@@ -75,6 +138,7 @@
 {
   "name": "Cart",
   "tag": "section",
+  "class": "section-main-cart",
   "settings": []
 }
 {% endschema %}

@@ -282,7 +282,7 @@
         "type": "text",
         "id": "trust_delivery",
         "label": "Free delivery text",
-        "default": "Free delivery over Rs. 2,999"
+        "default": "Free delivery all over Pakistan!"
       },
       {
         "type": "checkbox",

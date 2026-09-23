@@ -165,7 +165,7 @@
     },
     "delivery_estimate": "Typically delivered in {{ days }} days",
     "delivery_fallback": "Estimated delivery in 3–5 business days across Pakistan",
-    "open_parcel_cod": "Cash on Delivery is available on eligible orders.",
+    "open_parcel_cod": "Cash on Delivery is available on all orders.",
     "you_save": "You save {{ amount }}",
     "delivery_timeline": {
       "ordered": "Ordered",
@@ -182,7 +182,7 @@
     "details_subheading": "Get the complete information about this product.",
     "features_heading": "Key features",
     "order_now_heading": "Order now from Payedaar",
-    "order_now_text": "Get {{ title }} delivered across Pakistan with COD on eligible orders.",
+    "order_now_text": "Get {{ title }} delivered across Pakistan with COD on all orders.",
     "included_heading": "What's included",
     "included_item": "1× {{ title }}",
     "included_packaging": "Original packaging",
@@ -199,7 +199,7 @@
       "cod": "Cash on Delivery",
       "cod_hint": "Pay at your door",
       "delivery": "Free Delivery",
-      "delivery_hint": "On eligible orders",
+      "delivery_hint": "On all orders",
       "support": "7-Day Support",
       "support_hint": "Easy returns"
     },
@@ -226,7 +226,7 @@
       "delivery_3": "Major cities often arrive faster",
       "charges_title": "Shipping charges",
       "charges_2": "Calculated at checkout by city",
-      "charges_3": "COD available on eligible orders",
+      "charges_3": "COD available on all orders",
       "returns_title": "Returns & refunds",
       "returns_2": "Unused items in original condition",
       "returns_3": "WhatsApp support for return help"
@@ -236,7 +236,7 @@
       "summary": "Original product · Secure payment · Free delivery",
       "point_1": "Authentic products sourced for everyday deals",
       "point_2": "Secure checkout and order support",
-      "point_3": "Cash on Delivery on eligible orders"
+      "point_3": "Cash on Delivery on all orders"
     },
     "reviews": {
       "heading": "Customer reviews",
@@ -286,7 +286,7 @@
       "kicker": "Limited-time picks",
       "subheading": "Flash prices, original products, and Cash on Delivery across Pakistan.",
       "pill_cod": "Cash on Delivery",
-      "pill_delivery": "Free delivery on eligible orders",
+      "pill_delivery": "Free delivery on all orders",
       "pill_returns": "Easy return support",
       "stat_count": {
         "one": "deal live now",
@@ -302,6 +302,10 @@
   "cart": {
     "title": "Your cart",
     "drawer_title": "Your cart",
+    "kicker": "Ready to order",
+    "empty_heading": "Your cart is empty",
+    "summary": "Order summary",
+    "each": "each",
     "empty": "Your cart is empty — browse Hot Deals.",
     "product": "Product",
     "quantity": "Qty",
@@ -354,7 +358,7 @@
     "whatsapp_prefill": "Hi Payedaar, I have a question from the FAQ page.",
     "shipping_link": "Shipping & returns",
     "default_q1": "Do you offer Cash on Delivery?",
-    "default_a1": "Yes — Cash on Delivery is available across Pakistan on eligible orders.",
+    "default_a1": "Yes — Cash on Delivery is available across Pakistan on all orders.",
     "default_q2": "How long does delivery take?",
     "default_a2": "Most orders arrive within a few business days depending on your city.",
     "default_q3": "What is your return policy?",
@@ -377,7 +381,7 @@
   },
   "shipping": {
     "default_delivery": "We deliver nationwide across Pakistan. Free delivery may apply above the store threshold.",
-    "default_cod": "Pay Cash on Delivery when your order arrives — available on eligible orders.",
+    "default_cod": "Pay Cash on Delivery when your order arrives — available on all orders.",
     "default_returns": "Hassle-free returns within the stated window for unused items in original condition."
   },
   "cookie": {

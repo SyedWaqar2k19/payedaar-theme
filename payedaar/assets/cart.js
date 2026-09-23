@@ -47,6 +47,63 @@
     });
   }
 
+  let cartBusyCount = 0;
+
+  function formatCartMoney(cents) {
+    const format = window.themeMoneyFormat || 'Rs. {{amount}}';
+    if (window.Shopify?.formatMoney) {
+      return window.Shopify.formatMoney(cents, format);
+    }
+    const amount = (Number(cents) / 100).toLocaleString('en-PK', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    });
+    return format.replace(/\{\{\s*amount[^}]*\}\}/g, amount);
+  }
+
+  function setCheckoutBusy(busy) {
+    document.querySelectorAll('[data-cart-checkout]').forEach((el) => {
+      if (el.tagName === 'BUTTON' || el.tagName === 'INPUT') {
+        el.disabled = Boolean(busy);
+      }
+      if (busy) el.setAttribute('aria-disabled', 'true');
+      else el.removeAttribute('aria-disabled');
+    });
+  }
+
+  function setCartBusy(busy, row) {
+    cartBusyCount += busy ? 1 : -1;
+    if (cartBusyCount < 0) cartBusyCount = 0;
+    if (row) row.classList.toggle('is-updating', Boolean(busy));
+    setCheckoutBusy(cartBusyCount > 0);
+  }
+
+  function applyDrawerFromCart(cart) {
+    if (!cart || !Array.isArray(cart.items)) return;
+    document.querySelectorAll('[data-cart-item][data-key]').forEach((row) => {
+      const key = row.getAttribute('data-key');
+      const item = cart.items.find((entry) => entry.key === key);
+      if (!item) {
+        row.remove();
+        return;
+      }
+      const priceEl = row.querySelector('[data-cart-drawer-line-price]');
+      if (priceEl) {
+        let html = formatCartMoney(item.final_line_price);
+        if (item.original_line_price > item.final_line_price) {
+          html += ` <s class="cart-drawer__compare text-muted">${formatCartMoney(item.original_line_price)}</s>`;
+        }
+        priceEl.innerHTML = html;
+      }
+      const input = row.querySelector('[data-qty-input]');
+      if (input) input.value = String(item.quantity);
+    });
+    const subtotal = document.querySelector('[data-cart-subtotal]');
+    if (subtotal) subtotal.textContent = formatCartMoney(cart.total_price);
+    const count = document.querySelector('[data-cart-drawer-count]');
+    if (count) count.textContent = `(${cart.item_count ?? 0})`;
+  }
+
   async function fetchCart() {
     const res = await fetch(`${cartUrl}.js`, {
       headers: { Accept: 'application/json' },
@@ -213,9 +270,11 @@
     }
 
     async _changeLine(line, quantity) {
-      this.classList.add('is-loading');
+      const row = this.querySelector(`[data-qty-input][data-line="${line}"]`)?.closest('[data-cart-item]');
+      setCartBusy(true, row);
       this.clearError();
       try {
+        const needsRebuild = quantity === 0;
         const res = await fetch(cartChangeUrl, {
           method: 'POST',
           headers: {
@@ -223,30 +282,38 @@
             Accept: 'application/json',
           },
           credentials: 'same-origin',
-          body: JSON.stringify({
-            line,
-            quantity,
-            sections: SECTION_ID,
-            sections_url: window.location.pathname,
-          }),
+          body: JSON.stringify(
+            needsRebuild
+              ? {
+                  line,
+                  quantity,
+                  sections: SECTION_ID,
+                  sections_url: window.location.pathname,
+                }
+              : { line, quantity }
+          ),
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
           throw new Error(data.description || data.message || 'Cart change failed');
         }
-        if (data.sections) {
-          const ok = await this.renderFromSections(data.sections);
-          if (!ok) await this.refresh();
-        } else {
-          await this.refresh();
-        }
         updateCartCounts(data.item_count ?? 0);
+        if (needsRebuild || !data.item_count) {
+          if (data.sections) {
+            const ok = await this.renderFromSections(data.sections);
+            if (!ok) await this.refresh();
+          } else {
+            await this.refresh();
+          }
+        } else {
+          applyDrawerFromCart(data);
+        }
         document.dispatchEvent(new CustomEvent('cart:updated', { detail: { action: 'change', cart: data } }));
       } catch (error) {
         this.showError(error.message);
         throw error;
       } finally {
-        this.classList.remove('is-loading');
+        setCartBusy(false, row);
       }
     }
 
@@ -453,5 +520,176 @@
       drawer.setAttribute('hidden', '');
       drawer.setAttribute('aria-hidden', 'true');
     }
+  });
+
+  /* Cart page qty uses the same changeLine API as the drawer. */
+  let cartPageRefresh = Promise.resolve();
+
+  function cartPageRoot() {
+    return document.querySelector('.section-main-cart');
+  }
+
+  function applyCartPageFromCart(cart) {
+    if (!cart || !cartPageRoot()) return;
+    if (!Array.isArray(cart.items) || cart.item_count === 0) {
+      refreshCartPageSection();
+      return;
+    }
+
+    document.querySelectorAll('.cart-page__item[data-key]').forEach((row) => {
+      const key = row.getAttribute('data-key');
+      const item = cart.items.find((entry) => entry.key === key);
+      if (!item) {
+        row.remove();
+        return;
+      }
+      const priceEl = row.querySelector('[data-cart-page-line-price]');
+      if (priceEl) {
+        let html = formatCartMoney(item.final_line_price);
+        if (item.original_line_price > item.final_line_price) {
+          html += ` <s class="cart-page__compare">${formatCartMoney(item.original_line_price)}</s>`;
+        }
+        if (item.quantity > 1) {
+          html += `<span class="cart-page__unit">${formatCartMoney(item.final_price)} each</span>`;
+        }
+        priceEl.innerHTML = html;
+      }
+      const input = row.querySelector('[data-cart-page-qty-input]');
+      if (input) input.value = String(item.quantity);
+    });
+
+    const subtotal = document.querySelector('[data-cart-page-subtotal]');
+    if (subtotal) subtotal.textContent = formatCartMoney(cart.total_price);
+
+    const count = document.querySelector('[data-cart-page-count]');
+    if (count) count.textContent = cartCountLabel(cart.item_count);
+  }
+
+  function refreshCartPageSection() {
+    const root = cartPageRoot();
+    const sectionId = root?.dataset.sectionId;
+    if (!sectionId) return Promise.resolve();
+    cartPageRefresh = cartPageRefresh
+      .then(async () => {
+        const res = await fetch(`${window.location.pathname}?sections=${encodeURIComponent(sectionId)}`, {
+          headers: { Accept: 'application/json' },
+          credentials: 'same-origin',
+        });
+        if (!res.ok) throw new Error('Cart page refresh failed');
+        const sections = await res.json();
+        const html = sections[sectionId];
+        if (!html) return;
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const nextId = `shopify-section-${sectionId}`;
+        const next = doc.getElementById(nextId) || doc.querySelector('.section-main-cart');
+        const current = document.getElementById(nextId);
+        if (next && current) {
+          current.innerHTML = next.id === nextId ? next.innerHTML : next.outerHTML;
+        }
+      })
+      .catch((error) => {
+        console.error('[Payedaar cart page]', error);
+      });
+    return cartPageRefresh;
+  }
+
+  function changeCartPageLine(line, quantity) {
+    const drawer = document.querySelector('cart-drawer');
+    if (drawer && typeof drawer.changeLine === 'function') {
+      return drawer.changeLine(line, quantity);
+    }
+    return fetch(cartChangeUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({ line, quantity }),
+    })
+      .then(async (res) => {
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.description || data.message || 'Cart change failed');
+        updateCartCounts(data.item_count ?? 0);
+        document.dispatchEvent(new CustomEvent('cart:updated', { detail: { action: 'change', cart: data } }));
+      });
+  }
+
+  document.addEventListener('cart:updated', (event) => {
+    if (!cartPageRoot()) return;
+    const cart = event.detail?.cart;
+    if (!cart || !Array.isArray(cart.items)) return;
+    if (cart.item_count === 0) {
+      refreshCartPageSection();
+      return;
+    }
+    applyCartPageFromCart(cart);
+  });
+
+  document.addEventListener('click', (event) => {
+    const blockedCheckout = event.target.closest('[data-cart-checkout][aria-disabled="true"]');
+    if (blockedCheckout) {
+      event.preventDefault();
+      return;
+    }
+
+    const btn = event.target.closest('[data-cart-page-qty-btn]');
+    if (!btn) return;
+    const form = document.getElementById('cart-page-form');
+    if (!form || !form.contains(btn)) return;
+    event.preventDefault();
+    const wrap = btn.closest('[data-cart-page-qty]');
+    const input = wrap?.querySelector('[data-cart-page-qty-input]');
+    const line = Number(wrap?.dataset.line || input?.dataset.line);
+    if (!input || !line) return;
+    const step = Number(btn.getAttribute('data-cart-page-qty-btn')) || 0;
+    const min = input.min === '' ? 0 : Number(input.min);
+    const max = input.max === '' ? Infinity : Number(input.max);
+    const next = Math.min(max, Math.max(min, (Number(input.value) || 0) + step));
+    input.value = String(next);
+    const row = btn.closest('.cart-page__item');
+    setCartBusy(true, row);
+    Promise.resolve(changeCartPageLine(line, next))
+      .catch(() => refreshCartPageSection())
+      .finally(() => setCartBusy(false, row));
+  });
+
+  document.addEventListener('change', (event) => {
+    const input = event.target.closest('[data-cart-page-qty-input]');
+    if (!input) return;
+    const form = document.getElementById('cart-page-form');
+    if (!form || !form.contains(input)) return;
+    const wrap = input.closest('[data-cart-page-qty]');
+    const line = Number(wrap?.dataset.line || input.dataset.line);
+    if (!line) return;
+    let next = Math.max(0, Number(input.value || 0));
+    const max = Number(input.max || 0);
+    if (max > 0) next = Math.min(max, next);
+    input.value = String(next);
+    const row = input.closest('.cart-page__item');
+    setCartBusy(true, row);
+    Promise.resolve(changeCartPageLine(line, next))
+      .catch(() => refreshCartPageSection())
+      .finally(() => setCartBusy(false, row));
+  });
+
+  /* Browser Back restores a frozen page (bfcache). Re-sync cart without opening the drawer. */
+  function isHistoryRestore(event) {
+    if (event?.persisted) return true;
+    const nav = performance.getEntriesByType?.('navigation')?.[0];
+    return nav?.type === 'back_forward';
+  }
+
+  window.addEventListener('pageshow', (event) => {
+    if (!isHistoryRestore(event)) return;
+    const drawer = document.querySelector('cart-drawer');
+    if (drawer && typeof drawer.refresh === 'function') {
+      drawer.refresh();
+    } else {
+      fetchCart()
+        .then((cart) => updateCartCounts(cart.item_count || 0))
+        .catch(() => {});
+    }
+    if (cartPageRoot()) refreshCartPageSection();
   });
 })();

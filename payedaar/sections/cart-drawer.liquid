@@ -67,7 +67,7 @@
                     {%- endfor -%}
                   </ul>
                 {%- endif -%}
-                <p class="cart-drawer__price text-primary font-bold">
+                <p class="cart-drawer__price text-primary font-bold" data-cart-drawer-line-price>
                   {{ item.final_line_price | money }}
                   {%- if item.original_line_price > item.final_line_price -%}
                     <s class="cart-drawer__compare text-muted">{{ item.original_line_price | money }}</s>
@@ -141,7 +141,7 @@
           <a href="{{ routes.cart_url }}" class="button button--secondary button--full">
             {{ 'cart.view_cart' | t }}
           </a>
-          <a href="/checkout" class="button button--primary button--full">
+          <a href="/checkout" class="button button--primary button--full" data-cart-checkout>
             {{ 'cart.checkout' | t }}
           </a>
         </div>

@@ -16,7 +16,7 @@
           "settings": {
             "category": "orders",
             "question": "Do you offer Cash on Delivery everywhere?",
-            "answer": "<p>Yes — Cash on Delivery is available across Pakistan on eligible orders. If COD is not offered for an item, checkout will show the payment options that apply.</p>"
+            "answer": "<p>Yes — Cash on Delivery is available across Pakistan on all orders. If COD is not offered for an item, checkout will show the payment options that apply.</p>"
           }
         },
         "q_change": {
