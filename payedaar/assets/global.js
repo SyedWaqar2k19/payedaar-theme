@@ -87,6 +87,27 @@
         trapFocus(event, panel);
       }
     });
+
+    const accountLoader = drawer.querySelector('[data-account-nav-loader]');
+    const hideAccountLoader = () => {
+      if (!accountLoader) return;
+      accountLoader.hidden = true;
+      accountLoader.setAttribute('aria-busy', 'false');
+    };
+    const showAccountLoader = () => {
+      if (!accountLoader) return;
+      accountLoader.hidden = false;
+      accountLoader.setAttribute('aria-busy', 'true');
+    };
+
+    drawer.querySelectorAll('[data-account-drawer-link]').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        if (event.defaultPrevented || event.button !== 0) return;
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        showAccountLoader();
+      });
+    });
+    window.addEventListener('pageshow', hideAccountLoader);
   }
 
   /* -------------------------------------------------------------------- */
@@ -430,6 +451,27 @@
           : `For ${order}, use the secure status link in your order confirmation email or sign in to view your orders.`;
         hint.hidden = false;
       }
+    });
+  });
+
+  document.querySelectorAll('[data-track-whatsapp-form]').forEach((form) => {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!form.reportValidity()) return;
+      const phone = form.querySelector('[data-track-phone]')?.value?.trim() || '';
+      if (!phone) return;
+      const order = form.querySelector('[data-track-order-number]')?.value?.trim() || '';
+      const waNumber = String(form.dataset.waNumber || '').replace(/\D/g, '');
+      if (!waNumber) return;
+      const lines = [form.dataset.waTitle || 'Track Order'];
+      if (order) lines.push(`Order ID: ${order}`);
+      lines.push(`Phone: ${phone}`);
+      const url = `https://wa.me/${waNumber}?text=${encodeURIComponent(lines.join('\n'))}`;
+      const link = document.createElement('a');
+      link.href = url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.click();
     });
   });
 })();

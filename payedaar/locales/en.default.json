@@ -10,7 +10,8 @@
     "close_menu": "Close menu",
     "close": "Close",
     "dismiss": "Dismiss",
-    "scroll_to_top": "Scroll to top"
+    "scroll_to_top": "Scroll to top",
+    "loading": "Loading"
   },
   "general": {
     "home": "Home",
@@ -377,7 +378,14 @@
     "full_page": "Open full track page",
     "whatsapp_prefill": "Hi Payedaar, I need help tracking my order.",
     "hint_ready": "For live shipment updates, use the tracking link in your confirmation email or message us on WhatsApp with order {{ order }}.",
-    "hint_login": "Sign in to see order history and fulfillment status in your Payedaar account."
+    "hint_login": "Sign in to see order history and fulfillment status in your Payedaar account.",
+    "drawer_instructions": "Enter the phone number used at checkout. Add your order ID if you have it — you can still track with phone only.",
+    "phone": "Phone number",
+    "phone_placeholder": "e.g. 03XX XXXXXXX",
+    "order_optional_hint": "Optional — leave blank if you don’t have it",
+    "via_whatsapp": "Track Order Via WhatsApp",
+    "online_soon": "Track Order Online (Coming Soon)",
+    "whatsapp_message_title": "Track Order"
   },
   "shipping": {
     "default_delivery": "We deliver nationwide across Pakistan. Free delivery may apply above the store threshold.",

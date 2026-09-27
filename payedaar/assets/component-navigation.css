@@ -273,6 +273,37 @@ body.drawer-open .header-drawer {
   z-index: calc(var(--drawer-z) + 30);
 }
 
+.account-nav-loader {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--drawer-z) + 80);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 253, 249, 0.72);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.account-nav-loader[hidden] {
+  display: none !important;
+}
+
+.account-nav-loader__spinner {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: payedaar-account-spin 0.7s linear infinite;
+}
+
+@keyframes payedaar-account-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* -------------------------------------------------------------------------- */
 /* Footer                                                                     */
 /* -------------------------------------------------------------------------- */
@@ -1324,7 +1355,25 @@ button.mobile-sticky-nav__item {
 .track-drawer__form {
   display: grid;
   gap: 0.85rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
+}
+
+.track-drawer__form .field {
+  margin-bottom: 0;
+}
+
+.track-drawer__field-hint {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+.track-drawer__form .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
 }
 
 .track-drawer__hint {

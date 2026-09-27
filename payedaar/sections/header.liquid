@@ -531,14 +531,14 @@
                       {% render 'icon', name: 'chevron-down', size: 16 %}
                     </summary>
                     <ul class="header-drawer__sublist list-unstyled">
-                      <li><a href="{{ link.url }}">{{ 'general.view_all' | t }}</a></li>
+                      <li><a href="{{ link.url }}"{% if link.url contains '/account' %} data-account-drawer-link{% endif %}>{{ 'general.view_all' | t }}</a></li>
                       {%- for child in link.links -%}
-                        <li><a href="{{ child.url }}">{{ child.title }}</a></li>
+                        <li><a href="{{ child.url }}"{% if child.url contains '/account' %} data-account-drawer-link{% endif %}>{{ child.title }}</a></li>
                       {%- endfor -%}
                     </ul>
                   </details>
                 {%- else -%}
-                  <a href="{{ link.url }}" {% if link.active %}aria-current="page"{% endif %}>{{ link.title }}</a>
+                  <a href="{{ link.url }}" {% if link.active %}aria-current="page"{% endif %}{% if link.url contains '/account' %} data-account-drawer-link{% endif %}>{{ link.title }}</a>
                 {%- endif -%}
               </li>
             {%- endfor -%}
@@ -571,7 +571,7 @@
                 <button type="button" data-track-drawer-open data-drawer-close>{{ 'general.track_order' | t }}</button>
               {%- endif -%}
             </li>
-            <li><a href="{{ routes.account_login_url }}">{{ 'general.account' | t }}</a></li>
+            <li><a href="{{ routes.account_login_url }}" data-account-drawer-link>{{ 'general.account' | t }}</a></li>
           </ul>
         {%- endif -%}
       </nav>
@@ -590,6 +590,10 @@
           </a>
         {%- endif -%}
       </div>
+    </div>
+    <div class="account-nav-loader" data-account-nav-loader hidden aria-live="polite" aria-busy="false">
+      <span class="account-nav-loader__spinner" aria-hidden="true"></span>
+      <span class="visually-hidden">{{ 'accessibility.loading' | t }}</span>
     </div>
   </div>
 </header>
