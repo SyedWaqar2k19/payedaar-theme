@@ -321,6 +321,8 @@
     "free_shipping_remaining_html": "You're {{ amount }} away from FREE delivery",
     "free_shipping_unlocked_html": "Congrats! You unlocked FREE delivery",
     "free_shipping_progress": "Free delivery progress",
+    "delivery_promise_title": "Quick delivery",
+    "delivery_promise_text": "Across Pakistan within 3–4 working days",
     "drawer_placeholder": "Cart drawer"
   },
   "templates": {

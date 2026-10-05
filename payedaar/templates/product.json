@@ -32,7 +32,7 @@
           "type": "buy_buttons",
           "settings": {
             "show_buy_now": true,
-            "show_whatsapp_inquiry": true
+            "show_whatsapp_inquiry": false
           }
         },
         "description": {

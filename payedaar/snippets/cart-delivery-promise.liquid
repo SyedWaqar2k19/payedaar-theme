@@ -1,0 +1,12 @@
+{%- comment -%}
+  Shared delivery highlight for cart drawer + cart page.
+{%- endcomment -%}
+<div class="cart-delivery-promise">
+  <span class="cart-delivery-promise__icon" aria-hidden="true">
+    {% render 'icon', name: 'truck', size: 18 %}
+  </span>
+  <p class="cart-delivery-promise__copy">
+    <span class="cart-delivery-promise__title">{{ 'cart.delivery_promise_title' | t }}</span>
+    <span class="cart-delivery-promise__text">{{ 'cart.delivery_promise_text' | t }}</span>
+  </p>
+</div>

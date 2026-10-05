@@ -115,6 +115,7 @@
               <span>{{ 'cart.subtotal' | t }}</span>
               <strong data-cart-page-subtotal>{{ cart.total_price | money }}</strong>
             </p>
+            {% render 'cart-delivery-promise' %}
             <div class="cart-page__trust">
               {% render 'trust-badges' %}
             </div>

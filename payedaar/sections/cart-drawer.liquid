@@ -127,6 +127,7 @@
 
     {%- if cart.item_count > 0 -%}
       <div class="cart-drawer__footer">
+        {% render 'cart-delivery-promise' %}
         <div class="cart-drawer__subtotal">
           <span>{{ 'cart.subtotal' | t }}</span>
           <strong class="text-primary" data-cart-subtotal>{{ cart.total_price | money }}</strong>

@@ -680,8 +680,16 @@
     return nav?.type === 'back_forward';
   }
 
+  function resetProductFormsAfterHistory() {
+    document.querySelectorAll('product-form').forEach((form) => {
+      form._busy = false;
+      if (typeof form.setLoading === 'function') form.setLoading(false);
+    });
+  }
+
   window.addEventListener('pageshow', (event) => {
     if (!isHistoryRestore(event)) return;
+    resetProductFormsAfterHistory();
     const drawer = document.querySelector('cart-drawer');
     if (drawer && typeof drawer.refresh === 'function') {
       drawer.refresh();
